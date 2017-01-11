@@ -1,0 +1,45 @@
+---
+title: "Optimizing the Plans for the Neighbourhood ‘Amstelhaege’ to be Family Friendly."
+author: "todo insert names"
+date: "January 2017"
+output: pdf_document
+---
+
+# Introduction
+
+This proposal is on optimizing the neighbourhood ‘Amstelhaege’ for family friendliness. Therefore, for this neighbourhood with a size of 200x170 meters new plans will be constructed. For these plans to be accepted a number of constraints have to be met
+
+# Constraints 
+
+ - Building rations have to be 50% Family Homes, 30% Bungalows, 20% Mansions.
+ - Varying plans containing 40, 70 and 100 houses have to be made.
+ - Each house needs some clearance.
+ - At most 4 bodies of water with side ratios 1:4 may be present.
+ - Water bodies may be 20% of the total area maximally.
+ - A playground should be within 50 meters of any house.
+
+# Research goal
+
+Design an algorithm which generates a configuration with maximal profit without breaching the given constraints.
+
+# Methods we will use
+
+We will consider different families of algorithms, and customize some to our context. One notable algorithm we could look into is rod cutting, where a fixed amount of resources are available and the goal is to maximise profits for said resources. We might also use machine learning techniques. Python libraries such as scikit-learn already provide the foundations of machine learning, which we can build on top of, if we choose to. Else the Java library WEKA can be used. This might make us more efficient in producing many different algorithms to try and compare. 
+
+# Motivations for method: 
+
+Our methods will allow us to implement and compare lots of different combinations of techniques, until we find an optimal solution. By using libraries to our advantage, we will be able to highly automate our analysis and provide extensive statistics/visualisations.
+
+# References
+
+Other students have worked on the same assignment in previous years, as evident from google.com?q=github+Amstelhaege . Inspecting their work is relevant both to reviewing existing solutions, to learn of alternative methods from our own, and for benchmarking our solutions against others. If we do decide to apply some form of machine learning, the massive corpus on machine learning methods could help us in our work. We’re yet to decide on specific literature to do further research into.
+
+# Schedule
+
+At this stage, we are pushing to finish our proposal in the strict time frame given. the above research goal/loose plans might not persist, and so we avoid carving our project schedule in stone. Our development cycle will be highly agile. The schedule below is general/abstract and details are to be determined shortly. 
+
+|Week|Description|
+|1|Decide on stuff and do research|
+|2|Implement stuff and test some early algorithms|
+|3|Finalize algorithms, get results|
+|4|Write report, make it pretty|

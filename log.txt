@@ -1,0 +1,11 @@
+# Development log
+
+## 11.1.17
+
+ - downloaded code from blackboard
+ - ran intellij's code analysis, removing redundant paranthesis and semicolons
+ - inited __main__.py, where our future code will init
+ - inited README.md
+ - copied research proposal doc into docs/proposal.rmd
+ - inited docs/todo.md
+

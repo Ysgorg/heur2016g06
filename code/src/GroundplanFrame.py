@@ -22,8 +22,7 @@ class GroundplanFrame(object):
         self.canvas = Canvas(self.frame,
                              bg="white",
                              width=self.plan.getWidth() * self.SCALE,
-                             height=self.plan.getHeight() * self.SCALE,
-                             cursor="PLUS")
+                             height=self.plan.getHeight() * self.SCALE)
 
         self.canvas.bind("<Button-1>", self.processMouseEvent)
         self.canvas.focus_set()

@@ -1,5 +1,5 @@
-from code.src import Groundplan
-from code.src import GroundplanFrame
+from src import Groundplan
+from src import GroundplanFrame
 
 
 class DistrictPlanner(object):

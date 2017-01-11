@@ -1,9 +1,9 @@
 import math
 
-from code.districtobjects.Residence import Residence
-from code.districtobjects.Waterbody import Waterbody
+from districtobjects.Residence import Residence
+from districtobjects.Waterbody import Waterbody
 
-from code.districtobjects.Ground import Ground
+from districtobjects.Ground import Ground
 
 
 class Groundplan(object):

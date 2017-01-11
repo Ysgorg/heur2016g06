@@ -1,11 +1,11 @@
 from random import random
 
-from districtobjects.Bungalow import Bungalow
-from districtobjects.FamilyHome import FamilyHome
-from districtobjects.Mansion import Mansion
-from districtobjects.Waterbody import Waterbody
-from src.Groundplan import Groundplan
-from src.GroundplanFrame import GroundplanFrame
+from code.districtobjects.Bungalow import Bungalow
+from code.districtobjects.FamilyHome import FamilyHome
+from code.districtobjects.Mansion import Mansion
+from code.districtobjects.Waterbody import Waterbody
+from code.src.Groundplan import Groundplan
+from code.src.GroundplanFrame import GroundplanFrame
 
 from code.districtobjects.Playground import Playground
 

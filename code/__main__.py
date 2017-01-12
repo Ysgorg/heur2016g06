@@ -5,8 +5,13 @@ os.chdir(PATH)
 
 print "Current directory:", PATH
 
-# The example solution provided (For testing setup)
+# stuped algorithms
 from src.Example import Example
+from src.Greedy import Greedy
 
-# The Class we are expanding on
-#from src.DistrictPlanner import DistrictPlanner
+# cleverer algorithms
+from src.DistrictPlanner import DistrictPlanner
+from src.Evolver import Evolver
+
+
+Evolver()

@@ -161,11 +161,12 @@ class Groundplan(object):
                     return False
 
         if self.PLAYGROUND:
+            if len(self.playgrounds) is 0:
+                return False
             for playground in self.playgrounds:
-                if (placeable != playground and overlap(placeable, playground)):
+                if (placeable is playground and overlap(placeable, playground)):
                     return False
-                elif (isinstance(placeable, Residence) and
-                              placeable != playground):
+                elif isinstance(placeable, Residence) and placeable is not playground:
                     if self.getDistance(playground, placeable) < placeable.getminimumClearance():
                         return False
                     elif self.getDistance(playground, placeable) < self.MAXIMUM_PLAYGROUND_DISTANCE:

@@ -25,10 +25,10 @@ class DistrictPlanner(object):
 
     def __init__(self):
         self.plan = self.developGroundplan()
-        self.frame = GroundplanFrame(self.plan)
-        self.frame.setPlan()
+       # self.frame = GroundplanFrame(self.plan)
+       # self.frame.setPlan()
 
-        self.frame.root.mainloop()
+#        self.frame.root.mainloop()
 
     def placePlaygrounds(self, plan):
         print self, plan
@@ -69,7 +69,8 @@ class DistrictPlanner(object):
     def developGroundplan(self):
         plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
         self.placePlaygrounds(plan)
-
+        return plan
+"""
         i = 0
         attempts = 0
         while i < self.NUMBER_OF_HOUSES:
@@ -84,3 +85,4 @@ class DistrictPlanner(object):
         print "Placement attempts:", attempts
 
         return plan
+"""

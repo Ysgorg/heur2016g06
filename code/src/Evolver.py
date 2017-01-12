@@ -54,7 +54,7 @@ class Evolver(object):
 
             num = len(plan.getWaterbodies())
 
-            #if num> 0:plan.removeWaterbody(plan.getWaterbodies()[int(random()*num)])
+            if num> 0:plan.removeWaterbody(plan.getWaterbodies()[int(random()*num)])
 
             for j in range(1,30000):
 

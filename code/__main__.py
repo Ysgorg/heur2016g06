@@ -6,7 +6,7 @@ os.chdir(PATH)
 print "Current directory:", PATH
 
 # The example solution provided (For testing setup)
-from src.Example import Example
+#from src.Example import Example
 
 # The Class we are expanding on
-#from src.DistrictPlanner import DistrictPlanner
+from src.DistrictPlanner import DistrictPlanner

@@ -1,5 +1,6 @@
 from Tkinter import *
 
+# Taken from https://stackoverflow.com/questions/17985216/draw-circle-in-tkinter-python for analysis purposes
 
 class GroundplanFrame(object):
     MARGINLEFT = 25
@@ -7,6 +8,7 @@ class GroundplanFrame(object):
 
     COLOR_WATER = "blue"
     COLOR_PLAYGROUND = "green"
+
 
     def __init__(self, plan):
         self.SCALE = 3
@@ -50,6 +52,14 @@ class GroundplanFrame(object):
                                          (playground.getX() + playground.getWidth()) * self.SCALE,
                                          (playground.getY() + playground.getHeight()) * self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
+
+            # For visualising the effective radius
+            r, x, y, w, h = 50, playground.getX(), playground.getY(), playground.getWidth(), playground.getHeight()
+            r, x, y, w, h = map(lambda x:x*self.SCALE, (r,x,y,w,h))
+            self.canvas.create_oval(
+                    (x + w / 2) - r, (y + h / 2) - r,
+                    (x + w / 2) + r, (y + h / 2) + r,
+                    outline=self.COLOR_PLAYGROUND, width=1)
 
         self.text.insert(INSERT, "Value of plan is: ")
         self.text.insert(INSERT, self.plan.getPlanValue())

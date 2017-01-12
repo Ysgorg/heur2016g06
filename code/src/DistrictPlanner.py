@@ -1,13 +1,9 @@
 from random import random
 
+from districtobjects.FamilyHome import FamilyHome
+from districtobjects.Playground import Playground
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
-
-from districtobjects.Bungalow import Bungalow
-from districtobjects.FamilyHome import FamilyHome
-from districtobjects.Mansion import Mansion
-from districtobjects.Waterbody import Waterbody
-from districtobjects.Playground import Playground
 
 PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
@@ -21,6 +17,7 @@ Y_SPREAD = 10
 
 PLAYGROUND_WIDTH = 30
 PLAYGROUND_HEIGHT = 20
+
 
 class DistrictPlanner(object):
     NUMBER_OF_HOUSES = 40
@@ -39,7 +36,7 @@ class DistrictPlanner(object):
         # Reach is defined by the the playground size, plus its usable radius
         playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS
         playgroundReachY = PLAYGROUND_HEIGHT + PLAYGROUND_RADIUS
-        print "Playground reach:", playgroundReachX,",", playgroundReachY
+        print "Playground reach:", playgroundReachX, ",", playgroundReachY
 
         # Floor the total width and height by our playground reach to find optimal number to fit
         numberPlaygroundsX = plan.WIDTH // playgroundReachX
@@ -51,18 +48,18 @@ class DistrictPlanner(object):
         for x in range(1, numberPlaygroundsX + 1):
             xSpread = X_SPREAD
 
-            if (x <= numberPlaygroundsX/2): # if x is in the lower half, invert the offset
+            if x <= numberPlaygroundsX / 2:  # if x is in the lower half, invert the offset
                 xSpread = -xSpread
 
-            locationX = ((PLAYGROUND_RADIUS * x) + X_OFFSET) + (PLAYGROUND_WIDTH * (x-1)) + xSpread
+            locationX = ((PLAYGROUND_RADIUS * x) + X_OFFSET) + (PLAYGROUND_WIDTH * (x - 1)) + xSpread
 
             for y in range(1, numberPlaygroundsY + 1):
                 ySpread = Y_SPREAD
 
-                if (y <= numberPlaygroundsY/2): # if y is in the lower half, invert the offset
+                if y <= numberPlaygroundsY / 2:  # if y is in the lower half, invert the offset
                     ySpread = -ySpread
 
-                locationY = ((PLAYGROUND_RADIUS * y) + Y_OFFSET) + (PLAYGROUND_HEIGHT * (y-1)) + ySpread
+                locationY = ((PLAYGROUND_RADIUS * y) + Y_OFFSET) + (PLAYGROUND_HEIGHT * (y - 1)) + ySpread
 
                 print "Location:", x, "x", y, "\nCoordinates:", locationX, ",", locationY, "\n"
                 plan.addPlayground(Playground(locationX, locationY))
@@ -75,12 +72,12 @@ class DistrictPlanner(object):
 
         i = 0
         attempts = 0
-        while (i < self.NUMBER_OF_HOUSES):
+        while i < self.NUMBER_OF_HOUSES:
             attempts += 1
             x = 10 + random() * (plan.WIDTH - 50)
             y = 10 + random() * (plan.HEIGHT - 50)
             house = FamilyHome(x, y)
-            if (plan.correctlyPlaced(house)):
+            if plan.correctlyPlaced(house):
                 plan.addResidence(house)
                 i += 1
 

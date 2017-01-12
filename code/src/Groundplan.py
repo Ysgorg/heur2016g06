@@ -7,7 +7,6 @@ from districtobjects.Ground import Ground
 
 
 class Groundplan(object):
-    
     WIDTH = 200
     HEIGHT = 170
     AREA = WIDTH * HEIGHT
@@ -107,7 +106,7 @@ class Groundplan(object):
                     waterbody_surface += waterbody.getSurface()
 
             if (float(waterbody_surface) / self.AREA) < self.MINIMUM_WATER_PERCENTAGE:
-                print "problem: water percent " , float(waterbody_surface)/self.AREA
+                print "problem: water percent ", float(waterbody_surface) / self.AREA
                 return False
             for residence in self.residences:
                 if not self.correctlyPlaced(residence):
@@ -155,9 +154,8 @@ class Groundplan(object):
         for residence in self.residences:
             if residence is placeable: continue
             if overlap(residence, placeable): return False
-            if not isinstance(placeable,Waterbody):
-                if self.getDistance(residence, placeable) < max(self_clearance,residence.getminimumClearance()):
-
+            if not isinstance(placeable, Waterbody):
+                if self.getDistance(residence, placeable) < max(self_clearance, residence.getminimumClearance()):
                     return False
 
         if self.PLAYGROUND:
@@ -166,25 +164,26 @@ class Groundplan(object):
                 return False
             ok = False
             for playground in self.playgrounds:
-                #print "pg",playground
+                # print "pg",playground
                 if overlap(placeable, playground): return False
                 if isinstance(placeable, Residence):
                     min_ok = placeable.getminimumClearance()
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
-                    #print min_ok,distance,max_ok
+                    # print min_ok,distance,max_ok
                     if distance < min_ok or max_ok < distance:
-                        #print "was bad distance from playground :("
-                        pass # return False
+                        # print "was bad distance from playground :("
+                        pass  # return False
                     else:
                         ok = True
                         break
-                    #print "ok"
-                    #print "was ok distance from playground :)"
+                        # print "ok"
+                        # print "was ok distance from playground :)"
             if not ok: return False
         return True
 
-    def getDistance(self, residence, other):
+    @staticmethod
+    def getDistance(residence, other):
         if (residence.topEdge() <= other.bottomEdge() and
                     residence.rightEdge() >= other.leftEdge() and
                     residence.bottomEdge() >= other.topEdge() and

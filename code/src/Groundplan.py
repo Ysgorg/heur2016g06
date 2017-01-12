@@ -150,13 +150,12 @@ class Groundplan(object):
 
         if isinstance(placeable, Residence):
             self_clearance = placeable.getminimumClearance()
-        if not isinstance(placeable,Waterbody):
-            for residence in self.residences:
-                if residence is placeable: continue
-                if overlap(residence, placeable): return False
 
+        for residence in self.residences:
+            if residence is placeable: continue
+            if overlap(residence, placeable): return False
+            if not isinstance(placeable,Waterbody):
                 if self.getDistance(residence, placeable) < max(self_clearance,residence.getminimumClearance()):
-
 
                     return False
 

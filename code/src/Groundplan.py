@@ -94,34 +94,38 @@ class Groundplan(object):
                     (float(self.number_of_familyhomes) / self.number_of_houses) < self.MINIMUM_FAMILYHOMES_PERCENTAGE or
                     (float(self.number_of_bungalows) / self.number_of_houses) < self.MINIMUM_BUNGALOW_PERCENTAGE or
                     (float(self.number_of_mansions) / self.number_of_houses) < self.MINIMUM_MANSION_PERCENTAGE):
+            print "problem: incorrect ratio / number of elements"
             return False
         else:
             waterbody_surface = 0
-
             for waterbody in self.waterbodies:
                 if not self.correctlyPlaced(waterbody):
+                    print "problem: incorrectly placed water"
                     return False
                 else:
                     waterbody_surface += waterbody.getSurface()
 
             if (float(waterbody_surface) / self.AREA) < self.MINIMUM_WATER_PERCENTAGE:
+                print "problem: water percent"
                 return False
             for residence in self.residences:
                 if not self.correctlyPlaced(residence):
+                    print "problem: residence incorrectly placed"
                     return False
+
             return True
 
     def correctlyPlaced(self, placeable):
 
-        def overlap(o1,o2):
-
-            if         o1.topEdge() > o2.bottomEdge() \
+        def overlap(o1, o2):
+            if o1 is o2: return False
+            if o1.topEdge() > o2.bottomEdge() \
                     or o2.topEdge() > o1.bottomEdge() \
                     or o1.rightEdge() < o2.leftEdge() \
                     or o2.rightEdge() < o1.leftEdge():
                 return False
-            else: return True
-
+            else:
+                return True
 
         if (placeable.topEdge() < self.ground.topEdge() or
                     placeable.rightEdge() > self.ground.rightEdge() or
@@ -130,6 +134,7 @@ class Groundplan(object):
             return False
 
         if isinstance(placeable, Residence):
+
             if (placeable.topEdge() < placeable.getminimumClearance() or
                         placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
                         placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
@@ -137,20 +142,21 @@ class Groundplan(object):
                 return False
 
         for waterbody in self.waterbodies:
-            if overlap(waterbody,placeable):
+            if waterbody is not placeable and overlap(waterbody, placeable):
                 return False
 
-        for residence in self.residences:
-            if (placeable != residence and overlap(residence,placeable)):
-                return False
-            elif (isinstance(placeable, Residence) and
-                          placeable != residence and
-                          self.getDistance(residence, placeable) < placeable.getminimumClearance()):
-                return False
+        if isinstance(placeable,Residence):
+            for residence in self.residences:
+                if residence is placeable: continue
+
+                if overlap(residence, placeable): return False
+
+                if self.getDistance(residence, placeable) < min(placeable.getminimumClearance(),residence.getminimumClearance()):
+                    return False
 
         if self.PLAYGROUND:
             for playground in self.playgrounds:
-                if (placeable != playground and overlap(placeable,playground)):
+                if (placeable != playground and overlap(placeable, playground)):
                     return False
                 elif (isinstance(placeable, Residence) and
                               placeable != playground):

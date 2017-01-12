@@ -9,25 +9,31 @@ from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
 from src.DistrictPlanner import DistrictPlanner
+from src.ConfigLogger import ConfigLogger
 
 #
 
 class Evolver(object):
+
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
+    LOG_KEY = "evolver"
 
-    def __init__(self):
+    # input log_unique_key to continue existing thread of evolution
+    def __init__(self,log_unique_key=None):
 
         i = 0
-
-        #plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
-
-        plan = DistrictPlanner().developGroundplan()
+        if log_unique_key is None:
+            log_unique_key = str(random()) # probably but not definetly unique
+            ConfigLogger.createConfigLog(self.LOG_KEY+log_unique_key)
+            plan = DistrictPlanner().developGroundplan()
+        else:
+            plan = ConfigLogger.loadConfig(self.LOG_KEY+log_unique_key)
 
         frame = GroundplanFrame(plan)
 
-        best_val = 0
-        best_plan = None
+        best_val = 1
+        best_plan = plan
         iterations_since_best = 0
 
         # separate window for the best found
@@ -116,5 +122,7 @@ class Evolver(object):
                     best_frame.repaint(best_plan)
                     print "new best:", best_val, iterations_since_best
                     iterations_since_best = 0
+
+                    ConfigLogger.appendToConfigLog(self.LOG_KEY+log_unique_key,best_plan)
 
             frame.repaint(plan)

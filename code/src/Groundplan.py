@@ -115,8 +115,11 @@ class Groundplan(object):
 
         def overlap(o1,o2):
 
-            if o1.topEdge() < o2.bottomEdge() or o1.bottomEdge() > o2.topEdge() or o1.leftEdge() < o2.rightEdge() \
-                    or o1.rightEdge() < o2.leftEdge(): return False
+            if         o1.topEdge() > o2.bottomEdge() \
+                    or o2.topEdge() > o1.bottomEdge() \
+                    or o1.rightEdge() < o2.leftEdge() \
+                    or o2.rightEdge() < o1.leftEdge():
+                return False
             else: return True
 
 
@@ -134,8 +137,6 @@ class Groundplan(object):
                 return False
 
         for waterbody in self.waterbodies:
-            if waterbody.rightEdge() > placeable.leftEdge():
-                return False
             if overlap(waterbody,placeable):
                 return False
 

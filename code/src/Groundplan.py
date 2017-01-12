@@ -31,6 +31,9 @@ class Groundplan(object):
         self.waterbodies = []
         self.playgrounds = []
 
+    def getNumberOfHouses(self):
+        return self.number_of_familyhomes + self.number_of_bungalows + self.number_of_mansions
+
     def __copy__(self):
         return type(self)
 
@@ -65,13 +68,14 @@ class Groundplan(object):
         self.residences.append(residence)
 
     def removeResidence(self, residence):
+
         if residence.getType() == "FamilyHome":
             self.number_of_familyhomes -= 1
-        elif residence.get_type() == "Bungalow":
+        elif residence.getType() == "Bungalow":
             self.number_of_bungalows -= 1
-        elif residence.get_type() == "Mansion":
+        elif residence.getType() == "Mansion":
             self.number_of_mansions -= 1
-        residence.remove(residence)
+        self.residences.remove(residence)
 
     def addWaterbody(self, waterbody):
         self.waterbodies.append(waterbody)
@@ -108,42 +112,44 @@ class Groundplan(object):
             return True
 
     def correctlyPlaced(self, placeable):
+
+        def overlap(o1,o2):
+
+            if o1.topEdge() < o2.bottomEdge() or o1.bottomEdge() > o2.topEdge() or o1.leftEdge() < o2.rightEdge() \
+                    or o1.rightEdge() < o2.leftEdge(): return False
+            else: return True
+
+
         if (placeable.topEdge() < self.ground.topEdge() or
                     placeable.rightEdge() > self.ground.rightEdge() or
                     placeable.bottomEdge() > self.ground.bottomEdge() or
                     placeable.leftEdge() < self.ground.leftEdge()):
             return False
+
         if isinstance(placeable, Residence):
             if (placeable.topEdge() < placeable.getminimumClearance() or
                         placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
                         placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
                         placeable.leftEdge() < placeable.getminimumClearance()):
                 return False
+
         for waterbody in self.waterbodies:
-            if (not (isinstance(placeable, Waterbody)) and
-                        placeable.topEdge() < waterbody.bottomEdge() and
-                        placeable.rightEdge() < waterbody.leftEdge() and
-                        placeable.bottomEdge() > waterbody.topEdge() and
-                        placeable.leftEdge() > waterbody.rightEdge()):
+            if waterbody.rightEdge() > placeable.leftEdge():
                 return False
+            if overlap(waterbody,placeable):
+                return False
+
         for residence in self.residences:
-            if (placeable != residence and
-                        placeable.topEdge() < residence.bottomEdge() and
-                        placeable.rightEdge() < residence.leftEdge() and
-                        placeable.bottomEdge() > residence.topEdge() and
-                        placeable.leftEdge() > residence.rightEdge()):
+            if (placeable != residence and overlap(residence,placeable)):
                 return False
             elif (isinstance(placeable, Residence) and
                           placeable != residence and
                           self.getDistance(residence, placeable) < placeable.getminimumClearance()):
                 return False
+
         if self.PLAYGROUND:
             for playground in self.playgrounds:
-                if (placeable != playground and
-                            placeable.leftEdge() < playground.rightEdge() and
-                            placeable.rightEdge() > playground.leftEdge() and
-                            placeable.topEdge() < playground.bottomEdge() and
-                            placeable.bottomEdge() > playground.topEdge()):
+                if (placeable != playground and overlap(placeable,playground)):
                     return False
                 elif (isinstance(placeable, Residence) and
                               placeable != playground):

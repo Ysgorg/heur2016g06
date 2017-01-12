@@ -8,18 +8,21 @@ from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
+from src.DistrictPlanner import DistrictPlanner
 
 #
 
 class Evolver(object):
     NUMBER_OF_HOUSES = 40
-    PLAYGROUND = False
+    PLAYGROUND = True
 
     def __init__(self):
 
         i = 0
 
-        plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
+        #plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
+
+        plan = DistrictPlanner().developGroundplan()
 
         frame = GroundplanFrame(plan)
 
@@ -62,8 +65,8 @@ class Evolver(object):
                 if plan.correctlyPlaced(wb):
                     plan.addWaterbody(wb)
 
-            if plan.getNumberOfHouses() is 40:
-                ind = int(random() * 40)
+            if plan.getNumberOfHouses() is self.NUMBER_OF_HOUSES:
+                ind = int(random() * self.NUMBER_OF_HOUSES)
 
                 toberemoved = plan.getResidence(ind)
                 type_to_place = toberemoved.getType()

@@ -63,10 +63,14 @@ class Evolver(object):
                     break
                 x = random()*plan.WIDTH
                 y = random()*plan.HEIGHT
-                wb = Waterbody(x,y,plan.WIDTH/4,plan.HEIGHT/5)
+                wb = None
+                if random() < 0.5:
+                    wb = Waterbody(x,y,plan.WIDTH/4,plan.HEIGHT/5)
+                else :
+                    wb = Waterbody(x,y,plan.HEIGHT/5,plan.WIDTH/4)
                 # plan.removeWaterbody(plan.getWaterbodies()[int(random()*num)])
                 if plan.correctlyPlaced(wb):
-                    plan.addWaterbody(Waterbody(x,y,plan.WIDTH/4,plan.HEIGHT/5))
+                    plan.addWaterbody(wb)
 
             type_to_place = None
 

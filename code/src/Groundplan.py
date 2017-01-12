@@ -7,6 +7,7 @@ from districtobjects.Ground import Ground
 
 
 class Groundplan(object):
+    
     WIDTH = 200
     HEIGHT = 170
     AREA = WIDTH * HEIGHT
@@ -160,16 +161,27 @@ class Groundplan(object):
                     return False
 
         if self.PLAYGROUND:
+
             if len(self.playgrounds) is 0:
                 return False
+            ok = False
             for playground in self.playgrounds:
-                if (placeable is playground and overlap(placeable, playground)):
-                    return False
-                elif isinstance(placeable, Residence) and placeable is not playground:
-                    if self.getDistance(playground, placeable) < placeable.getminimumClearance():
-                        return False
-                    elif self.getDistance(playground, placeable) < self.MAXIMUM_PLAYGROUND_DISTANCE:
-                        return True
+                #print "pg",playground
+                if overlap(placeable, playground): return False
+                if isinstance(placeable, Residence):
+                    min_ok = placeable.getminimumClearance()
+                    max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
+                    distance = self.getDistance(playground, placeable)
+                    #print min_ok,distance,max_ok
+                    if distance < min_ok or max_ok < distance:
+                        #print "was bad distance from playground :("
+                        pass # return False
+                    else:
+                        ok = True
+                        break
+                    #print "ok"
+                    #print "was ok distance from playground :)"
+            if not ok: return False
         return True
 
     def getDistance(self, residence, other):

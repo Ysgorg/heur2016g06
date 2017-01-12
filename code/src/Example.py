@@ -59,6 +59,3 @@ class Example(object):
         print "Value of plan is:", plan.getPlanValue()
 
         return plan
-
-
-Example()

@@ -7,7 +7,7 @@ print "Current directory:", PATH
 
 # stuped algorithms
 from src.Example import Example
-from src.Greedy import Greedy
+#from src.Greedy import Greedy
 
 # cleverer algorithms
 from src.DistrictPlanner import DistrictPlanner

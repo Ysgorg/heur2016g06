@@ -87,5 +87,3 @@ class DistrictPlanner(object):
         print "Placement attempts:", attempts
 
         return plan
-
-DistrictPlanner()

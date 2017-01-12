@@ -52,14 +52,12 @@ class DistrictPlanner(object):
             if (x <= numberPlaygroundsX/2): # if x is in the lower half, invert the offset
                 xSpread = -xSpread
 
-            print "xSpread:", xSpread
-
             locationX = ((PLAYGROUND_RADIUS * x) + X_OFFSET) + (PLAYGROUND_WIDTH * (x-1)) + xSpread
 
             for y in range(1, numberPlaygroundsY + 1):
                 ySpread = Y_SPREAD
 
-                if (y <= numberPlaygroundsY/2): # if x is in the lower half, invert the offset
+                if (y <= numberPlaygroundsY/2): # if y is in the lower half, invert the offset
                     ySpread = -ySpread
 
                 locationY = ((PLAYGROUND_RADIUS * y) + Y_OFFSET) + (PLAYGROUND_HEIGHT * (y-1)) + ySpread

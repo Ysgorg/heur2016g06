@@ -106,7 +106,7 @@ class Groundplan(object):
                     waterbody_surface += waterbody.getSurface()
 
             if (float(waterbody_surface) / self.AREA) < self.MINIMUM_WATER_PERCENTAGE:
-                print "problem: water percent"
+                print "problem: water percent " , float(waterbody_surface)/self.AREA
                 return False
             for residence in self.residences:
                 if not self.correctlyPlaced(residence):
@@ -142,16 +142,22 @@ class Groundplan(object):
                 return False
 
         for waterbody in self.waterbodies:
+
             if waterbody is not placeable and overlap(waterbody, placeable):
                 return False
 
-        if isinstance(placeable,Residence):
+        self_clearance = 0
+
+        if isinstance(placeable, Residence):
+            self_clearance = placeable.getminimumClearance()
+        if not isinstance(placeable,Waterbody):
             for residence in self.residences:
                 if residence is placeable: continue
-
                 if overlap(residence, placeable): return False
 
-                if self.getDistance(residence, placeable) < min(placeable.getminimumClearance(),residence.getminimumClearance()):
+                if self.getDistance(residence, placeable) < max(self_clearance,residence.getminimumClearance()):
+
+
                     return False
 
         if self.PLAYGROUND:

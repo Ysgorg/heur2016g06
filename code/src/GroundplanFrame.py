@@ -53,6 +53,8 @@ class GroundplanFrame(object):
 
         self.text.insert(INSERT, "Value of plan is: ")
         self.text.insert(INSERT, self.plan.getPlanValue())
+        self.text.insert(INSERT, "\nis valid: ")
+        self.text.insert(INSERT, self.plan.isValid())
 
         self.canvas.pack()
         self.text.pack(fill=BOTH, expand=1)

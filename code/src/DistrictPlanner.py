@@ -1,3 +1,5 @@
+from random import random
+
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
@@ -70,7 +72,19 @@ class DistrictPlanner(object):
     def developGroundplan(self):
         plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
         self.placePlaygrounds(plan)
-        print plan.getPlaygrounds()
+
+        i = 0
+        attempts = 0
+        while (i < self.NUMBER_OF_HOUSES):
+            attempts += 1
+            x = 10 + random() * (plan.WIDTH - 50)
+            y = 10 + random() * (plan.HEIGHT - 50)
+            house = FamilyHome(x, y)
+            if (plan.correctlyPlaced(house)):
+                plan.addResidence(house)
+                i += 1
+
+        print "Placement attempts:", attempts
 
         return plan
 

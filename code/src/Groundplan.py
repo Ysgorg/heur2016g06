@@ -177,8 +177,7 @@ class Groundplan(object):
                     else:
                         ok = True
                         break
-                        # print "ok"
-                        # print "was ok distance from playground :)"
+            if isinstance(placeable,Waterbody): ok = True
             if not ok: return False
         return True
 

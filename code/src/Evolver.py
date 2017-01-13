@@ -26,8 +26,8 @@ class Evolver(object):
         h = None
 
         while True:
-            x = random() * plan.WIDTH
-            y = random() * plan.HEIGHT
+            x = int(random() * plan.WIDTH)
+            y = int(random() * plan.HEIGHT)
 
             if type_to_place is "FamilyHome":   h = FamilyHome(x, y)
             elif type_to_place is "Bungalow":   h = Bungalow(x, y)
@@ -54,16 +54,16 @@ class Evolver(object):
             num_wbs -= 1
 
         # dimensions of water bodies
-        v1 = plan.WIDTH / 4
-        v2 = plan.HEIGHT / 5
+        v1 = int(plan.WIDTH / 4)
+        v2 = int(plan.HEIGHT / 5)
 
         # try many times to place wbs until 4 have been placed
         while True:
 
             if num_wbs >= 4: break
 
-            x = random() * plan.WIDTH
-            y = random() * plan.HEIGHT
+            x = int(random() * plan.WIDTH)
+            y = int(random() * plan.HEIGHT)
 
             # randomly decide rotation
             if random() < 0.5: wb = Waterbody(x, y, v1, v2)

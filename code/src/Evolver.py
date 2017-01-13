@@ -125,7 +125,7 @@ class Evolver(object):
         while True:
 
             # mutate
-            plan = self.mutateWater(plan)
+            #plan = self.mutateWater(plan)
             res = self.mutateAHouse(plan,i)
             if res[1]: # if succeeded in house mutation
                 plan = res[0]

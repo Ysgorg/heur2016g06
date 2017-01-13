@@ -1,6 +1,8 @@
 from random import random
 
-from districtobjects.FamilyHome import FamilyHome
+from math import sqrt, pow, ceil
+
+from districtobjects.Waterbody import Waterbody
 from districtobjects.Playground import Playground
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
@@ -8,7 +10,7 @@ from src.GroundplanFrame import GroundplanFrame
 PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
 # Coordinate offset from origin
-X_OFFSET = -5
+X_OFFSET = 0
 Y_OFFSET = -10
 
 # Spreading buildings from center towards the edge
@@ -18,6 +20,9 @@ Y_SPREAD = 10
 PLAYGROUND_WIDTH = 30
 PLAYGROUND_HEIGHT = 20
 
+# Neccecsary water as a percentage out of 1
+TOTAL_WATER = 0.2
+NO_WATER_BODIES = 4
 
 class DistrictPlanner(object):
     NUMBER_OF_HOUSES = 40
@@ -30,20 +35,49 @@ class DistrictPlanner(object):
 
 #        self.frame.root.mainloop()
 
-    def placePlaygrounds(self, plan):
-        print self, plan
+    def placeWater(self, plan):
+        w = int(plan.WIDTH / 4)
+        h = int(plan.HEIGHT / 5)
 
+        x = 0
+        y = plan.HEIGHT - h
+
+        for i in range(1, NO_WATER_BODIES):
+            print "x:", x, "y:", y, "w:", w, "h:", h
+            wb = Waterbody(x, y, w, h)
+
+            if plan.correctlyPlaced(wb):
+                plan.addWaterbody(wb)
+                print "Waterbody", i, "placed"
+            x += w+1
+
+        wb = Waterbody(plan.WIDTH - h, plan.HEIGHT - w, h, w)
+        wb.flip
+        if plan.correctlyPlaced(wb):
+            plan.addWaterbody(wb)
+            x += w+1
+        return plan
+
+    def placePlaygrounds(self, plan):
         # Reach is defined by the the playground size, plus its usable radius
         playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS
         playgroundReachY = PLAYGROUND_HEIGHT + PLAYGROUND_RADIUS
         print "Playground reach:", playgroundReachX, ",", playgroundReachY
 
+        utilisableX = plan.WIDTH
+        utilisableY = plan.HEIGHT * TOTAL_WATER
+
+        print "Utilisable area:", utilisableX, "+", utilisableY, "=", utilisableX * utilisableY
+
         # Floor the total width and height by our playground reach to find optimal number to fit
-        numberPlaygroundsX = plan.WIDTH // playgroundReachX
-        numberPlaygroundsY = plan.HEIGHT // playgroundReachY
+        #numberPlaygroundsX = int(utilisableX) // playgroundReachX
+        #numberPlaygroundsY = int(utilisableY) // playgroundReachY
+
+        numberPlaygroundsX = int(ceil(utilisableX / playgroundReachX))
+        numberPlaygroundsY = int(ceil(utilisableY / playgroundReachY))
         totalPlaygrounds = numberPlaygroundsX * numberPlaygroundsY
 
-        print "Total fully utilisable playgrounds:", totalPlaygrounds, "\n"
+        print "Total fully utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
 
         for x in range(1, numberPlaygroundsX + 1):
             xSpread = X_SPREAD
@@ -69,6 +103,7 @@ class DistrictPlanner(object):
     def developGroundplan(self):
         plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
         self.placePlaygrounds(plan)
+        self.placeWater(plan)
         return plan
 """
         i = 0

@@ -15,6 +15,7 @@
  - made brute force algo which produces correct but not very good solutions, without playground
  - made brute force algo into evolver
  - made config log interface, enabling saving and loading of plans on disk
+ - modularising DistrictPlanner, using in Evolver as base of layout
 
 ## 13.1.17
 

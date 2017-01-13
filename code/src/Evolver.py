@@ -14,7 +14,6 @@ class Evolver(object):
 
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
-    LOG_KEY = "evolver"
     ITERATIONS_BEFORE_RESET = 5
 
     def findValidHouse(self, plan, type_to_place):
@@ -34,12 +33,9 @@ class Evolver(object):
             elif type_to_place is "Mansion": h = Mansion(x, y)
 
             if random() < 0.5: h = h.flip()
-
             if plan.correctlyPlaced(h): break
-
-            elif type_to_place != "FamilyHome":
-                h = h.flip()
-                if plan.correctlyPlaced(h): break
+            h = h.flip()
+            if plan.correctlyPlaced(h): break
 
         return h
 
@@ -76,9 +72,9 @@ class Evolver(object):
 
         return plan
 
-    def getOrMakePlan(self,key,j=0):
+    def getOrMakePlan(self,key):
 
-        if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key,j)
+        if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key)
         else:
             ConfigLogger().createConfigLog(key)
             return DistrictPlanner().developGroundplan()
@@ -127,9 +123,9 @@ class Evolver(object):
             # mutate
             plan = self.mutateWater(plan)
             res = self.mutateAHouse(plan,i)
-            if res[1]: # if succeeded in house mutation
+            if res[1]:  # if succeeded in house mutation
                 plan = res[0]
-                i+=1
+                i += 1
 
             if plan.isValid():
 
@@ -139,23 +135,14 @@ class Evolver(object):
                     print "[+]\t",round(best_val),'\t->\t',round(plan.getPlanValue()),',\t',deaths,'\t',iterations_since_best
                     best_val = plan.getPlanValue()
                     if visualize: best_frame.repaint(plan)
+                    ConfigLogger.appendToConfigLog(key, plan, {"mutations":iterations_since_best,"deaths":deaths})
                     iterations_since_best = 0
                     deaths = 0
-                    ConfigLogger.appendToConfigLog(key, plan, {"mutations":iterations_since_best,"deaths":deaths})
 
                 elif iterations_since_best > self.ITERATIONS_BEFORE_RESET:
                     # no better plan was found. return to previous best
                     plan = self.getOrMakePlan(key)
-
-                    # strange bug will compute a plan previously computed to be valid to be invalid.
-                    # resolve by going reverting to increasingly far-away point in time
-                    j=0
-                    while not plan.isValid():
-                        j+=1
-                        plan = self.getOrMakePlan(key,j)
-
-
-                    deaths +=1
+                    deaths += 1
                     iterations_since_best = 0
 
                 if visualize: frame.repaint(plan)

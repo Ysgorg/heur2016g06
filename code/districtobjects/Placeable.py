@@ -34,3 +34,6 @@ class Placeable(object):
         self.flipped = False if self.flipped == True else True
         self.width, self.height = self.height, self.width
         return self
+
+    def toString(self):
+        return str(self.getX()) + " " + str(self.rightEdge()) + " " + str(self.topEdge()) + " " + str(self.bottomEdge())

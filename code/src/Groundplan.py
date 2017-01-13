@@ -2,6 +2,7 @@ import math
 
 from districtobjects.Residence import Residence
 from districtobjects.Waterbody import Waterbody
+from districtobjects.Playground import Playground
 
 from districtobjects.Ground import Ground
 
@@ -89,40 +90,40 @@ class Groundplan(object):
     def removePlayground(self, playground):
         self.playgrounds.remove(playground)
 
-    def isValid(self):
+    def isValid(self, verbose = False):
         if (len(self.waterbodies) > self.MAXIMUM_WATER_BODIES or
                     (float(self.number_of_familyhomes) / self.number_of_houses) < self.MINIMUM_FAMILYHOMES_PERCENTAGE or
                     (float(self.number_of_bungalows) / self.number_of_houses) < self.MINIMUM_BUNGALOW_PERCENTAGE or
                     (float(self.number_of_mansions) / self.number_of_houses) < self.MINIMUM_MANSION_PERCENTAGE):
-      #      print "problem: incorrect ratio / number of elements"
+            if verbose: print "problem: incorrect ratio / number of elements"
             return False
         else:
             waterbody_surface = 0
             for waterbody in self.waterbodies:
                 if not self.correctlyPlaced(waterbody):
-          #          print "problem: incorrectly placed water"
+                    if verbose: print "problem: incorrectly placed water"
                     return False
                 else:
                     waterbody_surface += waterbody.getSurface()
 
             if (float(waterbody_surface) / self.AREA) < self.MINIMUM_WATER_PERCENTAGE:
-              #  print "problem: water percent ", float(waterbody_surface) / self.AREA
+                if verbose: print "problem: water percent ", float(waterbody_surface) / self.AREA
                 return False
             for residence in self.residences:
                 if not self.correctlyPlaced(residence):
-              #      print "problem: residence incorrectly placed"
+                    if verbose: print "problem: residence incorrectly placed"
                     return False
 
             return True
 
-    def correctlyPlaced(self, placeable):
+    def correctlyPlaced(self, placeable, verbose = False):
 
-        def overlap(o1, o2):
+        def overlap(o1, o2, verbose=False):
             if o1 is o2: return False
-            if o1.topEdge() > o2.bottomEdge() \
-                    or o2.topEdge() > o1.bottomEdge() \
-                    or o1.rightEdge() < o2.leftEdge() \
-                    or o2.rightEdge() < o1.leftEdge():
+            if o1.topEdge() >= o2.bottomEdge() \
+                    or o2.topEdge() >= o1.bottomEdge() \
+                    or o1.rightEdge() <= o2.leftEdge() \
+                    or o2.rightEdge() <= o1.leftEdge():
                 return False
             else:
                 return True
@@ -147,29 +148,41 @@ class Groundplan(object):
         if isinstance(placeable, Residence):
             self_clearance = placeable.getminimumClearance()
 
+
         for residence in self.residences:
             if residence is placeable: continue
-            if overlap(residence, placeable): return False
+            if overlap(residence, placeable,verbose):
+
+                if verbose: print "overlap:",residence.leftEdge(),residence.rightEdge(),residence.topEdge(),residence.bottomEdge(),\
+                    residence.getType(),"and",placeable.leftEdge(),placeable.rightEdge(),placeable.topEdge(),placeable.bottomEdge(),placeable.getType()
+                return False
             if not isinstance(placeable, Waterbody):
                 if self.getDistance(residence, placeable) < max(self_clearance, residence.getminimumClearance()):
                     return False
 
+
         if self.PLAYGROUND:
 
             if len(self.playgrounds) is 0: return False
+
             ok = False
+
             for playground in self.playgrounds:
-                # print "pg",playground
-                if overlap(placeable, playground): return False
+
+                if overlap(placeable, playground):
+                    if verbose:print "overlap!",playground.getX(),playground.getY(),isinstance(playground,Playground),placeable.getX(),placeable.getY(),placeable.getType()
+                    return False
+
                 if isinstance(placeable, Residence):
                     min_ok = placeable.getminimumClearance()
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
-                    # print min_ok,distance,max_ok
+
                     if min_ok < distance and distance < max_ok:
                         ok = True
                         break
             if isinstance(placeable,Waterbody): ok = True
+
             if not ok: return False
         return True
 

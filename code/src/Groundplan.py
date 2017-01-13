@@ -120,13 +120,9 @@ class Groundplan(object):
 
         def overlap(o1, o2, verbose=False):
             if o1 is o2: return False
-            if o1.topEdge() >= o2.bottomEdge() \
-                    or o2.topEdge() >= o1.bottomEdge() \
-                    or o1.rightEdge() <= o2.leftEdge() \
-                    or o2.rightEdge() <= o1.leftEdge():
-                return False
-            else:
-                return True
+            # def correct https://silentmatt.com/rectangle-intersection/
+            return o1.leftEdge() <= o2.rightEdge() and o1.rightEdge() >= o2.leftEdge() and \
+                   o1.topEdge() <= o2.bottomEdge() and o1.bottomEdge() >= o2.topEdge()
 
         if placeable.topEdge() < self.ground.topEdge() or placeable.rightEdge() > self.ground.rightEdge() \
                 or placeable.bottomEdge() > self.ground.bottomEdge() or placeable.leftEdge() < self.ground.leftEdge():
@@ -178,9 +174,10 @@ class Groundplan(object):
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
 
-                    if min_ok < distance and distance < max_ok:
+                    if min_ok <= distance and distance <= max_ok:
                         ok = True
                         break
+
             if isinstance(placeable,Waterbody): ok = True
 
             if not ok: return False

@@ -9,3 +9,15 @@
  - copied research proposal doc into docs/proposal.rmd
  - inited docs/todo.md
 
+## 12.1.17
+
+ - debugged given code
+ - made brute force algo which produces correct but not very good solutions, without playground
+ - made brute force algo into evolver
+ - made config log interface, enabling saving and loading of plans on disk
+
+## 13.1.17
+
+ - debugging and prettifying evolver
+ - cleaning out print statements from groundplan
+ - take command line input to determine which algo to run and enable file loading

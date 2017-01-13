@@ -12,9 +12,17 @@ class ConfigLogger(object):
     def __init__(self):
         pass
 
-    def serialize_plan(self,plan):
-        print plan
-        config = {'num_houses':plan.numberOfHouses(),'playground':plan.PLAYGROUND,'residences':[],'waterbodies':[],'playgrounds':[]}
+    def exists(self,key):
+        try:
+            with open(key, 'r') as data:
+                return True
+        except Exception:
+            return False
+
+    def serialize_plan(self,plan,metad):
+        #print plan
+        config = {'num_houses':plan.numberOfHouses(),'playground':plan.PLAYGROUND,'residences':[],'waterbodies':[],
+                  'playgrounds':[],"deaths":metad['deaths'],"mutations":metad['mutations']}
         for i in plan.getResidences():
             config['residences'].append({'x':i.x,'y':i.y,'type':i.getType()})
         for i in plan.getWaterbodies():
@@ -27,24 +35,24 @@ class ConfigLogger(object):
         plan = Groundplan(d['num_houses'],d['playground'])
         for i in d['residences']:
             h = None
-            print i['type'] == "FamilyHome"
+            #print i['type'] == "FamilyHome"
             if i['type'] == "Bungalow": h = Bungalow(i['x'],i['y'])
             elif i['type'] == "Mansion": h = Mansion(i['x'],i['y'])
             elif i['type'] == "FamilyHome": h = FamilyHome(i['x'],i['y'])
-            print h
+            #print h
             plan.addResidence(h)
         for i in d['waterbodies']:
             plan.addWaterbody(Waterbody(i['x'],i['y'],i['w'],i['h']))
         for i in d['playgrounds']:
             plan.addPlayground(Playground(i['x'],i['y']))
-        print plan.getWidth()
+        #print plan.getWidth()
         return plan
 
     @classmethod
-    def appendToConfigLog(self, key, plan):
+    def appendToConfigLog(self, key, plan, metad):
         with open(key) as f:
             data = json.load(f)
-        data['d'].append(ConfigLogger().serialize_plan(plan))
+        data['d'].append(ConfigLogger().serialize_plan(plan,metad))
         with open(key, 'w') as f:
             json.dump(data, f)
 
@@ -52,7 +60,7 @@ class ConfigLogger(object):
     def loadConfig(self, key):
         with open(key, 'r') as data:
             d = json.load(data)
-            print data
+         #   print data
             d = d['d']
             return ConfigLogger().deserialize_plan(d[len(d) - 1])
             #return [len(d) - 1, ConfigLogger().deserialize_plan(d[len(d) - 1])]

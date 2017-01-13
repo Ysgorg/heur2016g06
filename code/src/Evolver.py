@@ -17,7 +17,7 @@ class Evolver(object):
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
     LOG_KEY = "evolver"
-    ITERATIONS_BEFORE_RESET = 30
+    ITERATIONS_BEFORE_RESET = 5
 
     def findValidHouse(self, plan, type_to_place):
 

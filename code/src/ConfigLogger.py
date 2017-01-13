@@ -24,18 +24,18 @@ class ConfigLogger(object):
             elif t == "Mansion": return 'm'
 
         config = [plan.numberOfHouses(),plan.PLAYGROUND,[],[],[],metad['deaths'],metad['mutations']]
-        for i in plan.getResidences():  config['residences'].append([i.x,i.y,minify(i.getType())])
-        for i in plan.getWaterbodies(): config['waterbodies'].append([i.x,i.y,i.getWidth(),i.getHeight()])
-        for i in plan.getPlaygrounds(): config['playgrounds'].append([i.x,i.y])
+        for i in plan.getResidences():  config[2].append([i.x,i.y,minify(i.getType())])
+        for i in plan.getWaterbodies(): config[3].append([i.x,i.y,i.getWidth(),i.getHeight()])
+        for i in plan.getPlaygrounds(): config[4].append([i.x,i.y])
         return config
 
     def deserialize_plan(self,d):
         plan = Groundplan(d[0],d[1])
         for i in d[2]:
             h = None
-            if i['type'] == "b": h = Bungalow(i[0],i[1])
-            elif i['type'] == "m": h = Mansion(i[0],i[1])
-            elif i['type'] == "f": h = FamilyHome(i[0],i[1])
+            if i[2] == "b": h = Bungalow(i[0],i[1])
+            elif i[2] == "m": h = Mansion(i[0],i[1])
+            elif i[2] == "f": h = FamilyHome(i[0],i[1])
             plan.addResidence(h)
         for i in d[3]:plan.addWaterbody(Waterbody(i[0],i[1],i[2],i[3]))
         for i in d[4]:plan.addPlayground(Playground(i[0],i[1]))

@@ -33,9 +33,10 @@ class Evolver(object):
             elif type_to_place is "Bungalow":   h = Bungalow(x, y)
             if type_to_place is "Mansion":      h = Mansion(x, y)
 
-            if random() < 0.5: h = h.flip()
+            if (type_to_place != "FamilyHome" # because FamilyHome has w==h
+                and random() < 0.5): h = h.flip()
             if plan.correctlyPlaced(h): break
-            else:
+            elif type_to_place != "FamilyHome": # because FamilyHome has w==h
                 h = h.flip()
                 if plan.correctlyPlaced(h): break
             iterations_since_last_success += 1
@@ -101,7 +102,7 @@ class Evolver(object):
 
         return [plan,h is not None]
 
-    # input log_unique_key to continue existing thread of evolution
+    # input key to continue existing thread of evolution
     def __init__(self, key="test", visualize=True):
 
         i = 0
@@ -133,7 +134,6 @@ class Evolver(object):
             if plan.isValid():
 
                 iterations_since_best += 1
-#                print "until reset: ", self.ITERATIONS_BEFORE_RESET-iterations_since_best
 
                 if plan.getPlanValue() > best_val:
                     print "[+]\t",round(best_val),'\t->\t',round(plan.getPlanValue()),',\t',deaths,'\t',iterations_since_best
@@ -147,7 +147,6 @@ class Evolver(object):
                     # no better plan was found. return to previous best
                     plan = self.getOrMakePlan(key)
                     deaths +=1
-               #     print "restore to", plan.getPlanValue()
                     iterations_since_best = 0
 
                 if visualize: frame.repaint(plan)

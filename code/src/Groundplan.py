@@ -127,15 +127,11 @@ class Groundplan(object):
             else:
                 return True
 
-        if (placeable.topEdge() < self.ground.topEdge() or
-                    placeable.rightEdge() > self.ground.rightEdge() or
-                    placeable.bottomEdge() > self.ground.bottomEdge() or
-                    placeable.leftEdge() < self.ground.leftEdge()):
+        if placeable.topEdge() < self.ground.topEdge() or placeable.rightEdge() > self.ground.rightEdge() \
+                or placeable.bottomEdge() > self.ground.bottomEdge() or placeable.leftEdge() < self.ground.leftEdge():
             return False
 
-        if isinstance(placeable, Residence):
-
-            if (placeable.topEdge() < placeable.getminimumClearance() or
+        if isinstance(placeable, Residence) and (placeable.topEdge() < placeable.getminimumClearance() or
                         placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
                         placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
                         placeable.leftEdge() < placeable.getminimumClearance()):
@@ -160,8 +156,7 @@ class Groundplan(object):
 
         if self.PLAYGROUND:
 
-            if len(self.playgrounds) is 0:
-                return False
+            if len(self.playgrounds) is 0: return False
             ok = False
             for playground in self.playgrounds:
                 # print "pg",playground
@@ -171,10 +166,7 @@ class Groundplan(object):
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
                     # print min_ok,distance,max_ok
-                    if distance < min_ok or max_ok < distance:
-                        # print "was bad distance from playground :("
-                        pass  # return False
-                    else:
+                    if min_ok < distance and distance < max_ok:
                         ok = True
                         break
             if isinstance(placeable,Waterbody): ok = True
@@ -238,12 +230,9 @@ class Groundplan(object):
 
     def getMinimumDistance(self, residence):
         minimum = residence.leftEdge()
-        if residence.topEdge() < minimum:
-            minimum = residence.topEdge()
-        if self.ground.rightEdge() - residence.rightEdge() < minimum:
-            minimum = self.ground.rightEdge() - residence.rightEdge()
-        if self.ground.bottomEdge() - residence.bottomEdge() < minimum:
-            minimum = self.ground.bottomEdge() - residence.bottomEdge()
+        if residence.topEdge() < minimum: minimum = residence.topEdge()
+        if self.ground.rightEdge() - residence.rightEdge() < minimum: minimum = self.ground.rightEdge() - residence.rightEdge()
+        if self.ground.bottomEdge() - residence.bottomEdge() < minimum: minimum = self.ground.bottomEdge() - residence.bottomEdge()
         for other in self.residences:
             if residence != other:
                 distance = int(self.getDistance(residence, other))

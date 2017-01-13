@@ -14,58 +14,47 @@ class ConfigLogger(object):
 
     def exists(self,key):
         try:
-            with open(key, 'r') as data:
-                return True
-        except Exception:
-            return False
+            with open(key, 'r') as data:return True
+        except Exception:return False
 
     def serialize_plan(self,plan,metad):
-        #print plan
-        config = {'num_houses':plan.numberOfHouses(),'playground':plan.PLAYGROUND,'residences':[],'waterbodies':[],
-                  'playgrounds':[],"deaths":metad['deaths'],"mutations":metad['mutations']}
-        for i in plan.getResidences():
-            config['residences'].append({'x':i.x,'y':i.y,'type':i.getType()})
-        for i in plan.getWaterbodies():
-            config['waterbodies'].append({'x':i.x,'y':i.y,'w':i.getWidth(),'h':i.getHeight()})
-        for i in plan.getPlaygrounds():
-            config['playgrounds'].append({'x':i.x,'y':i.y})
+        def minify(t):
+            if t == "FamilyHome": return 'f'
+            elif t == "Bungalow": return 'b'
+            elif t == "Mansion": return 'm'
+
+        config = [plan.numberOfHouses(),plan.PLAYGROUND,[],[],[],metad['deaths'],metad['mutations']]
+        for i in plan.getResidences():  config['residences'].append([i.x,i.y,minify(i.getType())])
+        for i in plan.getWaterbodies(): config['waterbodies'].append([i.x,i.y,i.getWidth(),i.getHeight()])
+        for i in plan.getPlaygrounds(): config['playgrounds'].append([i.x,i.y])
         return config
 
     def deserialize_plan(self,d):
-        plan = Groundplan(d['num_houses'],d['playground'])
-        for i in d['residences']:
+        plan = Groundplan(d[0],d[1])
+        for i in d[2]:
             h = None
-            #print i['type'] == "FamilyHome"
-            if i['type'] == "Bungalow": h = Bungalow(i['x'],i['y'])
-            elif i['type'] == "Mansion": h = Mansion(i['x'],i['y'])
-            elif i['type'] == "FamilyHome": h = FamilyHome(i['x'],i['y'])
-            #print h
+            if i['type'] == "b": h = Bungalow(i[0],i[1])
+            elif i['type'] == "m": h = Mansion(i[0],i[1])
+            elif i['type'] == "f": h = FamilyHome(i[0],i[1])
             plan.addResidence(h)
-        for i in d['waterbodies']:
-            plan.addWaterbody(Waterbody(i['x'],i['y'],i['w'],i['h']))
-        for i in d['playgrounds']:
-            plan.addPlayground(Playground(i['x'],i['y']))
-        #print plan.getWidth()
+        for i in d[3]:plan.addWaterbody(Waterbody(i[0],i[1],i[2],i[3]))
+        for i in d[4]:plan.addPlayground(Playground(i[0],i[1]))
+
         return plan
 
     @classmethod
     def appendToConfigLog(self, key, plan, metad):
-        with open(key) as f:
-            data = json.load(f)
+        with open(key) as f: data = json.load(f)
         data['d'].append(ConfigLogger().serialize_plan(plan,metad))
-        with open(key, 'w') as f:
-            json.dump(data, f)
+        with open(key, 'w') as f:json.dump(data, f)
 
     @classmethod
     def loadConfig(self, key):
         with open(key, 'r') as data:
             d = json.load(data)
-         #   print data
             d = d['d']
             return ConfigLogger().deserialize_plan(d[len(d) - 1])
-            #return [len(d) - 1, ConfigLogger().deserialize_plan(d[len(d) - 1])]
 
     @classmethod
     def createConfigLog(cls, key):
-        with open(key, 'w') as data:
-            json.dump({'d':[]}, data)
+        with open(key, 'w') as data:json.dump({'d':[]}, data)

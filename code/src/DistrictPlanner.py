@@ -11,7 +11,7 @@ PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
 # Coordinate offset from origin
 X_OFFSET = 0
-Y_OFFSET = -10
+Y_OFFSET = 0
 
 # Spreading buildings from center towards the edge
 X_SPREAD = 10

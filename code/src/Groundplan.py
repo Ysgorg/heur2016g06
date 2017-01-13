@@ -94,23 +94,23 @@ class Groundplan(object):
                     (float(self.number_of_familyhomes) / self.number_of_houses) < self.MINIMUM_FAMILYHOMES_PERCENTAGE or
                     (float(self.number_of_bungalows) / self.number_of_houses) < self.MINIMUM_BUNGALOW_PERCENTAGE or
                     (float(self.number_of_mansions) / self.number_of_houses) < self.MINIMUM_MANSION_PERCENTAGE):
-            print "problem: incorrect ratio / number of elements"
+      #      print "problem: incorrect ratio / number of elements"
             return False
         else:
             waterbody_surface = 0
             for waterbody in self.waterbodies:
                 if not self.correctlyPlaced(waterbody):
-                    print "problem: incorrectly placed water"
+          #          print "problem: incorrectly placed water"
                     return False
                 else:
                     waterbody_surface += waterbody.getSurface()
 
             if (float(waterbody_surface) / self.AREA) < self.MINIMUM_WATER_PERCENTAGE:
-                print "problem: water percent ", float(waterbody_surface) / self.AREA
+              #  print "problem: water percent ", float(waterbody_surface) / self.AREA
                 return False
             for residence in self.residences:
                 if not self.correctlyPlaced(residence):
-                    print "problem: residence incorrectly placed"
+              #      print "problem: residence incorrectly placed"
                     return False
 
             return True

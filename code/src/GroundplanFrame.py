@@ -53,12 +53,11 @@ class GroundplanFrame(object):
                                          (playground.getY() + playground.getHeight()) * self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
 
-            # For visualising the effective radius
-            r, x, y, w, h = 50, playground.getX(), playground.getY(), playground.getWidth(), playground.getHeight()
-            r, x, y, w, h = map(lambda x: x * self.SCALE, (r, x, y, w, h))
-            self.canvas.create_oval(
-                (x + w / 2) - r, (y + h / 2) - r,
-                (x + w / 2) + r, (y + h / 2) + r,
+            # For visualising the effective area
+            r = 50.0
+            x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX() + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
+            x0, y0, x1, y1 = map(lambda x: x * self.SCALE, (x0, y0, x1, y1)) # Scale the coords
+            self.canvas.create_rectangle(x0, y0, x1, y1,
                 outline=self.COLOR_PLAYGROUND, width=1)
 
         self.text.insert(INSERT, "Value of plan is: ")

@@ -5,13 +5,11 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
-from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
 from src.DistrictPlanner import DistrictPlanner
 from src.ConfigLogger import ConfigLogger
 
-#
 class Evolver(object):
 
     NUMBER_OF_HOUSES = 40
@@ -21,25 +19,27 @@ class Evolver(object):
 
     def findValidHouse(self, plan, type_to_place):
 
-        iterations_since_last_success = 0
-
         h = None
 
         while True:
             x = int(random() * plan.WIDTH)
             y = int(random() * plan.HEIGHT)
 
-            if type_to_place is "FamilyHome":   h = FamilyHome(x, y)
-            elif type_to_place is "Bungalow":   h = Bungalow(x, y)
-            if type_to_place is "Mansion":      h = Mansion(x, y)
+            if type_to_place is "FamilyHome":
+                # skip flipping because FamilyHome has w==h
+                h = FamilyHome(x, y)
+                if plan.correctlyPlaced(h): return h
 
-            if (type_to_place != "FamilyHome" # because FamilyHome has w==h
-                and random() < 0.5): h = h.flip()
+            elif type_to_place is "Bungalow": h = Bungalow(x, y)
+            elif type_to_place is "Mansion": h = Mansion(x, y)
+
+            if random() < 0.5: h = h.flip()
+
             if plan.correctlyPlaced(h): break
-            elif type_to_place != "FamilyHome": # because FamilyHome has w==h
+
+            elif type_to_place != "FamilyHome":
                 h = h.flip()
                 if plan.correctlyPlaced(h): break
-            iterations_since_last_success += 1
 
         return h
 
@@ -76,9 +76,9 @@ class Evolver(object):
 
         return plan
 
-    def getOrMakePlan(self,key):
+    def getOrMakePlan(self,key,j=0):
 
-        if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key)
+        if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key,j)
         else:
             ConfigLogger().createConfigLog(key)
             return DistrictPlanner().developGroundplan()
@@ -146,6 +146,15 @@ class Evolver(object):
                 elif iterations_since_best > self.ITERATIONS_BEFORE_RESET:
                     # no better plan was found. return to previous best
                     plan = self.getOrMakePlan(key)
+
+                    # strange bug will compute a plan previously computed to be valid to be invalid.
+                    # resolve by going reverting to increasingly far-away point in time
+                    j=0
+                    while not plan.isValid():
+                        j+=1
+                        plan = self.getOrMakePlan(key,j)
+
+
                     deaths +=1
                     iterations_since_best = 0
 

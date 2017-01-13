@@ -49,11 +49,12 @@ class ConfigLogger(object):
         with open(key, 'w') as f:json.dump(data, f)
 
     @classmethod
-    def loadConfig(self, key):
+    def loadConfig(self, key,j):
         with open(key, 'r') as data:
             d = json.load(data)
             d = d['d']
-            return ConfigLogger().deserialize_plan(d[len(d) - 1])
+            if len(d) - 1-j < 0: j = 0
+            return ConfigLogger().deserialize_plan(d[len(d) - 1-j])
 
     @classmethod
     def createConfigLog(cls, key):

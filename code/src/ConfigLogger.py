@@ -9,15 +9,18 @@ from districtobjects.Playground import Playground
 
 class ConfigLogger(object):
 
+    FOLDER = "plans/"
+
     def __init__(self):
         pass
 
     def exists(self,key):
         try:
-            with open(key, 'r') as data:return True
+            with open(self.FOLDER+key, 'r') as data:return True
         except Exception:return False
 
     def serialize_plan(self,plan,metad):
+
         def minify(t):
             if t == "FamilyHome": return 'f'
             elif t == "Bungalow": return 'b'
@@ -44,17 +47,17 @@ class ConfigLogger(object):
 
     @classmethod
     def appendToConfigLog(self, key, plan, metad):
-        with open(key) as f: data = json.load(f)
+        with open(self.FOLDER+key) as f: data = json.load(f)
         data['d'].append(ConfigLogger().serialize_plan(plan,metad))
-        with open(key, 'w') as f:json.dump(data, f)
+        with open(self.FOLDER+key, 'w') as f:json.dump(data, f)
 
     @classmethod
     def loadConfig(self, key):
-        with open(key, 'r') as data:
+        with open(self.FOLDER+key, 'r') as data:
             d = json.load(data)
             d = d['d']
             return ConfigLogger().deserialize_plan(d[len(d) - 1])
 
     @classmethod
-    def createConfigLog(cls, key):
-        with open(key, 'w') as data:json.dump({'d':[]}, data)
+    def createConfigLog(self, key):
+        with open(self.FOLDER+key, 'w') as data:json.dump({'d':[]}, data)

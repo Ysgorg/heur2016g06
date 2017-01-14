@@ -1,6 +1,6 @@
 from random import random
 
-from math import sqrt, pow, ceil
+from math import ceil
 
 from districtobjects.Waterbody import Waterbody
 from districtobjects.Playground import Playground
@@ -10,19 +10,22 @@ from src.GroundplanFrame import GroundplanFrame
 PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
 # Coordinate offset from origin
-X_OFFSET = 0
-Y_OFFSET = 0
+X_OFFSET = -5
+Y_OFFSET = 12
+
+# I didn't know what to name this. It shifts the playgrounds in the first half of the x-axis by the given value, allowing for diagonal placement
+Y_INVERT = 16
 
 # Spreading buildings from center towards the edge
-X_SPREAD = 10
-Y_SPREAD = 10
+X_SPREAD = 5
+Y_SPREAD = 5
 
 PLAYGROUND_WIDTH = 30
 PLAYGROUND_HEIGHT = 20
 
 # Neccecsary water as a percentage out of 1
 TOTAL_WATER = 0.2
-NO_WATER_BODIES = 4
+NO_WATER_BODIES = 2
 
 class DistrictPlanner(object):
     NUMBER_OF_HOUSES = 40
@@ -36,26 +39,21 @@ class DistrictPlanner(object):
 #        self.frame.root.mainloop()
 
     def placeWater(self, plan):
-        w = int(plan.WIDTH / 4)
-        h = int(plan.HEIGHT / 5)
+        w = int(plan.WIDTH)
+        h = int(plan.HEIGHT * (TOTAL_WATER/NO_WATER_BODIES))
 
-        x = 0
-        y = plan.HEIGHT - h
+        waterBodies = [
+                        Waterbody(0, 0, w, h),
+                        Waterbody(0, plan.HEIGHT - h, w, h)
+                        ]
 
-        for i in range(1, NO_WATER_BODIES):
-            print "x:", x, "y:", y, "w:", w, "h:", h
-            wb = Waterbody(x, y, w, h)
-
-            if plan.correctlyPlaced(wb):
-                plan.addWaterbody(wb)
+        for i, waterBody in enumerate(waterBodies):
+            if plan.correctlyPlaced(waterBody):
+                plan.addWaterbody(waterBody)
                 print "Waterbody", i, "placed"
-            x += w+1
+            else:
+                print "Waterbody", i, "could not be placed"
 
-        wb = Waterbody(plan.WIDTH - h, plan.HEIGHT - w, h, w)
-        wb.flip
-        if plan.correctlyPlaced(wb):
-            plan.addWaterbody(wb)
-            x += w+1
         return plan
 
     def placePlaygrounds(self, plan):
@@ -81,9 +79,11 @@ class DistrictPlanner(object):
 
         for x in range(1, numberPlaygroundsX + 1):
             xSpread = X_SPREAD
+            yOffset = Y_OFFSET
 
             if x <= numberPlaygroundsX / 2:  # if x is in the lower half, invert the offset
                 xSpread = -xSpread
+                yOffset += Y_INVERT
 
             locationX = ((PLAYGROUND_RADIUS * x) + X_OFFSET) + (PLAYGROUND_WIDTH * (x - 1)) + xSpread
 
@@ -93,7 +93,7 @@ class DistrictPlanner(object):
                 if y <= numberPlaygroundsY / 2:  # if y is in the lower half, invert the offset
                     ySpread = -ySpread
 
-                locationY = ((PLAYGROUND_RADIUS * y) + Y_OFFSET) + (PLAYGROUND_HEIGHT * (y - 1)) + ySpread
+                locationY = ((PLAYGROUND_RADIUS * y) + yOffset) + (PLAYGROUND_HEIGHT * (y - 1)) + ySpread
 
                 print "Location:", x, "x", y, "\nCoordinates:", locationX, ",", locationY, "\n"
                 plan.addPlayground(Playground(locationX, locationY))
@@ -105,19 +105,3 @@ class DistrictPlanner(object):
         self.placePlaygrounds(plan)
         self.placeWater(plan)
         return plan
-"""
-        i = 0
-        attempts = 0
-        while i < self.NUMBER_OF_HOUSES:
-            attempts += 1
-            x = 10 + random() * (plan.WIDTH - 50)
-            y = 10 + random() * (plan.HEIGHT - 50)
-            house = FamilyHome(x, y)
-            if plan.correctlyPlaced(house):
-                plan.addResidence(house)
-                i += 1
-
-        print "Placement attempts:", attempts
-
-        return plan
-"""

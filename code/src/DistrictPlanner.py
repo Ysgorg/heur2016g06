@@ -31,14 +31,16 @@ class DistrictPlanner(object):
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
 
+    """
     def __init__(self):
         self.plan = self.developGroundplan()
-       # self.frame = GroundplanFrame(self.plan)
-       # self.frame.setPlan()
-
-#        self.frame.root.mainloop()
+        self.frame = GroundplanFrame(self.plan)
+        self.frame.setPlan()
+        self.frame.root.mainloop()
+    """
 
     def placeWater(self, plan):
+        print "Place Water!"
         bestArea = (plan.WIDTH * plan.HEIGHT * TOTAL_WATER * 1.2) # Worst case area to consider (1.2 * requirement as arbitrary upper bound)
         req_area = plan.WIDTH * plan.HEIGHT * TOTAL_WATER # Best case / Minimum required area
         print "Required water area:", req_area
@@ -53,40 +55,42 @@ class DistrictPlanner(object):
                     bestWidth = width
                     bestHeight = height
                     noWaterBodies = j
-                    print "New best water distribution found! [", noWaterBodies, "bodies,", bestWidth, "width,", bestHeight, "height,", bestArea, "area ]"
+                    print "New best water distribution found! [", noWaterBodies, "bodie(s),", bestWidth, "width,", bestHeight, "height,", bestArea, "area ]\n"
 
         # Starting position
         x = 0
         y = plan.HEIGHT - bestHeight
 
         for i in range(1, noWaterBodies+1):
-          wb = Waterbody(x, y, bestWidth, bestHeight)
+            wb = Waterbody(x, y, bestWidth, bestHeight)
 
-          if plan.correctlyPlaced(wb):
+            #if plan.correctlyPlaced(wb, verbose=True):
             plan.addWaterbody(wb)
-            print "Waterbody", i, "placed"
+            #    print "Waterbody", i, "placed"
             x += bestWidth+1 # +1 so that the bodies are not touching
 
         return plan
 
     def placePlaygrounds(self, plan):
+        print "Place Playgrounds!"
         # Reach is defined by the the playground size, plus its usable radius
-        playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS
-        playgroundReachY = PLAYGROUND_HEIGHT + PLAYGROUND_RADIUS
-        print "Playground reach:", playgroundReachX, ",", playgroundReachY
+        playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS + 7.5
+        playgroundReachY = PLAYGROUND_HEIGHT + PLAYGROUND_RADIUS + 7.5
+        #print "Playground reach:", playgroundReachX, ",", playgroundReachY
 
         utilisableX = plan.WIDTH
-        utilisableY = plan.HEIGHT * TOTAL_WATER
+        utilisableY = int(plan.HEIGHT * (1-TOTAL_WATER))
 
         print "Utilisable area:", utilisableX, "x", utilisableY, "=", utilisableX * utilisableY
 
-        # Floor the total utiliable width and height by our playground reach to find optimal number to fit
-        #numberPlaygroundsX = int(utilisableX) // playgroundReachX
-        #numberPlaygroundsY = int(utilisableY) // playgroundReachY
+        # Floor the total utilisable width and height by our playground reach to find optimal number to fit
+        numberPlaygroundsX = int(utilisableX // playgroundReachX)
+        numberPlaygroundsY = int(utilisableY // playgroundReachY)
 
         # Ceil the total utilisable width and height by our playground reach to find optimal number to fit
-        numberPlaygroundsX = int(ceil(utilisableX / playgroundReachX))
-        numberPlaygroundsY = int(ceil(utilisableY / playgroundReachY))
+        #numberPlaygroundsX = int(ceil(utilisableX / playgroundReachX))
+        #numberPlaygroundsY = int(ceil(utilisableY / playgroundReachY))
+
         totalPlaygrounds = numberPlaygroundsX * numberPlaygroundsY
 
         print "Total utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
@@ -109,13 +113,17 @@ class DistrictPlanner(object):
 
                 locationY = ((PLAYGROUND_RADIUS * y) + yOffset) + (PLAYGROUND_HEIGHT * (y - 1)) + ySpread
 
-                print "Location:", x, "x", y, "\nCoordinates:", locationX, ",", locationY, "\n"
-                plan.addPlayground(Playground(locationX, locationY))
+                playground = Playground(locationX, locationY)
+                #if plan.correctlyPlaced(playground, verbose=True):
+                #    print "Playground placed at:", locationX, ",", locationY
+                plan.addPlayground(playground)
+                #else:
+                #    print "Could not place playground:", locationX, ",", locationY
 
         return plan
 
     def developGroundplan(self):
         plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
-        self.placePlaygrounds(plan)
         self.placeWater(plan)
+        self.placePlaygrounds(plan)
         return plan

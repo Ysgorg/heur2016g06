@@ -11,10 +11,10 @@ PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
 # Coordinate offset from origin
 X_OFFSET = -5
-Y_OFFSET = 12
+Y_OFFSET = 20
 
 # I didn't know what to name this. It shifts the playgrounds in the first half of the x-axis by the given value, allowing for diagonal placement
-Y_INVERT = 16
+Y_INVERT = 0
 
 # Spreading buildings from center towards the edge
 X_SPREAD = 5

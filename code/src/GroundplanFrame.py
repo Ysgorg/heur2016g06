@@ -54,7 +54,7 @@ class GroundplanFrame(object):
                                          fill=self.COLOR_PLAYGROUND)
 
             # For visualising the effective area
-            r = 58.0
+            r = 57.5
             x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX() + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
             x0, y0, x1, y1 = map(lambda x: x * self.SCALE, (x0, y0, x1, y1)) # Scale the coords
             self.canvas.create_rectangle(x0, y0, x1, y1,

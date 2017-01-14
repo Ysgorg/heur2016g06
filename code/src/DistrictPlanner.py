@@ -65,17 +65,18 @@ class DistrictPlanner(object):
         utilisableX = plan.WIDTH
         utilisableY = plan.HEIGHT * TOTAL_WATER
 
-        print "Utilisable area:", utilisableX, "+", utilisableY, "=", utilisableX * utilisableY
+        print "Utilisable area:", utilisableX, "x", utilisableY, "=", utilisableX * utilisableY
 
-        # Floor the total width and height by our playground reach to find optimal number to fit
+        # Floor the total utiliable width and height by our playground reach to find optimal number to fit
         #numberPlaygroundsX = int(utilisableX) // playgroundReachX
         #numberPlaygroundsY = int(utilisableY) // playgroundReachY
 
+        # Ceil the total utilisable width and height by our playground reach to find optimal number to fit
         numberPlaygroundsX = int(ceil(utilisableX / playgroundReachX))
         numberPlaygroundsY = int(ceil(utilisableY / playgroundReachY))
         totalPlaygrounds = numberPlaygroundsX * numberPlaygroundsY
 
-        print "Total fully utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
+        print "Total utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
 
         for x in range(1, numberPlaygroundsX + 1):
             xSpread = X_SPREAD

@@ -8,21 +8,26 @@ from districtobjects.Waterbody import Waterbody
 from src.GroundplanFrame import GroundplanFrame
 
 from src.DistrictPlanner import DistrictPlanner
+from src.OtherDistrict import OtherDistrict
 from src.ConfigLogger import ConfigLogger
 
 class Evolver(object):
 
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
-    ITERATIONS_BEFORE_RESET = 5
+    ITERATIONS_BEFORE_RESET = 4
 
-    def findValidHouse(self, plan, type_to_place):
+    def findValidHouse(self, plan, type_to_place,pre):
 
         h = None
 
         while True:
-            x = int(random() * plan.WIDTH)
-            y = int(random() * plan.HEIGHT)
+            if pre is None or random()<0.5:
+                x = int(random() * plan.WIDTH)
+                y = int(random() * plan.HEIGHT)
+            else:
+                x = int(pre.getX()-5+10*random())
+                y = int(pre.getY()-5+10*random())
 
             if type_to_place is "FamilyHome":
                 # skip flipping because FamilyHome has w==h
@@ -77,22 +82,25 @@ class Evolver(object):
         if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key)
         else:
             ConfigLogger().createConfigLog(key)
-            return DistrictPlanner().developGroundplan()
+            return OtherDistrict().developGroundplan()
 
     def mutateAHouse(self,plan,i):
+
+        toberemoved=None
 
         if plan.getNumberOfHouses() is self.NUMBER_OF_HOUSES:
             ind = int(random() * self.NUMBER_OF_HOUSES)
             toberemoved = plan.getResidence(ind)
+
             type_to_place = toberemoved.getType()
             plan.removeResidence(toberemoved)
 
         else:
-            if i % 10 < 5:type_to_place = "FamilyHome"
-            elif i % 10 < 8:type_to_place = "Bungalow"
-            else:type_to_place = "Mansion"
+            if      i % 10 < 5: type_to_place = "FamilyHome"
+            elif    i % 10 < 8: type_to_place = "Bungalow"
+            else:               type_to_place = "Mansion"
 
-        h = self.findValidHouse(plan,type_to_place)
+        h = self.findValidHouse(plan,type_to_place,toberemoved)
 
         if h is not None: plan.addResidence(h)
 

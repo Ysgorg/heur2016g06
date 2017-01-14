@@ -12,6 +12,7 @@ from src.Example import Example
 
 # cleverer algorithms
 from src.Evolver import Evolver
+from src.TreeSearcher import TreeSearcher
 
 algo = sys.argv[1]
 
@@ -22,3 +23,5 @@ if algo == "Evolver":
 elif algo == "Example":
     Example()
 
+elif algo == "TreeSearcher":
+    TreeSearcher()

@@ -11,10 +11,10 @@ PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
 # Coordinate offset from origin
 X_OFFSET = -5
-Y_OFFSET = 12
+Y_OFFSET = 0
 
 # I didn't know what to name this. It shifts the playgrounds in the first half of the x-axis by the given value, allowing for diagonal placement
-Y_INVERT = 16
+Y_INVERT = 0
 
 # Spreading buildings from center towards the edge
 X_SPREAD = 5
@@ -25,7 +25,7 @@ PLAYGROUND_HEIGHT = 20
 
 # Neccecsary water as a percentage out of 1
 TOTAL_WATER = 0.2
-NO_WATER_BODIES = 2
+MAX_WATER_BODIES = 10
 
 class DistrictPlanner(object):
     NUMBER_OF_HOUSES = 40
@@ -39,20 +39,33 @@ class DistrictPlanner(object):
 #        self.frame.root.mainloop()
 
     def placeWater(self, plan):
-        w = int(plan.WIDTH)
-        h = int(plan.HEIGHT * (TOTAL_WATER/NO_WATER_BODIES))
+        bestArea = (plan.WIDTH * plan.HEIGHT * TOTAL_WATER * 1.2) # Worst case area to consider (1.2 * requirement as arbitrary upper bound)
+        req_area = plan.WIDTH * plan.HEIGHT * TOTAL_WATER # Best case / Minimum required area
+        print "Required water area:", req_area
 
-        waterBodies = [
-                        Waterbody(0, 0, w, h),
-                        Waterbody(0, plan.HEIGHT - h, w, h)
-                        ]
+        for j in range(1, MAX_WATER_BODIES+1):
+            for i in range(1, plan.WIDTH):
+                width = i
+                height = width/4
+                area = width*height
+                if (area >= req_area and area < bestArea):
+                    bestArea = area
+                    bestWidth = width
+                    bestHeight = height
+                    noWaterBodies = j
+                    print "New best water distribution found! [", noWaterBodies, "bodies,", bestWidth, "width,", bestHeight, "height,", bestArea, "area ]"
 
-        for i, waterBody in enumerate(waterBodies):
-            if plan.correctlyPlaced(waterBody):
-                plan.addWaterbody(waterBody)
-                print "Waterbody", i, "placed"
-            else:
-                print "Waterbody", i, "could not be placed"
+        # Starting position
+        x = 0
+        y = plan.HEIGHT - bestHeight
+
+        for i in range(1, noWaterBodies+1):
+          wb = Waterbody(x, y, bestWidth, bestHeight)
+
+          if plan.correctlyPlaced(wb):
+            plan.addWaterbody(wb)
+            print "Waterbody", i, "placed"
+            x += bestWidth+1 # +1 so that the bodies are not touching
 
         return plan
 

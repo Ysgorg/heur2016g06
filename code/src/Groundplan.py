@@ -1,6 +1,9 @@
 import math
 
 from districtobjects.Residence import Residence
+from districtobjects.FamilyHome import FamilyHome
+from districtobjects.Bungalow import Bungalow
+from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 from districtobjects.Playground import Playground
 
@@ -31,6 +34,25 @@ class Groundplan(object):
         self.residences = []
         self.waterbodies = []
         self.playgrounds = []
+
+    def deepCopy(self):
+        plan = Groundplan(self.number_of_houses,self.PLAYGROUND)
+        for i in self.residences:
+            t = i.getType()
+            if t=="FamilyHome":h=FamilyHome(i.getX(),i.getY())
+            elif t=="Bungalow":h=Bungalow(i.getX(),i.getY())
+            elif t=="Mansion":h=Mansion(i.getX(),i.getY())
+            if i.flipped: h.flip()
+            plan.addResidence(h)
+        for i in self.waterbodies:
+            wb = Waterbody(i.getX(),i.getY(),i.getWidth(),i.getHeight())
+            if i.flipped: wb.flip()
+            plan.addWaterbody(wb)
+        for i in self.playgrounds:
+            pg = Playground(i.getX(),i.getY())
+            if i.flipped: pg.flip()
+            plan.addPlayground(pg)
+        return plan
 
     def getNumberOfHouses(self):
         return self.number_of_familyhomes + self.number_of_bungalows + self.number_of_mansions
@@ -135,7 +157,12 @@ class Groundplan(object):
                 return False
 
         for waterbody in self.waterbodies:
-
+            ratio = waterbody.getWidth()/waterbody.getWidth()
+            # ignoring water side ratio for now
+            if False and ratio != 0.25 and ratio != 4:
+                if verbose:
+                    print "problem: wrong water dimension"
+                    return False
             if waterbody is not placeable and overlap(waterbody, placeable):
                 return False
 

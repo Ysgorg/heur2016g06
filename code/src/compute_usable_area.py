@@ -47,5 +47,5 @@ def compute_usable_area(plan,visualize=True):
                 if bm[x][y]:frame.mark(x,y,'black')
 
         frame.updateit()
-        
+
     return useful_proportion

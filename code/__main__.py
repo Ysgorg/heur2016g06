@@ -2,6 +2,8 @@
 import os
 import sys
 
+from src.evo_meta_get import plot_evo_meta
+
 PATH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PATH)
 
@@ -14,6 +16,7 @@ from src.Example import Example
 from src.Evolver import Evolver
 from src.TreeSearcher import TreeSearcher
 
+
 algo = sys.argv[1]
 
 if algo == "Evolver":
@@ -25,3 +28,6 @@ elif algo == "Example":
 
 elif algo == "TreeSearcher":
     TreeSearcher()
+
+elif algo == "EvoPlot":
+    plot_evo_meta(sys.argv[2])

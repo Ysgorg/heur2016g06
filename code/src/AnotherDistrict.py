@@ -18,6 +18,7 @@ class AnotherDistrict(object):
         # self.frame.root.mainloop()
 
     def placeWater(self, plan):
+
         w = int(plan.WIDTH / 2)
         h = int(plan.HEIGHT / 5)
         plan.addWaterbody(Waterbody(0,0,w,h))

@@ -36,20 +36,23 @@ class Groundplan(object):
         self.playgrounds = []
 
     def deepCopy(self):
-        plan = Groundplan(self.number_of_houses,self.PLAYGROUND)
+        plan = Groundplan(self.number_of_houses, self.PLAYGROUND)
         for i in self.residences:
             t = i.getType()
-            if t=="FamilyHome":h=FamilyHome(i.getX(),i.getY())
-            elif t=="Bungalow":h=Bungalow(i.getX(),i.getY())
-            elif t=="Mansion":h=Mansion(i.getX(),i.getY())
+            if t == "FamilyHome":
+                h = FamilyHome(i.getX(), i.getY())
+            elif t == "Bungalow":
+                h = Bungalow(i.getX(), i.getY())
+            elif t == "Mansion":
+                h = Mansion(i.getX(), i.getY())
             if i.flipped: h.flip()
             plan.addResidence(h)
         for i in self.waterbodies:
-            wb = Waterbody(i.getX(),i.getY(),i.getWidth(),i.getHeight())
+            wb = Waterbody(i.getX(), i.getY(), i.getWidth(), i.getHeight())
             if i.flipped: wb.flip()
             plan.addWaterbody(wb)
         for i in self.playgrounds:
-            pg = Playground(i.getX(),i.getY())
+            pg = Playground(i.getX(), i.getY())
             if i.flipped: pg.flip()
             plan.addPlayground(pg)
         return plan
@@ -112,7 +115,7 @@ class Groundplan(object):
     def removePlayground(self, playground):
         self.playgrounds.remove(playground)
 
-    def isValid(self, verbose = False):
+    def isValid(self, verbose=False):
         if (len(self.waterbodies) > self.MAXIMUM_WATER_BODIES or
                     (float(self.number_of_familyhomes) / self.number_of_houses) < self.MINIMUM_FAMILYHOMES_PERCENTAGE or
                     (float(self.number_of_bungalows) / self.number_of_houses) < self.MINIMUM_BUNGALOW_PERCENTAGE or
@@ -138,7 +141,7 @@ class Groundplan(object):
 
             return True
 
-    def correctlyPlaced(self, placeable, verbose = False):
+    def correctlyPlaced(self, placeable, verbose=False):
 
         def overlap(o1, o2, verbose=False):
             if o1 is o2: return False
@@ -151,13 +154,13 @@ class Groundplan(object):
             return False
 
         if isinstance(placeable, Residence) and (placeable.topEdge() < placeable.getminimumClearance() or
-                        placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
-                        placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
-                        placeable.leftEdge() < placeable.getminimumClearance()):
-                return False
+                                                         placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
+                                                         placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
+                                                         placeable.leftEdge() < placeable.getminimumClearance()):
+            return False
 
         for waterbody in self.waterbodies:
-            ratio = waterbody.getWidth()/waterbody.getWidth()
+            ratio = waterbody.getWidth() / waterbody.getWidth()
             # ignoring water side ratio for now
             if False and ratio != 0.25 and ratio != 4:
                 if verbose:
@@ -171,18 +174,16 @@ class Groundplan(object):
         if isinstance(placeable, Residence):
             self_clearance = placeable.getminimumClearance()
 
-
         for residence in self.residences:
             if residence is placeable: continue
-            if overlap(residence, placeable,verbose):
+            if overlap(residence, placeable, verbose):
 
-                if verbose: print "overlap:",residence.leftEdge(),residence.rightEdge(),residence.topEdge(),residence.bottomEdge(),\
-                    residence.getType(),"and",placeable.leftEdge(),placeable.rightEdge(),placeable.topEdge(),placeable.bottomEdge(),placeable.getType()
+                if verbose: print "overlap:", residence.leftEdge(), residence.rightEdge(), residence.topEdge(), residence.bottomEdge(), \
+                    residence.getType(), "and", placeable.leftEdge(), placeable.rightEdge(), placeable.topEdge(), placeable.bottomEdge(), placeable.getType()
                 return False
             if not isinstance(placeable, Waterbody):
                 if self.getDistance(residence, placeable) < max(self_clearance, residence.getminimumClearance()):
                     return False
-
 
         if self.PLAYGROUND:
 
@@ -193,7 +194,8 @@ class Groundplan(object):
             for playground in self.playgrounds:
 
                 if overlap(placeable, playground):
-                    if verbose:print "overlap!",playground.getX(),playground.getY(),isinstance(playground,Playground),placeable.getX(),placeable.getY(),placeable.getType()
+                    if verbose: print "overlap!", playground.getX(), playground.getY(), isinstance(playground,
+                                                                                                   Playground), placeable.getX(), placeable.getY(), placeable.getType()
                     return False
 
                 if isinstance(placeable, Residence):
@@ -201,11 +203,11 @@ class Groundplan(object):
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
 
-                    if min_ok <= distance and distance <= max_ok:
+                    if min_ok <= distance <= max_ok:
                         ok = True
                         break
 
-            if isinstance(placeable,Waterbody): ok = True
+            if isinstance(placeable, Waterbody): ok = True
 
             if not ok: return False
         return True

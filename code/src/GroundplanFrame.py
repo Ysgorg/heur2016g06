@@ -56,9 +56,9 @@ class GroundplanFrame(object):
             # For visualising the effective area
             r = 57.5
             x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX() + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
-            x0, y0, x1, y1 = map(lambda x: x * self.SCALE, (x0, y0, x1, y1)) # Scale the coords
+            x0, y0, x1, y1 = map(lambda x: x * self.SCALE, (x0, y0, x1, y1))  # Scale the coords
             self.canvas.create_rectangle(x0, y0, x1, y1,
-                outline=self.COLOR_PLAYGROUND, width=1)
+                                         outline=self.COLOR_PLAYGROUND, width=1)
 
         self.text.insert(INSERT, "Value of plan is: ")
         self.text.insert(INSERT, self.plan.getPlanValue())
@@ -70,9 +70,9 @@ class GroundplanFrame(object):
 
         self.root.update()
 
-    def mark(self,x,y,c):
+    def mark(self, x, y, c):
 
-        self.canvas.create_line(x*self.SCALE,y*self.SCALE,x*self.SCALE,y*self.SCALE,fill=c)
+        self.canvas.create_line(x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
 
     def updateit(self):
 

@@ -22,3 +22,15 @@
  - debugging and prettifying evolver
  - cleaning out print statements from groundplan
  - take command line input to determine which algo to run and enable file loading
+
+ ## 14.1.17
+
+ - Notice 1:4 water body dimension constraint
+ - Compute water body dimensions given num_waterbodies, assuming equal dimensions for all water bodies and floats are valid coordinates
+ - Compute good water body dimensions assuming coordinates must be int // probably not the case, since some Placeable have .5 dimensions
+ - Visualize and compute how much area is available for placing residences on, based on location of water and playgrounds
+
+##  16.1.17
+
+ - ???? see commit comments TODO remember to keep this log updated
+

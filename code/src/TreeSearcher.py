@@ -18,6 +18,7 @@ from src.GroundplanFrame import GroundplanFrame
 
 from src.DistrictPlanner import DistrictPlanner
 from src.OtherDistrict import OtherDistrict
+from src.TestDistrict import TestDistrict
 
 from Queue import Queue
 
@@ -32,7 +33,12 @@ def determine_type_to_place(i):
 
 def determine_coordinates(plan, f):
 
-
+    while True:
+        x = int(random()*plan.WIDTH)
+        y = int(random()*plan.HEIGHT)
+        if plan.correctlyPlaced(f(x,y)):
+            return [x,y]
+    """
 
     for x in range(1,plan.WIDTH,1+int(25*random())):
         for y in range(1,plan.HEIGHT,1+int(25*random())):
@@ -40,6 +46,8 @@ def determine_coordinates(plan, f):
                 return [x,y]
     return None
     pass
+    """
+
 
 
 class TreeSearcher(object):
@@ -53,11 +61,12 @@ class TreeSearcher(object):
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
 
-    def __init__(self, visualize=True, beam_width=3,height=4):
+    def __init__(self, base, visualize=True, beam_width=3,height=4):
+
 
 
         # get init plan from other module
-        self.best_plan = DistrictPlanner().developGroundplan()
+        self.best_plan = base
         self.thetree = self.Tree(0)
 
         frame = GroundplanFrame(self.best_plan)
@@ -129,5 +138,4 @@ class TreeSearcher(object):
             print "built tree of ", self.c,"nodes in ",buildt,"sec, then traversed it in",(end-ms),"sec"
 
         frame.repaint(self.best_plan)
-        while True:
-            pass
+        while True: pass

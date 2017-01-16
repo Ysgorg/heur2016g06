@@ -9,6 +9,7 @@ from src.GroundplanFrame import GroundplanFrame
 
 from src.DistrictPlanner import DistrictPlanner
 from src.OtherDistrict import OtherDistrict
+from src.TestDistrict import TestDistrict
 from src.ConfigLogger import ConfigLogger
 
 class Evolver(object):
@@ -77,12 +78,12 @@ class Evolver(object):
 
         return plan
 
-    def getOrMakePlan(self,key):
+    def getOrMakePlan(self,key,base):
 
         if ConfigLogger().exists(key):return ConfigLogger.loadConfig(key)
         else:
             ConfigLogger().createConfigLog(key)
-            return DistrictPlanner().developGroundplan()
+            return base
 
     def mutateAHouse(self,plan,i):
 
@@ -107,13 +108,13 @@ class Evolver(object):
         return [plan,h is not None]
 
     # input key to continue existing thread of evolution
-    def __init__(self, key="test", visualize=True):
+    def __init__(self, base, key="test", visualize=True):
 
         i = 0
         deaths = 0
 
         # generate a new plan or load plan from previous run (continue previous evolution)
-        plan = self.getOrMakePlan(key)
+        plan = self.getOrMakePlan(key, base)
 
         # init vars to remember the best plan found so far and it's value
         best_val = plan.getPlanValue()

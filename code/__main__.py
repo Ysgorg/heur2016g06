@@ -45,4 +45,4 @@ elif algo == "TreeSearcher":
     TreeSearcher(base)
 
 elif algo == "EvoPlot":
-    plot_evo_meta(sys.argv[2])
+    plot_evo_meta('plans/'+sys.argv[2])

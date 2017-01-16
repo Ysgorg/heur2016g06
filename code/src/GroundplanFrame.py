@@ -70,6 +70,15 @@ class GroundplanFrame(object):
 
         self.root.update()
 
+    def mark(self,x,y,c):
+
+        self.canvas.create_line(x*self.SCALE,y*self.SCALE,x*self.SCALE,y*self.SCALE,fill=c)
+
+    def updateit(self):
+
+        self.canvas.pack()
+        self.root.update()
+
     def repaint(self, newPlan):
         self.text.delete(1.0, END)
         self.canvas.delete("all")

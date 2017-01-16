@@ -8,6 +8,7 @@ from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
+from src.compute_usable_area import compute_usable_area
 
 
 def get_valid_water_dimensions(plan, num_bodies):
@@ -50,25 +51,4 @@ class TestDistrict(object):
         if flip: pg2=pg2.flip()
         plan.addPlayground(pg2)
 
-        frame = GroundplanFrame(plan)
-        from districtobjects.FamilyHome import FamilyHome
-        from districtobjects.Bungalow import Bungalow
-        from districtobjects.Mansion import Mansion
-        frame.repaint(plan)
-
-        for x in range(1,500):
-            for y in range(1,500):
-                m = Mansion(x,y)
-                b = Bungalow(x,y)
-                h = FamilyHome(x,y)
-                #print "correct?:",plan.correctlyPlaced(h)
-                if plan.correctlyPlaced(h):
-                    frame.mark(x+7.5,y+7.5,h.color)
-                if plan.correctlyPlaced(m):
-                    frame.mark(x+13,y+13,m.color)
-                if plan.correctlyPlaced(b):
-                    frame.mark(x+10,y+10,b.color)
-
-        frame.updateit()
-        while True:pass
         return plan

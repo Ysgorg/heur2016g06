@@ -21,33 +21,34 @@ from src.algo_TreeSearcher import algo_TreeSearcher
 # other things
 from src.plot_evolver_data import plot_evolver_data
 
-algo = sys.argv[1]
-
 def parseBase(b):
     if b == "dynamic": from src.base_dynamic import base_dynamic as d
-    if b == "a":  from src.base_a import base_a as d
+    elif b == "a":  from src.base_a import base_a as d
     elif b == "b":from src.base_b import base_b as d
     elif b == "c":from src.base_c import base_c as d
     return d().developGroundplan()
 
+algo = sys.argv[1]
+base_name = sys.argv[2]
+base = parseBase(base_name)
+key = sys.argv[3]
+neighbor_function = sys.argv[4]
 
 if algo == "Evolver":
-    base = parseBase(sys.argv[2])
-    key = sys.argv[3]
+    base = parseBase(base_name)
     algo_Evolver(base, key=key)
 
 elif algo == "Base":
-    evaluate_base(parseBase(sys.argv[2]))
+    evaluate_base(base)
 
 elif algo == "Example":
     algo_Example()
 
 elif algo == "TreeSearcher":
-    base = parseBase(sys.argv[2])
     algo_TreeSearcher(base)
 
 elif algo == "EvoPlot":
-    plot_evolver_data('plans/' + sys.argv[2])
+    plot_evolver_data('plans/' + base_name)
 
 elif algo == "SA":
     from src.validstate_a import ValidStateGenerator
@@ -56,4 +57,4 @@ elif algo == "SA":
         if s == "random":
             return neighbor_random
 
-    simulated_annealing(ValidStateGenerator(parseBase(sys.argv[2])).best_plan,int(sys.argv[3]),parseGenNeighborFunction(sys.argv[4]))
+    simulated_annealing(ValidStateGenerator(base).getPlan(),int(key),parseGenNeighborFunction(neighbor_function))

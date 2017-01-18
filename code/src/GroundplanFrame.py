@@ -1,8 +1,5 @@
 from Tkinter import *
 
-
-# Taken from https://stackoverflow.com/questions/17985216/draw-circle-in-tkinter-python for analysis purposes
-
 class GroundplanFrame(object):
     MARGINLEFT = 25
     MARGINTOP = 25

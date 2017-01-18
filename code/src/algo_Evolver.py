@@ -6,7 +6,6 @@ from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 from src.ConfigLogger import ConfigLogger
 from src.GroundplanFrame import GroundplanFrame
-from src.evaluate_base import evaluate_base
 
 
 class algo_Evolver(object):
@@ -126,6 +125,7 @@ class algo_Evolver(object):
         best_val = plan.getPlanValue()
 
         # init visualizers. disable for higher performance
+
         if visualize:
             frame = GroundplanFrame(plan)  # window for current plan
             best_frame = GroundplanFrame(plan)  # window for the best plan so far
@@ -143,7 +143,6 @@ class algo_Evolver(object):
                 i += 1
 
             if plan.isValid():
-
 
                 iterations_since_best += 1
 

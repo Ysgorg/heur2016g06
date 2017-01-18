@@ -41,7 +41,6 @@ def evaluate_base(plan, visualize=True):
         frame = GroundplanFrame(plan)
         frame.repaint(plan)
 
-        tot = plan.WIDTH * plan.HEIGHT
         for x in range(plan.WIDTH):
             for y in range(plan.HEIGHT):
                 if bm[x][y]: frame.mark(x, y, 'black')

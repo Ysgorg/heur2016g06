@@ -1,9 +1,8 @@
 from random import random
 
-from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Bungalow import Bungalow
+from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
-
 
 def neighbor_random(state):
     def getTypeFunc(k):

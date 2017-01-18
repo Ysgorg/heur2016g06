@@ -2,7 +2,6 @@
 import os
 import sys
 
-from src.algo_SimulatedAnnealing import simulated_annealing
 from src.evaluate_base import evaluate_base
 from src.neighbor_random import neighbor_random
 
@@ -15,7 +14,7 @@ print "Current directory:", PATH
 from src.algo_Example import algo_Example
 
 # cleverer algorithms
-
+from src.algo_SimulatedAnnhealing import simulated_annealing
 from src.algo_Evolver import algo_Evolver
 from src.algo_TreeSearcher import algo_TreeSearcher
 
@@ -36,7 +35,7 @@ python . SA dynamic 1000 random
 
 def parseBase(b):
     if b == "dynamic": from src.base_dynamic import base_dynamic as d
-    if b == "a":  from src.base_a import base_a as d
+    elif b == "a":  from src.base_a import base_a as d
     elif b == "b":from src.base_b import base_b as d
     elif b == "c":from src.base_c import base_c as d
     return d().developGroundplan()

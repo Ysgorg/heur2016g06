@@ -4,9 +4,7 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
-from src.ConfigLogger import ConfigLogger
 from src.GroundplanFrame import GroundplanFrame
-from src.evaluate_base import evaluate_base
 
 
 # a modified evolver, returns first valid solution it finds
@@ -118,7 +116,6 @@ class ValidStateGenerator(object):
     # input key to continue existing thread of evolution
     def __init__(self, base, key="test", visualize=False):
 
-
         self.best_plan = None
         i = 0
         deaths = 0
@@ -147,6 +144,5 @@ class ValidStateGenerator(object):
                 i += 1
 
             if plan.isValid():
-
                 self.best_plan = plan.deepCopy()
                 break

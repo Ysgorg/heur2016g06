@@ -6,7 +6,6 @@ from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 from src.ConfigLogger import ConfigLogger
 from src.GroundplanFrame import GroundplanFrame
-from src.evaluate_base import evaluate_base
 
 
 class algo_Evolver(object):
@@ -143,7 +142,6 @@ class algo_Evolver(object):
                 i += 1
 
             if plan.isValid():
-
 
                 iterations_since_best += 1
 

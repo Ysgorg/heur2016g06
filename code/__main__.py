@@ -3,6 +3,7 @@ import os
 import sys
 
 from src.evaluate_base import evaluate_base
+from src.neighbor_random import neighbor_random
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PATH)
@@ -50,4 +51,9 @@ elif algo == "EvoPlot":
 
 elif algo == "SA":
     from src.validstate_a import ValidStateGenerator
-    simulated_annealing(ValidStateGenerator(parseBase(sys.argv[2])).best_plan,int(sys.argv[3]))
+
+    def parseGenNeighborFunction(s):
+        if s == "random":
+            return neighbor_random
+
+    simulated_annealing(ValidStateGenerator(parseBase(sys.argv[2])).best_plan,int(sys.argv[3]),parseGenNeighborFunction(sys.argv[4]))

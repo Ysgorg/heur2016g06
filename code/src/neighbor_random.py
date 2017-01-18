@@ -1,11 +1,18 @@
+from random import random
 
-def generateNeighbor(state):
+from districtobjects.FamilyHome import FamilyHome
+from districtobjects.Bungalow import Bungalow
+from districtobjects.Mansion import Mansion
 
 
+def neighbor_random(state):
     def getTypeFunc(k):
-        if k == "FamilyHome": return FamilyHome
-        elif k == "Bungalow": return Bungalow
-        elif k=="Mansion":  return Mansion
+        if k == "FamilyHome":
+            return FamilyHome
+        elif k == "Bungalow":
+            return Bungalow
+        elif k == "Mansion":
+            return Mansion
 
     def findValidHouse(plan, type_to_place, pre):
 
@@ -23,7 +30,7 @@ def generateNeighbor(state):
 
             h = f(x, y)
 
-            if type_to_place=="FamilyHome":
+            if type_to_place == "FamilyHome":
                 # not flipping because different
                 if plan.correctlyPlaced(h):
                     return h
@@ -57,26 +64,26 @@ def generateNeighbor(state):
 
             i1 = int(random() * 40)
             i2 = int(random() * 40)
-            if i1!=i2:
+            if i1 != i2:
                 temp = plan.deepCopy()
                 r1 = temp.getResidence(i1)
                 r2 = temp.getResidence(i2)
                 f1 = getTypeFunc(r1.getType())
                 f2 = getTypeFunc(r2.getType())
-                n1 = f1(r2.getX(),r2.getY())
-                n2 = f2(r1.getX(),r1.getY())
+                n1 = f1(r2.getX(), r2.getY())
+                n2 = f2(r1.getX(), r1.getY())
                 temp.removeResidence(r1)
                 temp.removeResidence(r2)
-                if temp.correctlyPlaced(n1) :
+                if temp.correctlyPlaced(n1):
                     temp.addResidence(n1)
                     if temp.correctlyPlaced(n2):
                         temp.addResidence(n2)
-                        return [temp,True]
+                        return [temp, True]
 
-
-    for i in range(int(random()*10)):
+    for i in range(int(random() * 10)):
         res = mutateAHouse(state)
-        if res[1]==True: state = res[0].deepCopy()
-        else: print "invalid"
+        if res[1]:
+            state = res[0].deepCopy()
+        else:
+            print "invalid"
     return state
-

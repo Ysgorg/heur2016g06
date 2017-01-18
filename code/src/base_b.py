@@ -12,7 +12,7 @@ def get_valid_water_dimensions(plan, num_bodies):
     return [x, x * 4]
 
 
-class TestDistrict(object):
+class base_b(object):
     def __init__(self):
         pass
 

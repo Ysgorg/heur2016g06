@@ -3,7 +3,7 @@ from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
 
 
-class OtherDistrict(object):
+class base_a(object):
     NUMBER_OF_HOUSES = 40
     PLAYGROUND = True
 
@@ -15,10 +15,10 @@ class OtherDistrict(object):
 
     @staticmethod
     def placeWater(plan):
-        w = int(plan.WIDTH)
-        h = int(plan.HEIGHT / 10)
+        w = int(plan.WIDTH / 2)
+        h = int(plan.HEIGHT / 5)
         plan.addWaterbody(Waterbody(0, 0, w, h))
-        plan.addWaterbody(Waterbody(0, plan.HEIGHT - h, w, h))
+        plan.addWaterbody(Waterbody(w, plan.HEIGHT - h, w, h))
         return plan
 
     @staticmethod
@@ -28,8 +28,8 @@ class OtherDistrict(object):
         y = int(center_y - dummy_pg.getHeight() / 2)
         x1 = int((plan.WIDTH / 3) - dummy_pg.getWidth() / 2)
         x2 = int((plan.WIDTH / 3) * 2 - dummy_pg.getWidth() / 2)
-        plan.addPlayground(Playground(x1, y))
-        plan.addPlayground(Playground(x2, y))
+        plan.addPlayground(Playground(x1, int(y + int(plan.HEIGHT / 5) / 2)))
+        plan.addPlayground(Playground(x2, int(y - int(plan.HEIGHT / 5) / 2)))
         return plan
 
     def developGroundplan(self):

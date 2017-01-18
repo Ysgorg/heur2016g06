@@ -2,7 +2,7 @@ import json
 import matplotlib.pyplot as plt
 
 
-def plot_evo_meta(p):
+def plot_evolver_data(p):
     with open(p, 'r') as data:
         d = json.load(data)['d']
         r1 = []

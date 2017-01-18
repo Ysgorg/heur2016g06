@@ -3,7 +3,7 @@ from districtobjects.Mansion import Mansion
 from districtobjects.Bungalow import Bungalow
 
 
-def compute_usable_area(plan, visualize=True):
+def evaluate_base(plan, visualize=True):
     # returns the proportion of area of a plan which can potentially be covered by a residence
 
     bm = [[0 for y in range(plan.HEIGHT)] for x in range(plan.WIDTH)]

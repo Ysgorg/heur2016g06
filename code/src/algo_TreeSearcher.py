@@ -45,7 +45,7 @@ def determine_coordinates(plan, f):
     """
 
 
-class TreeSearcher(object):
+class algo_TreeSearcher(object):
     class Tree(object):
         def __init__(self, depth):
             self.children = []

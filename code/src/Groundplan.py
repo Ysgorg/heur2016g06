@@ -203,7 +203,7 @@ class Groundplan(object):
                     max_ok = self.MAXIMUM_PLAYGROUND_DISTANCE
                     distance = self.getDistance(playground, placeable)
 
-                    if min_ok <= distance <= max_ok:
+                    if min_ok < distance <= max_ok:
                         ok = True
                         break
 

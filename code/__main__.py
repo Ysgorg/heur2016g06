@@ -14,7 +14,7 @@ print "Current directory:", PATH
 from src.algo_Example import algo_Example
 
 # cleverer algorithms
-from src.algo_SimulatedAnnhealing import simulated_annealing
+from src.algo_SimulatedAnnealing import simulated_annealing
 from src.algo_Evolver import algo_Evolver
 from src.algo_TreeSearcher import algo_TreeSearcher
 

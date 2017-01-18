@@ -4,8 +4,6 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
-def generateNeighbor(state):
-
 def neighbor_random(state):
     def getTypeFunc(k):
         if k == "FamilyHome":

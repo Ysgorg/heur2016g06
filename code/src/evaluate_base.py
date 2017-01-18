@@ -6,7 +6,7 @@ from districtobjects.Bungalow import Bungalow
 def evaluate_base(plan, visualize=True):
     # returns the proportion of area of a plan which can potentially be covered by a residence
 
-
+    bm = [[0 for y in range(plan.HEIGHT)] for x in range(plan.WIDTH)]
 
     for x in range(0, plan.WIDTH):
         for y in range(0, plan.HEIGHT):

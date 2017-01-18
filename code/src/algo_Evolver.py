@@ -125,6 +125,7 @@ class algo_Evolver(object):
         best_val = plan.getPlanValue()
 
         # init visualizers. disable for higher performance
+
         if visualize:
             frame = GroundplanFrame(plan)  # window for current plan
             best_frame = GroundplanFrame(plan)  # window for the best plan so far

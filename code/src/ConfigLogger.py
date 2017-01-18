@@ -5,6 +5,8 @@ from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 from districtobjects.Playground import Playground
+import os
+
 
 
 class ConfigLogger(object):
@@ -14,11 +16,7 @@ class ConfigLogger(object):
         pass
 
     def exists(self, key):
-        try:
-            with open(self.FOLDER + key, 'r') as data:
-                return True
-        except Exception:
-            return False
+        return os.path.isfile(self.FOLDER + key)
 
     @staticmethod
     def serialize_plan(plan, metad):
@@ -62,18 +60,18 @@ class ConfigLogger(object):
         return plan
 
     @classmethod
-    def appendToConfigLog(self, key, plan, metad):
-        with open(self.FOLDER + key) as f: data = json.load(f)
+    def appendToConfigLog(cls, key, plan, metad):
+        with open(cls.FOLDER + key) as f: data = json.load(f)
         data['d'].append(ConfigLogger().serialize_plan(plan, metad))
-        with open(self.FOLDER + key, 'w') as f: json.dump(data, f)
+        with open(cls.FOLDER + key, 'w') as f: json.dump(data, f)
 
     @classmethod
-    def loadConfig(self, key):
-        with open(self.FOLDER + key, 'r') as data:
+    def loadConfig(cls, key):
+        with open(cls.FOLDER + key, 'r') as data:
             d = json.load(data)
             d = d['d']
             return ConfigLogger().deserialize_plan(d[len(d) - 1])
 
     @classmethod
-    def createConfigLog(self, key):
-        with open(self.FOLDER + key, 'w') as data: json.dump({'d': []}, data)
+    def createConfigLog(cls, key):
+        with open(cls.FOLDER + key, 'w') as data: json.dump({'d': []}, data)

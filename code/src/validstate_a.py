@@ -4,7 +4,6 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
-from src.GroundplanFrame import GroundplanFrame
 
 
 # a modified evolver, returns first valid solution it finds
@@ -80,11 +79,6 @@ class ValidStateGenerator(object):
 
         return plan
 
-    @staticmethod
-    def getOrMakePlan(key, base):
-
-        return base
-
     def mutateAHouse(self, plan, i):
 
         toberemoved = None
@@ -111,28 +105,13 @@ class ValidStateGenerator(object):
         return [plan, h is not None]
 
     def getPlan(self):
-        return self.best_plan
+        return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, base, key="test", visualize=False):
+    def __init__(self, plan):
 
-        self.best_plan = None
+        self.plan = None
         i = 0
-        deaths = 0
-
-        # generate a new plan or load plan from previous run (continue previous evolution)
-        plan = self.getOrMakePlan(key, base)
-
-        # init vars to remember the best plan found so far and it's value
-        best_val = plan.getPlanValue()
-
-        # init visualizers. disable for higher performance
-        if visualize:
-            frame = GroundplanFrame(plan)  # window for current plan
-            best_frame = GroundplanFrame(plan)  # window for the best plan so far
-            best_frame.repaint(plan)
-
-        iterations_since_best = 0  # number of iterations since plan==best_plan
 
         while True:
 
@@ -144,5 +123,5 @@ class ValidStateGenerator(object):
                 i += 1
 
             if plan.isValid():
-                self.best_plan = plan.deepCopy()
+                self.plan = plan.deepCopy()
                 break

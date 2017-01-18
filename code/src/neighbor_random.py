@@ -81,7 +81,10 @@ def neighbor_random(state):
                         return [temp, True]
 
     for i in range(int(random() * 10)):
-        res = mutateAHouse(state)
+        if random() < 0.5:
+            res = randomSwap(state)
+        else:
+            res = mutateAHouse(state)
         if res[1]:
             state = res[0].deepCopy()
         else:

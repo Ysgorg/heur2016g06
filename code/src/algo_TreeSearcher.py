@@ -61,12 +61,13 @@ class algo_TreeSearcher(object):
         self.best_plan = base
         self.thetree = self.Tree(0)
 
-        frame = GroundplanFrame(self.best_plan)
+        if visualize:
+            frame = GroundplanFrame(self.best_plan)
 
         while not self.best_plan.getNumberOfHouses() == 40:
             print 'at ========================== ', self.best_plan.getNumberOfHouses()
-
-            frame.repaint(self.best_plan)
+            if visualize:
+                frame.repaint(self.best_plan)
             tree = self.Tree(self.thetree.depth)
             print tree.depth
             tree.data = self.best_plan
@@ -93,15 +94,11 @@ class algo_TreeSearcher(object):
                         n.children.append(child)
                         q.put(n.children[len(n.children) - 1])
 
-
-                        ####
-
                 if n.depth == height:
                     break
 
             buildt = time.time() - ms
             self.c = 0
-
             self.best_plan = None
             self.best_plan_val = -999999999999
 
@@ -126,5 +123,6 @@ class algo_TreeSearcher(object):
             end = time.time()
             print "built tree of ", self.c, "nodes in ", buildt, "sec, then traversed it in", (end - ms), "sec"
 
-        frame.repaint(self.best_plan)
+        if visualize:
+            frame.repaint(self.best_plan)
         while True: pass

@@ -2,6 +2,7 @@
 import os
 import sys
 
+from src.algo_SimulatedAnnealing import simulated_annealing
 from src.evaluate_base import evaluate_base
 from src.neighbor_random import neighbor_random
 
@@ -14,7 +15,7 @@ print "Current directory:", PATH
 from src.algo_Example import algo_Example
 
 # cleverer algorithms
-from src.algo_SimulatedAnnhealing import simulated_annealing
+
 from src.algo_Evolver import algo_Evolver
 from src.algo_TreeSearcher import algo_TreeSearcher
 
@@ -22,6 +23,16 @@ from src.algo_TreeSearcher import algo_TreeSearcher
 from src.plot_evolver_data import plot_evolver_data
 
 algo = sys.argv[1]
+
+"""
+# example commands
+python . Evolver a evofilename
+python . Base b
+python . Example
+python . TreeSearcher c
+python . EvoPlot evofilename
+python . SA dynamic 1000 random
+"""
 
 def parseBase(b):
     if b == "dynamic": from src.base_dynamic import base_dynamic as d
@@ -38,6 +49,7 @@ if algo == "Evolver":
 
 elif algo == "Base":
     evaluate_base(parseBase(sys.argv[2]))
+    while True: pass # to avoid instant closing of visualization
 
 elif algo == "Example":
     algo_Example()
@@ -56,4 +68,4 @@ elif algo == "SA":
         if s == "random":
             return neighbor_random
 
-    simulated_annealing(ValidStateGenerator(parseBase(sys.argv[2])).best_plan,int(sys.argv[3]),parseGenNeighborFunction(sys.argv[4]))
+    simulated_annealing(ValidStateGenerator(parseBase(sys.argv[2])).plan, int(sys.argv[3]), parseGenNeighborFunction(sys.argv[4]))

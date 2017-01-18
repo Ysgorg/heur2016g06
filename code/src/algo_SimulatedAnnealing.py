@@ -5,8 +5,10 @@ from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from src.GroundplanFrame import GroundplanFrame
 
+def simulated_annealing(init_state,max_iterations,type):
 
-def simulated_annealing(init_state,max_iterations):
+    if type == "random":
+        from src.neighbor_random import generateNeighbor
 
     state = init_state.deepCopy()
     best_state = init_state.deepCopy()
@@ -31,4 +33,3 @@ def simulated_annealing(init_state,max_iterations):
                 best_state = state.deepCopy()
         elif (state.getPlanValue()-neighbor.getPlanValue())/temperature > random():
             state = neighbor.deepCopy()
-

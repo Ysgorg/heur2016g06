@@ -1,3 +1,4 @@
+from random import random
 
 def generateNeighbor(state):
 
@@ -79,4 +80,3 @@ def generateNeighbor(state):
         if res[1]==True: state = res[0].deepCopy()
         else: print "invalid"
     return state
-

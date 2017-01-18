@@ -1,5 +1,9 @@
 from random import random
 
+from districtobjects.Bungalow import Bungalow
+from districtobjects.FamilyHome import FamilyHome
+from districtobjects.Mansion import Mansion
+
 def generateNeighbor(state):
 
 

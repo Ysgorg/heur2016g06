@@ -8,7 +8,7 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc):
     best_state = state
 
     frame = GroundplanFrame(state)
-    bframe = frame
+    bframe = GroundplanFrame(state)
 
     for i in range(max_iterations):
 

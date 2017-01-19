@@ -8,10 +8,8 @@ def plot_evolver_data(p):
         r1 = []
         r2 = []
         for i in d:
-            print i
             r1.append(i[5])
             r2.append(i[6])
-        print r1
         plt.plot(r1)
 
         plt.show()

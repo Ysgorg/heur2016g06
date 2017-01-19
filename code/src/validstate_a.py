@@ -7,6 +7,7 @@ from districtobjects.Waterbody import Waterbody
 
 
 # a modified evolver, returns first valid solution it finds
+from src.GroundplanFrame import GroundplanFrame
 
 
 class ValidStateGenerator(object):
@@ -31,10 +32,8 @@ class ValidStateGenerator(object):
                 h = FamilyHome(x, y)
                 if plan.correctlyPlaced(h): return h
 
-            elif type_to_place is "Bungalow":
-                h = Bungalow(x, y)
-            elif type_to_place is "Mansion":
-                h = Mansion(x, y)
+            elif type_to_place is "Bungalow":   h = Bungalow(x, y)
+            elif type_to_place is "Mansion":    h = Mansion(x, y)
 
             if random() < 0.5: h = h.flip()
             if plan.correctlyPlaced(h): break
@@ -67,10 +66,8 @@ class ValidStateGenerator(object):
             y = int(random() * plan.HEIGHT)
 
             # randomly decide rotation
-            if random() < 0.5:
-                wb = Waterbody(x, y, v1, v2)
-            else:
-                wb = Waterbody(x, y, v2, v1)
+            if random() < 0.5: wb = Waterbody(x, y, v1, v2)
+            else: wb = Waterbody(x, y, v2, v1)
 
             if plan.correctlyPlaced(wb):
                 plan.addWaterbody(wb)
@@ -111,19 +108,17 @@ class ValidStateGenerator(object):
 
         self.enable_playground=enable_playground
         self.num_houses = enable_playground
-        self.plan = None
+        self.plan = plan
 
         i = 0
 
         while True:
-
             # mutate
             # plan = self.mutateWater(plan)
             res = self.mutateAHouse(plan, i)
             if res[1]:  # if succeeded in house mutation
-                plan = res[0]
+                self.plan = res[0]
                 i += 1
 
-            if plan.isValid():
-                self.plan = plan.deepCopy()
+            if self.plan.isValid():
                 break

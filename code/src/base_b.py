@@ -36,13 +36,10 @@ class base_b(object):
         pgx = plan.WIDTH / 2 + dims[0] / 2 - dummy_pg.getWidth() / 2
 
         factor = 5
-
         pg1 = Playground(pgx + factor, pgy1 + factor)
         if flip: pg1 = pg1.flip()
         plan.addPlayground(pg1)
-        return plan
         pg2 = Playground(pgx - factor, pgy2 - factor)
         if flip: pg2 = pg2.flip()
         plan.addPlayground(pg2)
-
         return plan

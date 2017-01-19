@@ -29,7 +29,7 @@ class ConfigLogger(object):
             elif t == "Mansion":
                 return 'm'
 
-        config = [plan.numberOfHouses(), plan.PLAYGROUND, [], [], [], metad['deaths'], metad['mutations']]
+        config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND, [], [], [], metad['deaths'], metad['mutations']]
         for i in plan.getResidences():  config[2].append([i.x, i.y, minify(i.getType()), i.flipped])
         for i in plan.getWaterbodies(): config[3].append([i.x, i.y, i.getWidth(), i.getHeight(), i.flipped])
         for i in plan.getPlaygrounds(): config[4].append([i.x, i.y, i.flipped])

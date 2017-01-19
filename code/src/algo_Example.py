@@ -11,10 +11,11 @@ from districtobjects.Playground import Playground
 
 
 class algo_Example(object):
-    NUMBER_OF_HOUSES = 40
-    PLAYGROUND = True
 
-    def __init__(self):
+
+    def __init__(self,enable_playground=True,num_houses = 40):
+        self.enable_playground=enable_playground
+        self.num_houses=num_houses
         self.plan = self.developGroundplan()
         self.frame = GroundplanFrame(self.plan)
         self.frame.setPlan()
@@ -22,7 +23,7 @@ class algo_Example(object):
         self.frame.root.mainloop()
 
     def developGroundplan(self):
-        plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
+        plan = Groundplan(self.num_houses,self.enable_playground)
 
         x = 10 + random() * (plan.WIDTH - 50)
         y = 10 + random() * (plan.HEIGHT - 50)

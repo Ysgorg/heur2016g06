@@ -4,6 +4,10 @@ class Placeable(object):
         self.y = y
         self.width = width
         self.height = height
+        self.x1 = self.x
+        self.x2 = self.x1+self.width
+        self.y1 = self.y
+        self.y2 = self.y1+self.height
         self.flipped = False
 
     def setX(self, x): self.x = x
@@ -36,4 +40,4 @@ class Placeable(object):
         return self
 
     def toString(self):
-        return str(self.getX()) + " " + str(self.rightEdge()) + " " + str(self.topEdge()) + " " + str(self.bottomEdge())
+        return str(self.getX()) + " " + str(self.rightEdge()) + " " + str(self.y1) + " " + str(self.bottomEdge())

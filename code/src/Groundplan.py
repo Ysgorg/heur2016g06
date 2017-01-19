@@ -141,22 +141,22 @@ class Groundplan(object):
 
             return True
 
+    def overlap(self,o1, o2, verbose=False):
+        if o1 is o2: return False
+        # def correct https://silentmatt.com/rectangle-intersection/
+        return o1.x1 <= o2.x2 and o1.x2 >= o2.x1 and o1.y1 <= o2.y2 and o1.y2 >= o2.y1
+
+
     def correctlyPlaced(self, placeable, verbose=False):
 
-        def overlap(o1, o2, verbose=False):
-            if o1 is o2: return False
-            # def correct https://silentmatt.com/rectangle-intersection/
-            return o1.leftEdge() <= o2.rightEdge() and o1.rightEdge() >= o2.leftEdge() and \
-                   o1.topEdge() <= o2.bottomEdge() and o1.bottomEdge() >= o2.topEdge()
-
-        if placeable.topEdge() < self.ground.topEdge() or placeable.rightEdge() > self.ground.rightEdge() \
-                or placeable.bottomEdge() > self.ground.bottomEdge() or placeable.leftEdge() < self.ground.leftEdge():
+        if placeable.y1 < self.ground.y1 or placeable.x2 > self.ground.x2 \
+                or placeable.y2 > self.ground.y2 or placeable.x1 < self.ground.x1:
             return False
 
-        if isinstance(placeable, Residence) and (placeable.topEdge() < placeable.getminimumClearance() or
-                                                         placeable.rightEdge() > self.ground.rightEdge() - placeable.getminimumClearance() or
-                                                         placeable.bottomEdge() > self.ground.bottomEdge() - placeable.getminimumClearance() or
-                                                         placeable.leftEdge() < placeable.getminimumClearance()):
+        if isinstance(placeable, Residence) and (placeable.y1 < placeable.getminimumClearance() or
+                                                         placeable.x2 > self.ground.x2 - placeable.getminimumClearance() or
+                                                         placeable.y2 > self.ground.y2 - placeable.getminimumClearance() or
+                                                         placeable.x1 < placeable.getminimumClearance()):
             return False
 
         for waterbody in self.waterbodies:
@@ -166,7 +166,7 @@ class Groundplan(object):
                 if verbose:
                     print "problem: wrong water dimension"
                     return False
-            if waterbody is not placeable and overlap(waterbody, placeable):
+            if waterbody is not placeable and self.overlap(waterbody, placeable):
                 return False
 
         self_clearance = 0
@@ -176,10 +176,10 @@ class Groundplan(object):
 
         for residence in self.residences:
             if residence is placeable: continue
-            if overlap(residence, placeable, verbose):
+            if self.overlap(residence, placeable, verbose):
 
-                if verbose: print "overlap:", residence.leftEdge(), residence.rightEdge(), residence.topEdge(), residence.bottomEdge(), \
-                    residence.getType(), "and", placeable.leftEdge(), placeable.rightEdge(), placeable.topEdge(), placeable.bottomEdge(), placeable.getType()
+                if verbose: print "overlap:", residence.x1, residence.x2, residence.y1, residence.y2, \
+                    residence.getType(), "and", placeable.x1, placeable.x2, placeable.y1, placeable.y2, placeable.getType()
                 return False
             if not isinstance(placeable, Waterbody):
                 if self.getDistance(residence, placeable) < max(self_clearance, residence.getminimumClearance()):
@@ -193,7 +193,7 @@ class Groundplan(object):
 
             for playground in self.playgrounds:
 
-                if overlap(placeable, playground):
+                if self.overlap(placeable, playground):
                     if verbose: print "overlap!", playground.getX(), playground.getY(), isinstance(playground,
                                                                                                    Playground), placeable.getX(), placeable.getY(), placeable.getType()
                     return False
@@ -212,45 +212,30 @@ class Groundplan(object):
             if not ok: return False
         return True
 
-    @staticmethod
-    def getDistance(residence, other):
-        if (residence.topEdge() <= other.bottomEdge() and
-                    residence.rightEdge() >= other.leftEdge() and
-                    residence.bottomEdge() >= other.topEdge() and
-                    residence.leftEdge() <= other.rightEdge()):
-            return 0
-        elif (residence.topEdge() < other.bottomEdge() and
-                      residence.rightEdge() < other.leftEdge() and
-                      residence.bottomEdge() > other.topEdge()):
-            return other.leftEdge() - residence.rightEdge()
-        elif (residence.topEdge() < other.bottomEdge() and
-                      residence.bottomEdge() > other.topEdge() and
-                      residence.leftEdge() > other.rightEdge()):
-            return residence.leftEdge() - other.rightEdge()
-        elif (residence.topEdge() > other.bottomEdge() and
-                      residence.rightEdge() > other.leftEdge() and
-                      residence.leftEdge() < other.rightEdge()):
-            return residence.topEdge() - other.bottomEdge()
-        elif (residence.rightEdge() > other.leftEdge() and
-                      residence.bottomEdge() - other.topEdge() and
-                      residence.leftEdge() < other.rightEdge()):
-            return other.topEdge() - residence.bottomEdge()
-        elif (residence.topEdge() < other.bottomEdge() and
-                      residence.rightEdge() > other.leftEdge()):
-            return math.sqrt(math.pow(residence.leftEdge() - other.rightEdge(), 2) +
-                             math.pow(other.topEdge() - residence.bottomEdge(), 2))
-        elif (residence.topEdge() < other.bottomEdge() and
-                      residence.leftEdge() < other.rightEdge()):
-            return math.sqrt(math.pow(other.leftEdge() - residence.rightEdge(), 2) +
-                             math.pow(other.topEdge() - residence.bottomEdge(), 2))
-        elif (residence.rightEdge() > other.leftEdge() and
-                      residence.bottomEdge() > other.topEdge()):
-            return math.sqrt(math.pow(residence.leftEdge() - other.rightEdge(), 2) +
-                             math.pow(residence.topEdge() - other.bottomEdge(), 2))
-        elif (residence.bottomEdge() > other.topEdge() and
-                      residence.leftEdge() < other.rightEdge()):
-            return math.sqrt(math.pow(other.leftEdge() - residence.rightEdge(), 2) +
-                             math.pow(residence.topEdge() - other.bottomEdge(), 2))
+
+    def getDistance(self,o1, o2):
+
+        def dist(p1,p2): return ( (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2 ) ** 0.5
+
+        a1 = o1.y1 < o2.y2
+        a2 = o1.x2 < o2.x1
+        a3 = o1.y2 > o2.y1
+        a4 = o1.x1 > o2.x2
+        a5 = o1.y1 > o2.y2
+        a6 = o1.x2 > o2.x1
+        a7 = o1.x1 < o2.x2
+        a8 = o1.y2 - o2.y1
+
+        if self.overlap(o1,o2):     return 0
+        elif (a1 and a2 and a3):    return o2.x1 - o1.x2
+        elif (a1 and a3 and a4):    return o1.x1 - o2.x2
+        elif (a5 and a6 and a7):    return o1.y1 - o2.y2
+        elif (a6 and a8 and a7):    return o2.y1 - o1.y2
+        elif (a1 and a6):           return dist((o1.x1, o1.y2), (o2.x2, o2.y1))
+        elif (a1 and a7):           return dist((o1.x2, o1.y2), (o2.x1, o2.y1))
+        elif (a6 and a3):           return dist((o1.x1, o1.y1), (o2.x2, o2.y2))
+        elif (a3 and a7):           return dist((o1.x2, o1.y1), (o2.x1, o2.y2))
+
 
     def getPlanValue(self):
         planValue = 0
@@ -268,10 +253,10 @@ class Groundplan(object):
         return value_residence + (max(distance - residence.getminimumClearance(), 0)) * value_increase
 
     def getMinimumDistance(self, residence):
-        minimum = residence.leftEdge()
-        if residence.topEdge() < minimum: minimum = residence.topEdge()
-        if self.ground.rightEdge() - residence.rightEdge() < minimum: minimum = self.ground.rightEdge() - residence.rightEdge()
-        if self.ground.bottomEdge() - residence.bottomEdge() < minimum: minimum = self.ground.bottomEdge() - residence.bottomEdge()
+        minimum = residence.x1
+        if residence.y1 < minimum: minimum = residence.y1
+        if self.ground.x2 - residence.x2 < minimum: minimum = self.ground.x2 - residence.x2
+        if self.ground.y2 - residence.y2 < minimum: minimum = self.ground.y2 - residence.y2
         for other in self.residences:
             if residence != other:
                 distance = int(self.getDistance(residence, other))

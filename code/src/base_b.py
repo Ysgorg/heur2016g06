@@ -13,17 +13,17 @@ def get_valid_water_dimensions(plan, num_bodies):
 
 
 class base_b(object):
-    def __init__(self):
-        pass
 
-    @staticmethod
-    def developGroundplan():
+    def __init__(self,enable_playground=True,num_houses = 40):
+        self.enable_playground=enable_playground
+        self.num_houses = num_houses
+
+    def developGroundplan(self):
 
         flip = False
 
-        plan = Groundplan(40, True)
+        plan = Groundplan(self.num_houses, self.enable_playground)
         dims = get_valid_water_dimensions(plan, 1)
-        plan = Groundplan(40, True)
         wb = Waterbody(0, 0, dims[0], dims[1])
         plan.addWaterbody(wb)
 
@@ -40,6 +40,7 @@ class base_b(object):
         pg1 = Playground(pgx + factor, pgy1 + factor)
         if flip: pg1 = pg1.flip()
         plan.addPlayground(pg1)
+        return plan
         pg2 = Playground(pgx - factor, pgy2 - factor)
         if flip: pg2 = pg2.flip()
         plan.addPlayground(pg2)

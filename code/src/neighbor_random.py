@@ -43,7 +43,7 @@ def neighbor_random(state):
 
     def mutateAHouse(plan):
 
-        ind = int(random() * 40)
+        ind = int(random() * plan.getNumberOfHouses())
 
         toberemoved = plan.getResidence(ind)
 
@@ -61,8 +61,8 @@ def neighbor_random(state):
 
         while True:
 
-            i1 = int(random() * 40)
-            i2 = int(random() * 40)
+            i1 = int(random() * plan.getNumberOfHouses())
+            i2 = int(random() * plan.getNumberOfHouses())
             if i1 != i2:
                 temp = plan.deepCopy()
                 r1 = temp.getResidence(i1)

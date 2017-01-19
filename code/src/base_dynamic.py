@@ -24,8 +24,6 @@ MAX_WATER_BODIES = 10
 
 
 class base_dynamic(object):
-    NUMBER_OF_HOUSES = 40
-    PLAYGROUND = True
 
     """
     def __init__(self):
@@ -34,6 +32,10 @@ class base_dynamic(object):
         self.frame.setPlan()
         self.frame.root.mainloop()
     """
+
+    def __init__(self,enable_playground=True,num_houses = 40):
+        self.enable_playground=enable_playground
+        self.num_houses = num_houses
 
     @staticmethod
     def placeWater(plan):
@@ -122,7 +124,7 @@ class base_dynamic(object):
         return plan
 
     def developGroundplan(self):
-        plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
+        plan = Groundplan(self.num_houses, self.enable_playground)
         self.placeWater(plan)
         self.placePlaygrounds(plan)
         return plan

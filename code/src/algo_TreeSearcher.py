@@ -52,19 +52,18 @@ class algo_TreeSearcher(object):
             self.data = None
             self.depth = depth
 
-    NUMBER_OF_HOUSES = 40
-    PLAYGROUND = True
-
-    def __init__(self, base, visualize=True, beam_width=3, height=4):
+    def __init__(self, base, visualize=True, beam_width=3, height=4,enable_playground=True,num_houses = 40):
 
         # get init plan from other module
         self.best_plan = base
+        self.num_houses=num_houses
+        self.enable_playground=enable_playground
         self.thetree = self.Tree(0)
 
         if visualize:
             frame = GroundplanFrame(self.best_plan)
 
-        while not self.best_plan.getNumberOfHouses() == 40:
+        while not self.best_plan.getNumberOfHouses() == self.num_houses:
             print 'at ========================== ', self.best_plan.getNumberOfHouses()
             if visualize:
                 frame.repaint(self.best_plan)
@@ -106,13 +105,13 @@ class algo_TreeSearcher(object):
                 self.c += 1
                 # print self.c , n.depth
                 val = n.data.getPlanValue()
-                if val > self.best_plan_val and not n.data.getNumberOfHouses() > 40:
+                if val > self.best_plan_val and not n.data.getNumberOfHouses() > self.num_houses:
                     self.best_plan = n.data.deepCopy()
                     self.best_plan_val = val
                     self.thetree = self.Tree(n.depth)
                     self.thetree.data = self.best_plan.deepCopy()
 
-                    if n.data.getNumberOfHouses() == 40:
+                    if n.data.getNumberOfHouses() == self.num_houses:
                         return "yes"
                 print self.c, n.depth, n.data.getPlanValue()
                 for i in n.children: traverse(i)

@@ -10,8 +10,7 @@ from districtobjects.Waterbody import Waterbody
 
 
 class ValidStateGenerator(object):
-    NUMBER_OF_HOUSES = 40
-    PLAYGROUND = True
+
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
@@ -83,8 +82,8 @@ class ValidStateGenerator(object):
 
         toberemoved = None
 
-        if plan.getNumberOfHouses() is self.NUMBER_OF_HOUSES:
-            ind = int(random() * self.NUMBER_OF_HOUSES)
+        if plan.getNumberOfHouses() is self.num_houses:
+            ind = int(random() * self.num_houses)
             toberemoved = plan.getResidence(ind)
 
             type_to_place = toberemoved.getType()
@@ -108,9 +107,12 @@ class ValidStateGenerator(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, plan):
+    def __init__(self, plan,enable_playground=True,num_houses=40):
 
+        self.enable_playground=enable_playground
+        self.num_houses = enable_playground
         self.plan = None
+
         i = 0
 
         while True:

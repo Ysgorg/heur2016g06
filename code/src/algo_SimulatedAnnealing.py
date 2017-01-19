@@ -1,5 +1,7 @@
 from random import random
 
+import time
+
 from src.GroundplanFrame import GroundplanFrame
 
 
@@ -10,6 +12,8 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc):
     frame = GroundplanFrame(state)
     bframe = GroundplanFrame(state)
 
+    ms=time.time()
+
     for i in range(max_iterations):
 
         frame.repaint(state)
@@ -18,12 +22,11 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc):
         neighbor = generateNeighborFunc(state.deepCopy())
         temperature = float(i + 1) / max_iterations
 
-        print state.getPlanValue(), neighbor.getPlanValue(), best_state.getPlanValue()
-
-        print "t =", temperature, ", i =", i
         if neighbor.getPlanValue() > state.getPlanValue():
             state = neighbor.deepCopy()
             if state.getPlanValue() > best_state.getPlanValue():
                 best_state = state.deepCopy()
         elif (state.getPlanValue() - neighbor.getPlanValue()) / temperature > random():
             state = neighbor.deepCopy()
+
+    print "done",time.time()-ms

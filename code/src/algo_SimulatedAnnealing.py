@@ -33,3 +33,4 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visuali
             state = neighbor.deepCopy()
 
     print ((time.time()-ms) / max_iterations )*1000, "ms per iteration"
+    print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()

@@ -5,7 +5,7 @@ from src.Groundplan import Groundplan
 
 class base_c(object):
 
-    def __init__(self,enable_playground=True,num_houses = 40):
+    def __init__(self,enable_playground,num_houses):
         self.enable_playground=enable_playground
         self.num_houses = num_houses
         self.plan = self.developGroundplan()

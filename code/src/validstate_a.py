@@ -79,8 +79,8 @@ class ValidStateGenerator(object):
 
         toberemoved = None
 
-        if plan.getNumberOfHouses() is self.num_houses:
-            ind = int(random() * self.num_houses)
+        if plan.getNumberOfHouses() is plan.NUMBER_OF_HOUSES:
+            ind = int(random() * plan.NUMBER_OF_HOUSES)
             toberemoved = plan.getResidence(ind)
 
             type_to_place = toberemoved.getType()
@@ -104,10 +104,8 @@ class ValidStateGenerator(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, plan,enable_playground=True,num_houses=40):
+    def __init__(self, plan):
 
-        self.enable_playground=enable_playground
-        self.num_houses = enable_playground
         self.plan = plan
 
         i = 0

@@ -90,8 +90,8 @@ class algo_Evolver(object):
 
         toberemoved = None
 
-        if plan.getNumberOfHouses() is self.num_houses:
-            ind = int(random() * self.num_houses)
+        if plan.getNumberOfHouses() is plan.NUMBER_OF_HOUSES:
+            ind = int(random() * plan.NUMBER_OF_HOUSES)
             toberemoved = plan.getResidence(ind)
 
             type_to_place = toberemoved.getType()
@@ -112,10 +112,7 @@ class algo_Evolver(object):
         return [plan, h is not None]
 
     # input key to continue existing thread of evolution
-    def __init__(self, base, key="test", visualize=True,enable_playground=True,num_houses = 40):
-
-        self.num_houses = num_houses
-        self.enable_playground=enable_playground
+    def __init__(self, base, key="test",visualize=True):
 
         i = 0
         deaths = 0

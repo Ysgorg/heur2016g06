@@ -52,22 +52,21 @@ class algo_TreeSearcher(object):
             self.data = None
             self.depth = depth
 
-    def __init__(self, base, visualize=True, beam_width=3, height=4,enable_playground=True,num_houses = 40):
+    def __init__(self, base,beam_width, height, visualize=True):
 
         # get init plan from other module
-        self.best_plan = base
-        self.num_houses=num_houses
-        self.enable_playground=enable_playground
+        self.best_plan = base.deepCopy()
         self.thetree = self.Tree(0)
 
         if visualize:
             frame = GroundplanFrame(self.best_plan)
+            bframe = GroundplanFrame(self.best_plan)
 
-        while not self.best_plan.getNumberOfHouses() == self.num_houses:
-            print 'at ========================== ', self.best_plan.getNumberOfHouses()
-            if visualize:
-                frame.repaint(self.best_plan)
+        while not self.best_plan.getNumberOfHouses() == base.num_houses:
             tree = self.Tree(self.thetree.depth)
+            if visualize:
+                frame.repaint(tree.data)
+                bframe.repaint(self.best_plan)
             print tree.depth
             tree.data = self.best_plan
             q = Queue()
@@ -105,13 +104,13 @@ class algo_TreeSearcher(object):
                 self.c += 1
                 # print self.c , n.depth
                 val = n.data.getPlanValue()
-                if val > self.best_plan_val and not n.data.getNumberOfHouses() > self.num_houses:
+                if val > self.best_plan_val and not n.data.getNumberOfHouses() > base.num_houses:
                     self.best_plan = n.data.deepCopy()
                     self.best_plan_val = val
                     self.thetree = self.Tree(n.depth)
                     self.thetree.data = self.best_plan.deepCopy()
 
-                    if n.data.getNumberOfHouses() == self.num_houses:
+                    if n.data.getNumberOfHouses() == base.num_houses:
                         return "yes"
                 print self.c, n.depth, n.data.getPlanValue()
                 for i in n.children: traverse(i)

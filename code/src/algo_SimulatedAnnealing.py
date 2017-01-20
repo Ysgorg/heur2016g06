@@ -5,7 +5,7 @@ import time
 from src.GroundplanFrame import GroundplanFrame
 
 
-def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visualize=True):
+def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visualize):
 
     state = init_state.deepCopy()
     best_state = state

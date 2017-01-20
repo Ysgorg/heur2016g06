@@ -13,14 +13,14 @@ from districtobjects.Playground import Playground
 class algo_Example(object):
 
 
-    def __init__(self,enable_playground=True,num_houses = 40):
+    def __init__(self,enable_playground,num_houses, visualize):
         self.enable_playground=enable_playground
         self.num_houses=num_houses
         self.plan = self.developGroundplan()
-        self.frame = GroundplanFrame(self.plan)
-        self.frame.setPlan()
-
-        self.frame.root.mainloop()
+        if visualize:
+            self.frame = GroundplanFrame(self.plan)
+            self.frame.setPlan()
+            self.frame.root.mainloop()
 
     def developGroundplan(self):
         plan = Groundplan(self.num_houses,self.enable_playground)

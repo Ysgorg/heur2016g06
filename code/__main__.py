@@ -61,8 +61,9 @@ other = ['evoplot']
 neigens = ['rndm']
 
 
-if args['other'] == "evoplot":
-    plot_evolver_data('plans/' + args['f'])
+if 'other' in args:
+    if args['other'] == "evoplot":
+        plot_evolver_data('plans/' + args['f'])
 
 elif args['algo'] in algos:
     visualize = parseBool(args['vis'])
@@ -111,5 +112,3 @@ elif args['algo'] == "base":
 
 elif args['algo'] == "ex":
     algo_Example(enable_playground=parseBool(args['pg']),num_houses=int(args['nh']), visualize=visualize)
-
-

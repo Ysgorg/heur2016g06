@@ -9,7 +9,6 @@ from src.GroundplanFrame import GroundplanFrame
 
 
 class algo_Evolver(object):
-
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
@@ -112,7 +111,7 @@ class algo_Evolver(object):
         return [plan, h is not None]
 
     # input key to continue existing thread of evolution
-    def __init__(self, base, key="test",visualize=True):
+    def __init__(self, base, key="test", visualize=True):
 
         i = 0
         deaths = 0

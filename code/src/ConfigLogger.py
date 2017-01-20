@@ -8,7 +8,6 @@ from districtobjects.Playground import Playground
 import os
 
 
-
 class ConfigLogger(object):
     FOLDER = "plans/"
 

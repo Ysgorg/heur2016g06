@@ -5,13 +5,11 @@ from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 
-
 # a modified evolver, returns first valid solution it finds
 from src.GroundplanFrame import GroundplanFrame
 
 
-class ValidStateGenerator(object):
-
+class validstate_rndm(object):
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
@@ -32,8 +30,10 @@ class ValidStateGenerator(object):
                 h = FamilyHome(x, y)
                 if plan.correctlyPlaced(h): return h
 
-            elif type_to_place is "Bungalow":   h = Bungalow(x, y)
-            elif type_to_place is "Mansion":    h = Mansion(x, y)
+            elif type_to_place is "Bungalow":
+                h = Bungalow(x, y)
+            elif type_to_place is "Mansion":
+                h = Mansion(x, y)
 
             if random() < 0.5: h = h.flip()
             if plan.correctlyPlaced(h): break
@@ -66,8 +66,10 @@ class ValidStateGenerator(object):
             y = int(random() * plan.HEIGHT)
 
             # randomly decide rotation
-            if random() < 0.5: wb = Waterbody(x, y, v1, v2)
-            else: wb = Waterbody(x, y, v2, v1)
+            if random() < 0.5:
+                wb = Waterbody(x, y, v1, v2)
+            else:
+                wb = Waterbody(x, y, v2, v1)
 
             if plan.correctlyPlaced(wb):
                 plan.addWaterbody(wb)

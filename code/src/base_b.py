@@ -13,9 +13,8 @@ def get_valid_water_dimensions(plan, num_bodies):
 
 
 class base_b(object):
-
-    def __init__(self,enable_playground,num_houses):
-        self.enable_playground=enable_playground
+    def __init__(self, enable_playground, num_houses):
+        self.enable_playground = enable_playground
         self.num_houses = num_houses
 
     def developGroundplan(self):

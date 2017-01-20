@@ -6,7 +6,8 @@ from docopt import docopt
 
 from src.evaluate_base import evaluate_base
 from src.neighbor_random import neighbor_random
-from src.validstate_a import ValidStateGenerator
+from src.validstate_rndm import validstate_rndm
+from src.validstate_tight import validstate_tight
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 os.chdir(PATH)
@@ -98,7 +99,8 @@ elif args['algo'] == 'sa':
                 max_iter = int(args['max_i'])
 
                 def parse_initState(s,base):
-                    if s=="rndm": return ValidStateGenerator(base).plan
+                    if s=="rndm": return validstate_rndm(base).plan
+                    if s=="tight": return validstate_tight(base).plan
                 init_state = parse_initState(args['inits'], base)
                 print "Initial state found"
 

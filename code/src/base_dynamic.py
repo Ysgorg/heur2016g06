@@ -1,6 +1,7 @@
 from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
+import math
 
 PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
 
@@ -37,8 +38,10 @@ class base_dynamic(object):
         self.num_houses = num_houses
 
     @staticmethod
-    def placeWater(plan):
+    def placeWater(plan, num_bodies):
         print "Place Water!"
+
+        """
         bestArea = (
             plan.WIDTH * plan.HEIGHT * TOTAL_WATER * 1.2)  # Worst case area to consider (1.2 * requirement as arbitrary upper bound)
         req_area = plan.WIDTH * plan.HEIGHT * TOTAL_WATER  # Best case / Minimum required area
@@ -55,18 +58,24 @@ class base_dynamic(object):
                     bestHeight = height
                     noWaterBodies = j
                     print "New best water distribution found! [", noWaterBodies, "bodie(s),", bestWidth, "width,", bestHeight, "height,", bestArea, "area ]\n"
+        """
+
+        # input plan and desired number of water bodies
+        # output the dimensions that give exactly MINIMUM_WATER_PERCENTAGE
+        h = math.sqrt(((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
+        w = h * 4
 
         # Starting position
         x = 0
-        y = plan.HEIGHT - bestHeight
+        y = plan.HEIGHT - h
 
-        for i in range(1, noWaterBodies + 1):
-            wb = Waterbody(x, y, bestWidth, bestHeight)
+        for i in range(1, num_bodies + 1):
+            wb = Waterbody(x, y, w, h)
 
             # if plan.correctlyPlaced(wb, verbose=True):
             plan.addWaterbody(wb)
             #    print "Waterbody", i, "placed"
-            x += bestWidth + 1  # +1 so that the bodies are not touching
+            x += w + 1  # +1 so that the bodies are not touching
 
         return plan
 
@@ -124,6 +133,6 @@ class base_dynamic(object):
 
     def developGroundplan(self):
         plan = Groundplan(self.num_houses, self.enable_playground)
-        self.placeWater(plan)
+        self.placeWater(plan, 1)
         self.placePlaygrounds(plan)
         return plan

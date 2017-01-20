@@ -88,18 +88,28 @@ if args['algo'] == 'ts':
 
 elif args['algo'] == 'sa':
 
+    if 'ng' in args:
+        if 'max_i' in args:
+            if 'inits' in args:
+                def parseGenNeighborFunction(s):
+                    if s == "rndm": return neighbor_random
 
-    def parseGenNeighborFunction(s):
-        if s == "rndm": return neighbor_random
+                if args['ng'] in neigens: ng = parseGenNeighborFunction(args['ng'])
+                max_iter = int(args['max_i'])
 
-    if args['ng'] in neigens: ng = parseGenNeighborFunction(args['ng'])
-    max_iter = int(args['max_i'])
+                def parse_initState(s,base):
+                    if s=="rndm": return ValidStateGenerator(base).plan
+                init_state = parse_initState(args['inits'], base)
+                print "Initial state found"
 
-    def parse_initState(s,base):
-        if s=="rndm": return ValidStateGenerator(base).plan
-    init_state = parse_initState(args['inits'], base)
+                simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize)
+            else:
+                print 'inits arg missing!'
+        else:
+            print 'max_i arg missing!'
 
-    simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize)
+    else:
+        print 'ng arg missing!'
 
 elif args['algo'] == "evo":
 

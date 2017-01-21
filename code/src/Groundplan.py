@@ -121,7 +121,7 @@ class Groundplan(object):
         self.num_houses -= 1
         self.residences.remove(residence)
 
-    def isValid(self):
+    def isValid(self,stage='full'):
 
         def correctNumElements():
 
@@ -149,8 +149,7 @@ class Groundplan(object):
             for r in self.residences:
                 if not self.correctlyPlaced(r): return False
             return True
-
-        return correctNumElements() and enoughWater() and residencesCorrectlyPlaced()
+        return enoughWater() and (stage=='base' or (residencesCorrectlyPlaced() and correctNumElements() ))
 
     @staticmethod
     def overlap(o1, o2):

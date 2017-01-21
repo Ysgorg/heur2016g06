@@ -1,11 +1,13 @@
 from random import random
 
+import time
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
 
-def neighbor_random(state):
+def neighbor_random(state,timeout):
     def getTypeFunc(k):
         if k == "FamilyHome":
             return FamilyHome
@@ -58,9 +60,12 @@ def neighbor_random(state):
 
         return [plan, h is not None]
 
-    def randomSwap(plan):
+    def randomSwap(plan,timeout,t):
 
         while True:
+
+            if timeout < time.time() - t:
+                return [plan, True]
 
             i1 = int(random() * plan.getNumberOfHouses())
             i2 = int(random() * plan.getNumberOfHouses())
@@ -80,13 +85,21 @@ def neighbor_random(state):
                         temp.addResidence(n2)
                         return [temp, True]
 
+
+    t = time.time()
+
     for i in range(int(random() * 10)):
+
+        if timeout < time.time() - t:
+            return state
+
         if random() < 0.5:
-            res = randomSwap(state)
+            res = randomSwap(state,timeout,t)
         else:
             res = mutateAHouse(state)
         if res[1]:
             state = res[0].deepCopy()
         else:
             print "invalid"
+
     return state

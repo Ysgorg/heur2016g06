@@ -1,5 +1,7 @@
 from random import random
 
+import time
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
@@ -13,11 +15,16 @@ class validstate_rndm(object):
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
-    def findValidHouse(plan, type_to_place, pre):
+    def findValidHouse(plan, type_to_place, pre,timeout,t):
 
         h = None
 
+
         while True:
+            if timeout < time.time()-t:
+                #print time.time()-t
+                return h
+
             if pre is None or random() < 0.5:
                 x = int(random() * plan.WIDTH)
                 y = int(random() * plan.HEIGHT)
@@ -43,7 +50,7 @@ class validstate_rndm(object):
         return h
 
     @staticmethod
-    def mutateWater(plan):
+    def mutateWater(plan,timeout,t):
 
         # get number of water bodies
         num_wbs = len(plan.getWaterbodies())
@@ -59,6 +66,9 @@ class validstate_rndm(object):
 
         # try many times to place wbs until 4 have been placed
         while True:
+
+            if timeout < time.time()-t:
+                return plan
 
             if num_wbs >= 4: break
 
@@ -77,7 +87,7 @@ class validstate_rndm(object):
 
         return plan
 
-    def mutateAHouse(self, plan, i):
+    def mutateAHouse(self, plan, i,timeout,t):
 
         toberemoved = None
 
@@ -96,7 +106,7 @@ class validstate_rndm(object):
             else:
                 type_to_place = "Mansion"
 
-        h = self.findValidHouse(plan, type_to_place, toberemoved)
+        h = self.findValidHouse(plan, type_to_place, toberemoved,timeout,t)
 
         if h is not None: plan.addResidence(h)
 
@@ -106,16 +116,27 @@ class validstate_rndm(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, plan):
+    def __init__(self, plan,timeout):
 
         self.plan = plan
 
         i = 0
 
+        t = time.time()
+
         while True:
-            # mutate
+
+
+            if timeout < time.time() - t:
+                # print time.time() - t
+                break
+
             # plan = self.mutateWater(plan)
-            res = self.mutateAHouse(plan, i)
+            #print "ok"
+            res = self.mutateAHouse(plan, i,timeout,t)
+
+
+
             if res[1]:  # if succeeded in house mutation
                 self.plan = res[0]
                 i += 1

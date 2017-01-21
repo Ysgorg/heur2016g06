@@ -1,5 +1,7 @@
 from random import random
 
+import time
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
@@ -16,7 +18,7 @@ class validstate_tight(object):
         return self.plan
 
 
-    def genPlan(self):
+    def genPlan(self,timeout):
 
         def next_to_place(i):
             v = i%10
@@ -28,6 +30,7 @@ class validstate_tight(object):
         r = next_to_place(i)
         x=0
         frame = GroundplanFrame(self.plan)
+
         while x < self.plan.WIDTH:
             y=0
             while y < self.plan.HEIGHT:
@@ -42,7 +45,7 @@ class validstate_tight(object):
                     x1+=1
 
                     self.plan.addResidence(r(x1,y))
-                    frame.repaint(self.plan)
+                    #frame.repaint(self.plan)
                     if self.plan.NUMBER_OF_HOUSES == self.plan.getNumberOfHouses():
                         return
                     y+=r1.height
@@ -51,9 +54,9 @@ class validstate_tight(object):
                 else: y+=1
             x+=1
 
-    def __init__(self, plan):
+    def __init__(self, plan,timeout):
 
         self.plan = plan
-        self.genPlan()
+        self.genPlan(timeout)
 
         i = 0

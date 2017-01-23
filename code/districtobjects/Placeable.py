@@ -5,9 +5,9 @@ class Placeable(object):
         self.width = width
         self.height = height
         self.x1 = self.x
-        self.x2 = self.x1+self.width
+        self.x2 = self.x1 + self.width
         self.y1 = self.y
-        self.y2 = self.y1+self.height
+        self.y2 = self.y1 + self.height
         self.flipped = False
 
     def setX(self, x): self.x = x

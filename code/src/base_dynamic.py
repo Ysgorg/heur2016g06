@@ -25,7 +25,6 @@ MAX_WATER_BODIES = 10
 
 
 class base_dynamic(object):
-
     """
     def __init__(self):
         self.plan = self.developGroundplan()
@@ -34,13 +33,13 @@ class base_dynamic(object):
         self.frame.root.mainloop()
     """
 
-    def __init__(self,enable_playground,num_houses):
-        self.enable_playground=enable_playground
+    def __init__(self, enable_playground, num_houses):
+        self.enable_playground = enable_playground
         self.num_houses = num_houses
 
     @staticmethod
     def placeWater(plan, num_bodies):
-        print "Place Water!"
+       # print "Place Water!"
 
         """
         bestArea = (
@@ -82,7 +81,7 @@ class base_dynamic(object):
 
     @staticmethod
     def placePlaygrounds(plan):
-        print "Place Playgrounds!"
+        #print "Place Playgrounds!"
         # Reach is defined by the the playground size, plus its usable radius
         playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS + 7.5
         playgroundReachY = PLAYGROUND_HEIGHT + PLAYGROUND_RADIUS + 7.5
@@ -91,7 +90,7 @@ class base_dynamic(object):
         utilisableX = plan.WIDTH
         utilisableY = int(plan.HEIGHT * (1 - TOTAL_WATER))
 
-        print "Utilisable area:", utilisableX, "x", utilisableY, "=", utilisableX * utilisableY
+        #print "Utilisable area:", utilisableX, "x", utilisableY, "=", utilisableX * utilisableY
 
         # Floor the total utilisable width and height by our playground reach to find optimal number to fit
         numberPlaygroundsX = int(utilisableX // playgroundReachX)
@@ -103,7 +102,7 @@ class base_dynamic(object):
 
         totalPlaygrounds = numberPlaygroundsX * numberPlaygroundsY
 
-        print "Total utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
+        #print "Total utilisable playgrounds:", totalPlaygrounds, numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
 
         for x in range(1, numberPlaygroundsX + 1):
             xSpread = X_SPREAD
@@ -132,8 +131,9 @@ class base_dynamic(object):
 
         return plan
 
-    def developGroundplan(self):
+    def developGroundplan(self,timeout
+                          ):
         plan = Groundplan(self.num_houses, self.enable_playground)
         self.placeWater(plan, 1)
-        self.placePlaygrounds(plan)
+        if plan.PLAYGROUND: self.placePlaygrounds(plan)
         return plan

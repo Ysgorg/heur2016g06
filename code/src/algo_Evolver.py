@@ -9,7 +9,6 @@ from src.GroundplanFrame import GroundplanFrame
 
 
 class algo_Evolver(object):
-
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
@@ -28,7 +27,7 @@ class algo_Evolver(object):
             if type_to_place is "FamilyHome":
                 # skip flipping because FamilyHome has w==h
                 h = FamilyHome(x, y)
-                if plan.correctlyPlaced(h): return h
+                if plan.correctlyPlaced(h,"extraroom"): return h
 
             elif type_to_place is "Bungalow":
                 h = Bungalow(x, y)
@@ -36,9 +35,9 @@ class algo_Evolver(object):
                 h = Mansion(x, y)
 
             if random() < 0.5: h = h.flip()
-            if plan.correctlyPlaced(h): break
+            if plan.correctlyPlaced(h,"extraroom"): break
             h = h.flip()
-            if plan.correctlyPlaced(h): break
+            if plan.correctlyPlaced(h,"extraroom"): break
 
         return h
 
@@ -71,7 +70,7 @@ class algo_Evolver(object):
             else:
                 wb = Waterbody(x, y, v2, v1)
 
-            if plan.correctlyPlaced(wb):
+            if plan.correctlyPlaced(wb,"extraroom"):
                 plan.addWaterbody(wb)
                 num_wbs += 1
 
@@ -112,7 +111,9 @@ class algo_Evolver(object):
         return [plan, h is not None]
 
     # input key to continue existing thread of evolution
-    def __init__(self, base, key="test",visualize=True):
+    def __init__(self, base, key="test", visualize=True):
+
+        visualize=True
 
         i = 0
         deaths = 0
@@ -134,6 +135,7 @@ class algo_Evolver(object):
 
         while True:
 
+            print iterations_since_best, deaths
             # mutate
             # plan = self.mutateWater(plan)
             res = self.mutateAHouse(plan, i)
@@ -160,4 +162,4 @@ class algo_Evolver(object):
                     deaths += 1
                     iterations_since_best = 0
 
-                if visualize: frame.repaint(plan)
+            if visualize: frame.repaint(plan)

@@ -52,7 +52,7 @@ class algo_TreeSearcher(object):
             self.data = None
             self.depth = depth
 
-    def __init__(self, base,beam_width, height, visualize=True):
+    def __init__(self, base, beam_width, height, visualize=True):
 
         # get init plan from other module
         self.best_plan = base.deepCopy()
@@ -100,20 +100,20 @@ class algo_TreeSearcher(object):
             self.best_plan = None
             self.best_plan_val = -999999999999
 
-            def traverse(n):
+            def traverse(node):
                 self.c += 1
                 # print self.c , n.depth
-                val = n.data.getPlanValue()
-                if val > self.best_plan_val and not n.data.getNumberOfHouses() > base.num_houses:
-                    self.best_plan = n.data.deepCopy()
+                val = node.data.getPlanValue()
+                if val > self.best_plan_val and not node.data.getNumberOfHouses() > base.num_houses:
+                    self.best_plan = node.data.deepCopy()
                     self.best_plan_val = val
-                    self.thetree = self.Tree(n.depth)
+                    self.thetree = self.Tree(node.depth)
                     self.thetree.data = self.best_plan.deepCopy()
 
-                    if n.data.getNumberOfHouses() == base.num_houses:
+                    if node.data.getNumberOfHouses() == base.num_houses:
                         return "yes"
-                print self.c, n.depth, n.data.getPlanValue()
-                for i in n.children: traverse(i)
+                print self.c, node.depth, node.data.getPlanValue()
+                for c in node.children: traverse(c)
 
             ms = time.time()
             if traverse(tree) == "yes":

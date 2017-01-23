@@ -1,25 +1,30 @@
 from random import random
 
+import time
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
 
-
 # a modified evolver, returns first valid solution it finds
 from src.GroundplanFrame import GroundplanFrame
 
 
-class ValidStateGenerator(object):
-
+class validstate_rndm(object):
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod
-    def findValidHouse(plan, type_to_place, pre):
+    def findValidHouse(plan, type_to_place, pre,timeout,t):
 
         h = None
 
+
         while True:
+            if timeout < time.time()-t:
+                #print time.time()-t
+                return h
+
             if pre is None or random() < 0.5:
                 x = int(random() * plan.WIDTH)
                 y = int(random() * plan.HEIGHT)
@@ -32,8 +37,10 @@ class ValidStateGenerator(object):
                 h = FamilyHome(x, y)
                 if plan.correctlyPlaced(h): return h
 
-            elif type_to_place is "Bungalow":   h = Bungalow(x, y)
-            elif type_to_place is "Mansion":    h = Mansion(x, y)
+            elif type_to_place is "Bungalow":
+                h = Bungalow(x, y)
+            elif type_to_place is "Mansion":
+                h = Mansion(x, y)
 
             if random() < 0.5: h = h.flip()
             if plan.correctlyPlaced(h): break
@@ -43,7 +50,7 @@ class ValidStateGenerator(object):
         return h
 
     @staticmethod
-    def mutateWater(plan):
+    def mutateWater(plan,timeout,t):
 
         # get number of water bodies
         num_wbs = len(plan.getWaterbodies())
@@ -60,14 +67,19 @@ class ValidStateGenerator(object):
         # try many times to place wbs until 4 have been placed
         while True:
 
+            if timeout < time.time()-t:
+                return plan
+
             if num_wbs >= 4: break
 
             x = int(random() * plan.WIDTH)
             y = int(random() * plan.HEIGHT)
 
             # randomly decide rotation
-            if random() < 0.5: wb = Waterbody(x, y, v1, v2)
-            else: wb = Waterbody(x, y, v2, v1)
+            if random() < 0.5:
+                wb = Waterbody(x, y, v1, v2)
+            else:
+                wb = Waterbody(x, y, v2, v1)
 
             if plan.correctlyPlaced(wb):
                 plan.addWaterbody(wb)
@@ -75,7 +87,7 @@ class ValidStateGenerator(object):
 
         return plan
 
-    def mutateAHouse(self, plan, i):
+    def mutateAHouse(self, plan, i,timeout,t):
 
         toberemoved = None
 
@@ -94,7 +106,7 @@ class ValidStateGenerator(object):
             else:
                 type_to_place = "Mansion"
 
-        h = self.findValidHouse(plan, type_to_place, toberemoved)
+        h = self.findValidHouse(plan, type_to_place, toberemoved,timeout,t)
 
         if h is not None: plan.addResidence(h)
 
@@ -104,16 +116,25 @@ class ValidStateGenerator(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, plan):
+    def __init__(self, plan,timeout,visualize):
 
         self.plan = plan
 
         i = 0
 
+        t = time.time()
+
         while True:
-            # mutate
+
+
+            if timeout < time.time() - t:
+                # print time.time() - t
+                break
+
             # plan = self.mutateWater(plan)
-            res = self.mutateAHouse(plan, i)
+            #print "ok"
+            res = self.mutateAHouse(plan, i,timeout,t)
+
             if res[1]:  # if succeeded in house mutation
                 self.plan = res[0]
                 i += 1

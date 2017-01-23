@@ -1,36 +1,58 @@
+import math
+
 from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
 
 
+def get_valid_water_dimensions(plan, num_bodies):
+    # input plan and desired number of water bodies
+    # output the dimensions that give exactly MINIMUM_WATER_PERCENTAGE
+    x = math.sqrt(((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
+    return [x, x * 4]
+
+
 class base_c(object):
 
-    def __init__(self,enable_playground,num_houses):
-        self.enable_playground=enable_playground
+    def __init__(self, enable_playground, num_houses):
+        self.enable_playground = enable_playground
         self.num_houses = num_houses
-        self.plan = self.developGroundplan()
 
-    @staticmethod
-    def placeWater(plan):
-        w = int(plan.WIDTH)
-        h = int(plan.HEIGHT / 10)
-        plan.addWaterbody(Waterbody(0, 0, w, h))
-        plan.addWaterbody(Waterbody(0, plan.HEIGHT - h, w, h))
-        return plan
+    def developGroundplan(self,timeout):
 
-    @staticmethod
-    def placePlaygrounds(plan):
-        center_y = plan.HEIGHT / 2
-        dummy_pg = Playground(0, 0)
-        y = int(center_y - dummy_pg.getHeight() / 2)
-        x1 = int((plan.WIDTH / 3) - dummy_pg.getWidth() / 2)
-        x2 = int((plan.WIDTH / 3) * 2 - dummy_pg.getWidth() / 2)
-        plan.addPlayground(Playground(x1, y))
-        plan.addPlayground(Playground(x2, y))
-        return plan
+        flip = False
 
-    def developGroundplan(self):
         plan = Groundplan(self.num_houses, self.enable_playground)
-        self.placePlaygrounds(plan)
-        self.placeWater(plan)
+
+        dims = get_valid_water_dimensions(plan, 4)
+
+        factor = 13
+
+        plan.addWaterbody(Waterbody(0, 40, dims[0], dims[1]))
+        plan.addWaterbody(Waterbody(dims[0]+factor, 40, dims[0], dims[1]))
+        plan.addWaterbody(Waterbody(2*(dims[0]+factor), 40, dims[0], dims[1]))
+        plan.addWaterbody(Waterbody(3*(dims[0]+factor),40, dims[0], dims[1]))
+
+
         return plan
+
+
+
+    """
+    dummy_pg = Playground(0, 0)
+    if flip: dummy_pg = dummy_pg.flip()
+
+    pgy1 = plan.HEIGHT / 3 - dummy_pg.getHeight() / 2
+    pgy2 = plan.HEIGHT / 3 * 2 - dummy_pg.getHeight() / 2
+
+    pgx = plan.WIDTH / 2 + dims[0] / 2 - dummy_pg.getWidth() / 2
+
+    factor = 5
+    pg1 = Playground(pgx + factor, pgy1 + factor)
+    if flip: pg1 = pg1.flip()
+    plan.addPlayground(pg1)
+    pg2 = Playground(pgx - factor, pgy2 - factor)
+    if flip: pg2 = pg2.flip()
+    plan.addPlayground(pg2)
+    return plan
+    """

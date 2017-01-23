@@ -155,7 +155,7 @@ class Groundplan(object):
     def overlap(o1, o2):
         return o1 is not o2 and o1.x1 <= o2.x2 and o1.x2 >= o2.x1 and o1.y1 <= o2.y2 and o1.y2 >= o2.y1
 
-    def correctlyPlaced(self, o):
+    def correctlyPlaced(self, o,key=None):
 
         if ((o.y1 < self.ground.y1 or o.x2 > self.ground.x2 or o.y2 > self.ground.y2 or o.x1 < self.ground.x1)
             or (isinstance(o, Residence) and (o.y1 < o.minimumClearance or
@@ -169,15 +169,15 @@ class Groundplan(object):
             if ratio > 4: return False
 
         for wb in self.waterbodies:
-            if wb is not o and self.overlap(wb, o): return False
+            if wb != o and self.overlap(wb, o): return False
 
         self_clearance = o.minimumClearance if (isinstance(o, Residence)) else 0
 
-        for r in self.residences:
-            if r is not o and (self.overlap(r, o) or (
-                        not isinstance(o, Waterbody) and self.getDistance(r, o) < max(self_clearance,
-                                                                                      r.minimumClearance))):
-                return False
+        if not isinstance(o,Waterbody):
+            for r in self.residences:
+                if r is o: continue
+                if self.overlap(r, o) or self.getDistance(r, o) < max(self_clearance,r.minimumClearance):
+                    return False
 
         if self.PLAYGROUND:
 
@@ -190,7 +190,7 @@ class Groundplan(object):
                 if self.overlap(o, pg): return False
 
                 if not ok and isinstance(o, Residence):
-                    if o.minimumClearance < self.getDistance(pg, o) <= self.MAXIMUM_PLAYGROUND_DISTANCE:
+                    if self.getDistance(pg, o) <= self.MAXIMUM_PLAYGROUND_DISTANCE:
                         ok = True
                         continue
 
@@ -232,6 +232,7 @@ class Groundplan(object):
             return dist((o1.x2, o1.y1), (o2.x1, o2.y2))
 
     def getPlanValue(self):
+
         planValue = 0
         for residence in self.residences:
             planValue += self.getResidenceValue(residence)

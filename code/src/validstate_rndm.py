@@ -116,7 +116,7 @@ class validstate_rndm(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    def __init__(self, plan,timeout):
+    def __init__(self, plan,timeout,visualize):
 
         self.plan = plan
 
@@ -134,8 +134,6 @@ class validstate_rndm(object):
             # plan = self.mutateWater(plan)
             #print "ok"
             res = self.mutateAHouse(plan, i,timeout,t)
-
-
 
             if res[1]:  # if succeeded in house mutation
                 self.plan = res[0]

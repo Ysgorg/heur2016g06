@@ -135,5 +135,5 @@ class base_dynamic(object):
                           ):
         plan = Groundplan(self.num_houses, self.enable_playground)
         self.placeWater(plan, 1)
-        self.placePlaygrounds(plan)
+        if plan.PLAYGROUND: self.placePlaygrounds(plan)
         return plan

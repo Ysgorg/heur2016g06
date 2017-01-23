@@ -33,7 +33,7 @@ def evaluate_base(plan, visualize):
             count += bm[x][y]
 
     useful_proportion = float(count) / tot
-    print useful_proportion
+    print "Useful proportion:", useful_proportion, "Count:", count
 
     if visualize:
 

@@ -18,7 +18,7 @@ class base_c(object):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
 
-    def developGroundplan(self,timeout):
+    def developGroundplan(self,timeout=1000):
 
         flip = False
 

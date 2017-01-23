@@ -1,13 +1,37 @@
+import os
 from random import random
 
 import time
+
+import signal
+
+import errno
+from six import wraps
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
 
-def neighbor_random(state,timeout):
+
+class TimeoutError(Exception):
+    pass
+
+def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
+    def decorator(func):
+        def _handle_timeout(signum, frame):raise TimeoutError(error_message)
+        def wrapper(*args, **kwargs):
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+            try:result = func(*args, **kwargs)
+            finally:signal.alarm(0)
+            return result
+        return wraps(func)(wrapper)
+    return decorator
+
+
+@timeout(5)
+def neighbor_random(state):
     def getTypeFunc(k):
         if k == "FamilyHome":
             return FamilyHome
@@ -60,12 +84,9 @@ def neighbor_random(state,timeout):
 
         return [plan, h is not None]
 
-    def randomSwap(plan,timeout,t):
+    def randomSwap(plan):
 
         while True:
-
-            if timeout < time.time() - t:
-                return [plan, True]
 
             i1 = int(random() * plan.getNumberOfHouses())
             i2 = int(random() * plan.getNumberOfHouses())
@@ -86,20 +107,11 @@ def neighbor_random(state,timeout):
                         return [temp, True]
 
 
-    t = time.time()
-
     for i in range(int(random() * 10)):
 
-        if timeout < time.time() - t:
-            return state
-
-        if random() < 0.5:
-            res = randomSwap(state,timeout,t)
-        else:
-            res = mutateAHouse(state)
-        if res[1]:
-            state = res[0].deepCopy()
-        else:
-            print "invalid"
+        if random() < 0.5:  res = randomSwap(state)
+        else:               res = mutateAHouse(state)
+        if res[1]:          state = res[0].deepCopy()
+        else:               print "invalid"
 
     return state

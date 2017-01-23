@@ -30,7 +30,7 @@ class base_a(object):
         plan.addPlayground(Playground(x2, int(y - int(plan.HEIGHT / 5) / 2)))
         return plan
 
-    def developGroundplan(self,timeout):
+    def developGroundplan(self,timeout=1000):
         plan = Groundplan(self.num_houses, self.enable_playground)
         self.placePlaygrounds(plan)
         self.placeWater(plan)

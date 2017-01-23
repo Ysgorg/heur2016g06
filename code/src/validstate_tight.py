@@ -22,7 +22,7 @@ class validstate_tight(object):
     def getPlan(self):
         return self.plan
 
-    def place_residences(self,plan,visualize=True):
+    def place_residences(self,plan,visualize=False):
 
         i = 0
         r = self.next_to_place(i)
@@ -58,8 +58,9 @@ class validstate_tight(object):
         else: return Mansion
 
 
-    def __init__(self, plan, i=1,j=1,k=1,visualize=False):
+    def __init__(self, plan, i,j,k,visualize=False):
 
+            print "satight",i,j,k
             self.f_clearance = i
             self.b_clearance = j
             self.m_clearance = k

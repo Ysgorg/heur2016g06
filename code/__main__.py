@@ -4,6 +4,8 @@ import sys
 from pprint import pprint
 
 import time
+from random import random
+
 from docopt import docopt
 
 # for getting the proportion of a run
@@ -14,6 +16,7 @@ from src.evaluate_base import evaluate_base
 from src.neighbor_random import neighbor_random
 
 # residence placers
+from src.sa_tight import sa_tight
 from src.validstate_rndm import validstate_rndm
 from src.validstate_tight import validstate_tight
 #from src.validstate_cluster import validstate_cluster
@@ -35,9 +38,11 @@ from src.plot_evolver_data import plot_evolver_data
 """
 # example commands
 
-python . cluster
+python . sat # bugged or poorly designed
+python . cluster # brute forces best params for validstate_tight
+python . full # runs all experiments
 
-python . full
+# single runs
 python . single algo=ts w=3 d=5 base=b vis=True pg=True nh=40
 python . single algo=sa max_i=1000 ng=rndm base=b inits=rndm vis=True pg=True nh=40
 python . single algo=evo base=b f=somekey vis=True pg=True nh=40
@@ -47,11 +52,21 @@ python . single other=evoplot f=somekey
 """
 
 
+
+def sat():
+    ## fail
+
+    sa_tight(1000,True,40,True)
+    while True:pass
+
+if sys.argv[1]=="sat":sat()
+
 def cluster_experiment():
+
     best_plan = None
     best_val = None
 
-    base = base_c(False,100).developGroundplan(1000)
+    base = base_dynamic(True,100).developGroundplan(1000)
     frame = GroundplanFrame(base)
     bframe = GroundplanFrame(base)
     best_vals=[]
@@ -109,8 +124,11 @@ def cluster_experiment():
             if upperupperbreak>0:
                 break
 
+
     #bframe.repaint(best_plan)
     print "best found: ", best_vals , best_val
+    # simulated_annealing(best_plan,1000,neighbor_random,True,10000) # doesn't help much
+    algo_Evolver(best_plan,key="lol"+str(round(random()*100)))
     while True: pass
 
 
@@ -168,8 +186,7 @@ def single_experiment(args):
                             return validstate_rndm(base, int(timeout), args['vis']).getPlan()
                         elif s=="tight":
                             return validstate_tight(base,int(timeout), args['vis']).getPlan()
-                        elif s=="cluster":
-                            return validstate_cluster(base, int(timeout)).getPlan()
+                        #elif s=="cluster":return validstate_cluster(base, int(timeout)).getPlan()
 
                     init_state = parse_initState(args['inits'], base)
                     #while True:pass
@@ -234,8 +251,10 @@ def all_experiments():
         for pg in ENABLE_PG:
             i2 = ENABLE_PG.index(pg)
             results[i1][i2] = [None]*len(INIT_STATE)
+            #results[i1][i2]
             params["pg"] = pg
             for inits in INIT_STATE:
+
                 i3 = INIT_STATE.index(inits)
                 results[i1][i2][i3] = [None]*len(NEIGBOR_GEN)
                 params["inits"] = inits

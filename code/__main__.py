@@ -16,7 +16,7 @@ from src.neighbor_random import neighbor_random
 # residence placers
 from src.validstate_rndm import validstate_rndm
 from src.validstate_tight import validstate_tight
-from src.validstate_cluster import validstate_cluster
+#from src.validstate_cluster import validstate_cluster
 
 # water and playground placers
 from src.base_dynamic import base_dynamic
@@ -115,11 +115,8 @@ def cluster_experiment():
 
 
 def single_experiment(args):
-
-
     def parseBool(s):
         return s=="True"
-
 
     algos = ['evo','sa','ts','base','ex']
     bases = ['dynamic','a','b','c']
@@ -141,7 +138,8 @@ def single_experiment(args):
             elif b == "a":  from src.base_a import base_a as d
             elif b == "b":from src.base_b import base_b as d
             elif b == "c":from src.base_c import base_c as d
-            return d(enable_playground,num_houses).developGroundplan(float(args['timeout'])/10)
+
+            return d(enable_playground,num_houses).developGroundplan(float(timeout))
 
         base = parseBase(args['base'],parseBool(args['pg']),int(args['nh']))
         if not base.isValid(stage="base"):
@@ -156,12 +154,6 @@ def single_experiment(args):
         algo_TreeSearcher(base=base,beam_width=search_width,height=max_depth,visualize=visualize)
 
     elif args['algo'] == 'sa':
-
-        if not 'timeout' in args:
-            print "timeout arg missing!"
-            return
-        else: timeout = 1
-
         if 'ng' in args:
             if 'max_i' in args:
                 if 'inits' in args:
@@ -172,12 +164,12 @@ def single_experiment(args):
                     max_iter = int(args['max_i'])
 
                     def parse_initState(s,base):
-                        if s=="rndm": return validstate_rndm(base,int(args['timeout'])/10,args['vis']).getPlan()
-                        if s=="tight": return validstate_tight(base,int(args['timeout'])/10,args['vis']).getPlan()
-                        if s=="cluster": return validstate_cluster(
-                            base,
-                            int(args['timeout'])/10,
-                        ).getPlan()
+                        if s=="rndm":
+                            return validstate_rndm(base, int(timeout), args['vis']).getPlan()
+                        elif s=="tight":
+                            return validstate_tight(base,int(timeout), args['vis']).getPlan()
+                        elif s=="cluster":
+                            return validstate_cluster(base, int(timeout)).getPlan()
 
                     init_state = parse_initState(args['inits'], base)
                     #while True:pass
@@ -284,6 +276,13 @@ def parseArgs(strs):
 
 
 def reactToInput(args):
+    global timeout
+    if 'timeout' in args:
+        timeout = args['timeout']
+    else:
+        timeout = 60
+        print 'timeout arg missing! Defaulting to 60 seconds'
+
     if "cluster" in args: cluster_experiment()
     elif "full" in args: all_experiments()
     else: single_experiment(args)
@@ -293,4 +292,3 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # run program
 reactToInput(parseArgs(sys.argv))
-

@@ -20,7 +20,9 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visuali
 
     for i in range(max_iterations):
 
-        if timeout < time.time()-init_time:
+        run_time = time.time()-init_time
+
+        if run_time >= timeout:
             return best_state
 
         if visualize:
@@ -40,5 +42,6 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visuali
 
 
     #print ((time.time()-ms) / max_iterations )*1000, "ms per iteration"
-    #print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()
+    print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()
+
     return best_state

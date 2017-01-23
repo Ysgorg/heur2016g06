@@ -1,11 +1,27 @@
 from random import random
+from math import exp
 
 import time
 
 from src.GroundplanFrame import GroundplanFrame
 
+def get_acceptance_threshold(current_value, new_value, temperature, max_temperature):
+    difference = int(new_value - current_value)
 
-def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visualize,timeout):
+    print temperature, new_value, current_value, new_value - current_value
+
+    threshold = exp(difference / temperature)
+
+    print "Threshold:", threshold, "\n"
+
+    return threshold
+    #return current_value - new_value / temperature # old function
+
+def get_temperature(i, max_i):
+    return max_i - i
+    #return max_i - (i + 1 / max_i)
+
+def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize, timeout):
 
     #print init_state.isValid()
 
@@ -30,16 +46,17 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc,visuali
             bframe.repaint(best_state)
 
         neighbor = generateNeighborFunc(state.deepCopy(),timeout)
-        temperature = float(i + 1) / max_iterations
+        temperature = get_temperature(i, max_iterations)
 
-        if neighbor.getPlanValue() > state.getPlanValue():
+        accept_threshold = get_acceptance_threshold(int(state.getPlanValue()), int(neighbor.getPlanValue()), temperature, max_iterations)
+        random_val = random()
+
+        if neighbor.getPlanValue() >= state.getPlanValue():
             state = neighbor.deepCopy()
             if state.getPlanValue() > best_state.getPlanValue():
                 best_state = state.deepCopy()
-        elif (state.getPlanValue() - neighbor.getPlanValue()) / temperature > random():
+        elif accept_threshold > random_val:
             state = neighbor.deepCopy()
-
-
 
     #print ((time.time()-ms) / max_iterations )*1000, "ms per iteration"
     print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()

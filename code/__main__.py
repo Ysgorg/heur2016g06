@@ -16,7 +16,7 @@ from src.neighbor_random import neighbor_random
 # residence placers
 from src.validstate_rndm import validstate_rndm
 from src.validstate_tight import validstate_tight
-#from src.validstate_cluster import validstate_cluster
+from src.validstate_cluster import validstate_cluster
 
 # water and playground placers
 from src.base_dynamic import base_dynamic

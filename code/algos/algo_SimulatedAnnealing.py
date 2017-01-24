@@ -11,24 +11,6 @@ from six import wraps
 
 from src.GroundplanFrame import GroundplanFrame
 
-class TimeoutError(Exception):
-    pass
-
-def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
-    def decorator(func):
-        def _handle_timeout(signum, frame):raise TimeoutError(error_message)
-        def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
-            try:result = func(*args, **kwargs)
-            finally:signal.alarm(0)
-            return result
-        return wraps(func)(wrapper)
-    return decorator
-
-
-@timeout(50)
-
 def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
     if temperature == 0:
         return 0.0

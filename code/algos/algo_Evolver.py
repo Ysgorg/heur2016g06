@@ -3,6 +3,7 @@ from random import random
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
+
 from src.timeout import timeout
 
 
@@ -64,6 +65,7 @@ class algo_Evolver(object):
     def getPlan(self): return self.plan
 
     # input key to continue existing thread of evolution
+
     #@timeout(1)
     def __init__(self, base, max_iterations=100000,frame=None):
 
@@ -84,6 +86,7 @@ class algo_Evolver(object):
             iterations += 1
             if max_iterations < iterations:
                 break
+
             i+=1
 
         self.plan = plan

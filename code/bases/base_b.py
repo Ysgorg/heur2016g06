@@ -25,6 +25,7 @@ class base_b(object):
         dims = get_valid_water_dimensions(plan, 1)
         wb = Waterbody(0, 0, dims[0], dims[1])
         plan.addWaterbody(wb)
+        if not self.enable_playground: return plan
 
         dummy_pg = Playground(0, 0)
         if flip: dummy_pg = dummy_pg.flip()

@@ -29,7 +29,10 @@ class ConfigLogger(object):
                 return 'm'
 
         config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND, [], [], [], metad['deaths'], metad['mutations']]
-        for i in plan.getResidences():  config[2].append([i.x, i.y, minify(i.getType()), i.flipped])
+        for i in plan.getResidences():
+            #print "dsadsadsa",i.minimumClearance
+            config[2].append([i.x, i.y, minify(i.getType()), i.flipped#, i.minimumClearance
+                              ])
         for i in plan.getWaterbodies(): config[3].append([i.x, i.y, i.getWidth(), i.getHeight(), i.flipped])
         for i in plan.getPlaygrounds(): config[4].append([i.x, i.y, i.flipped])
         return config
@@ -46,6 +49,7 @@ class ConfigLogger(object):
             elif i[2] == "f":
                 h = FamilyHome(i[0], i[1])
             if i[3]: h = h.flip()
+            #h.minimumClearance = float(i[4])
             plan.addResidence(h)
         for i in d[3]:
             wb = Waterbody(i[0], i[1], i[2], i[3])
@@ -66,6 +70,7 @@ class ConfigLogger(object):
 
     @classmethod
     def loadConfig(cls, key):
+        print key, cls.FOLDER + key
         with open(cls.FOLDER + key, 'r') as data:
             d = json.load(data)
             d = d['d']

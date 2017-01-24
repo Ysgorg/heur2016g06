@@ -32,6 +32,6 @@ class base_a(object):
 
     def developGroundplan(self):
         plan = Groundplan(self.num_houses, self.enable_playground)
-        self.placePlaygrounds(plan)
+        if self.enable_playground: self.placePlaygrounds(plan)
         self.placeWater(plan)
         return plan

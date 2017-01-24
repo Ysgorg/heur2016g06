@@ -15,23 +15,23 @@ from src.GroundplanFrame import GroundplanFrame
 class validstate_tight(object):
 
     def compute_clearance(self,r):
-        if isinstance(r,Mansion ): return r.minimumClearance*self.m_clearance
-        if isinstance(r,Bungalow ): return r.minimumClearance*self.b_clearance
-        if isinstance(r, FamilyHome) : return r.minimumClearance*self.f_clearance
+        if isinstance(r, Mansion ): return Mansion(0,0).minimumClearance*self.m_clearance
+        elif isinstance(r, Bungalow ): return Bungalow(0,0).minimumClearance*self.b_clearance
+        elif isinstance(r, FamilyHome) : return FamilyHome(0,0).minimumClearance*self.f_clearance
+        else: print "nooo"
 
     def getPlan(self):
         return self.plan
 
-    def place_residences(self,plan,visualize=False):
+    def place_residences(self,plan,frame=None):
+
+        visualize=frame is not None
 
         i = 0
         r = self.next_to_place(i)
         r1 = r(0,0)
         r1.minimumClearance = self.compute_clearance(r1)
         x = r1.minimumClearance
-
-        if visualize:
-            frame = GroundplanFrame(plan)
 
         while x < plan.WIDTH:
             y = r1.minimumClearance
@@ -41,7 +41,9 @@ class validstate_tight(object):
                 r1.minimumClearance = self.compute_clearance(r1)
                 if plan.correctlyPlaced(r1):
                     plan.addResidence(r1)
-                    if visualize: frame.repaint(plan)
+                    if visualize:
+                        time.sleep(0.1)
+                        frame.repaint(plan)
                     if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses(): return plan
                     y+=r1.height+r1.minimumClearance
                     i+=1
@@ -58,7 +60,7 @@ class validstate_tight(object):
         else: return Mansion
 
 
-    def __init__(self, plan, i=1.0,j=1.0,k=1.0,visualize=False):
+    def __init__(self, plan, i=1.0,j=1.0,k=1.0,frame=None):
 
             #print "satight",i,j,k
             self.f_clearance = i
@@ -68,5 +70,5 @@ class validstate_tight(object):
             self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (plan.MINIMUM_FAMILYHOMES_PERCENTAGE +
                                                            plan.MINIMUM_BUNGALOW_PERCENTAGE)
 
-            self.plan = self.place_residences(plan,visualize=visualize)
+            self.plan = self.place_residences(plan,frame=frame)
 

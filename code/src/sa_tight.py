@@ -12,6 +12,8 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
     MIN = 10.0
     MAX = 80.0
 
+
+
     base = base_dynamic(enable_playground,num_houses).developGroundplan()
 
     def state(i,j,k):

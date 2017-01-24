@@ -21,9 +21,9 @@ def get_temperature(i, max_i):
     #return float(max_i - i)
     return (1.0 - (float(i + 1) / float(max_i)))
 
-def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize):
+def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize=False):
     state = init_state.deepCopy()
-    best_state = state
+    best_state = state.deepCopy()
     jumps_list = [None]*JUMP_SAMPLES
     jump_count = 0 # Number of probabilistic jumps to a lower value state
     sample_number = 0
@@ -43,8 +43,10 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             jump_count = 0
 
         temperature = get_temperature(i, max_iterations)
-        neighbor = generateNeighborFunc(state.deepCopy(), temperature)
+        neighbor = generateNeighborFunc(state.deepCopy(), temperature).deepCopy()
 
+        #while True: pass
+        #print "i =",i
         # If the new plan has a lower value, calculate the acceptance threshold of still accepting this state (probability decreases as temperature does)
         if neighbor.getPlanValue() < state.getPlanValue():
             accept_probability = get_acceptance_probability(state.getPlanValue(), neighbor.getPlanValue(), temperature, max_iterations)

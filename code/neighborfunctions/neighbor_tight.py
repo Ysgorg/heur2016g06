@@ -1,18 +1,31 @@
+from random import random
+
 from src.validstate_tight import validstate_tight
 from src.GroundplanFrame import GroundplanFrame
 
 def neighbor_tight(state, temperature):
-    MIN = 10.0
-    MAX = 80.0
+    MIN = 1.0
+    MAX = 8.0
+
+    print temperature, state.params
+
+    temperature = 1 - temperature
+
+
+
+    seed = state.deepCopy()
+
+    while len(seed.residences) > 0:
+        seed.removeResidence(seed.getResidence(0))
 
     def generate_state(i,j,k):
-        state = validstate_tight(base.deepCopy(),float(i)/10,float(j)/10,float(k/10),visualize=False).getPlan().deepCopy()
-        return state
+        return validstate_tight(seed.deepCopy(),i,j,k).getPlan().deepCopy()
+
 
     def factor():
-        v = random()*tempertature
+        v = random()*(1+temperature)
         if random()>0.5:v*=-1.0
-        return v
+        return v*500*temperature
 
     def set_param(p,f):
         if random()<0.9:
@@ -20,18 +33,12 @@ def neighbor_tight(state, temperature):
             if p > MAX: p = MAX
             elif p < MIN : p = MIN
         return p
-
-    print "Starting"
-    a = state[0]
-    b = state[1]
-    c = state[2]
+    a = state.params[0]
+    b = state.params[1]
+    c = state.params[2]
 
     i = set_param(a,factor())
     j = set_param(b,factor())
     k = set_param(c,factor())
 
-    #print "a to i",a,i
-    #while True:pass
-
-    print "Generating state"
-    return generate_state(i,j,k)
+    return generate_state(i,j,k).deepCopy()

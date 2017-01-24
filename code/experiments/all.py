@@ -21,7 +21,7 @@ def perform_all_experiments():
 
     report = {
         #"evolution": evo.report(frame),
-        #"simulated_annealing": sa.report(frame),
+        "simulated_annealing": sa.report(frame),
         "tight": tight.report(frame)
     }
     #print report

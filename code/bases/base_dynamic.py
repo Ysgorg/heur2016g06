@@ -1,28 +1,31 @@
 from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
+from src.GroundplanFrame import GroundplanFrame
+
 import math
 
 PLAYGROUND_RADIUS = Groundplan.MAXIMUM_PLAYGROUND_DISTANCE
-
-# Coordinate offset from origin
-X_OFFSET = -5
-Y_OFFSET = 0
-
-# I didn't know what to name this. It shifts the playgrounds in the first half of the x-axis by the given value, allowing for diagonal placement
-Y_INVERT = 0
-
-# Spreading buildings from center towards the edge
-X_SPREAD = 5
-Y_SPREAD = 5
 
 PLAYGROUND_WIDTH = 30
 PLAYGROUND_HEIGHT = 20
 
 # Neccecsary water as a percentage out of 1
 TOTAL_WATER = 0.2
-MAX_WATER_BODIES = 10
 
+MIN_WATER_BODIES = 1
+MAX_WATER_BODIES = 4
+
+MIN_CHANGE = 0
+MAX_CHANGE = 20
+
+# Coordinate offset from origin
+X_OFFSET = -5
+Y_OFFSET = 0
+
+# Spreading buildings from center towards the edge
+X_SPREAD = 5
+Y_SPREAD = 5
 
 class base_dynamic(object):
     """
@@ -80,7 +83,7 @@ class base_dynamic(object):
         return plan
 
     @staticmethod
-    def placePlaygrounds(plan):
+    def placePlaygrounds(plan, y_invert):
         #print "Place Playgrounds!"
         # Reach is defined by the the playground size, plus its usable radius
         playgroundReachX = PLAYGROUND_WIDTH + PLAYGROUND_RADIUS + 7.5
@@ -110,7 +113,7 @@ class base_dynamic(object):
 
             if x <= numberPlaygroundsX / 2:  # if x is in the lower half, invert the offset
                 xSpread = -xSpread
-                yOffset += Y_INVERT
+                yOffset += y_invert
 
             locationX = ((PLAYGROUND_RADIUS * x) + X_OFFSET) + (PLAYGROUND_WIDTH * (x - 1)) + xSpread
 
@@ -133,6 +136,30 @@ class base_dynamic(object):
 
     def developGroundplan(self):
         plan = Groundplan(self.num_houses, self.enable_playground)
+        best_plan = plan.deepCopy()
+        #frame = GroundplanFrame(plan)
+
+
         self.placeWater(plan, 1)
-        if plan.PLAYGROUND: self.placePlaygrounds(plan)
-        return plan
+        if plan.PLAYGROUND:
+            self.placePlaygrounds(plan, 0)
+
+        """
+        for num_water_bodies in range(MIN_WATER_BODIES, MAX_WATER_BODIES+1):
+            for y_invert in range(MIN_CHANGE, MAX_CHANGE+1):
+                plan = Groundplan(self.num_houses, self.enable_playground)
+                self.placeWater(plan, num_water_bodies)
+                if plan.PLAYGROUND:
+                    self.placePlaygrounds(plan, y_invert)
+
+                if plan.getUsableArea() > best_plan.getUsableArea():
+                    best_plan = plan.deepCopy()
+                    print "Better area found"
+
+                frame.repaint(plan)
+        """
+
+        best_plan = plan.deepCopy() # Temporary
+
+        print "Best plan area:", best_plan.getUsableArea()
+        return best_plan

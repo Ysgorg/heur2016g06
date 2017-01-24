@@ -5,7 +5,7 @@ from math import exp
 from src.GroundplanFrame import GroundplanFrame
 
 # A list of JUMP_SAMPLES number of jumps will be stored
-JUMP_SAMPLES = 4
+JUMP_SAMPLES = 10
 MIN_PERCENTAGE_CHANGE = 0.00001 # Minimum percentage change (out of 1) between new best and last best, which when reached terminates the search
 
 def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
@@ -42,8 +42,8 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             sample_number += 1
             jump_count = 0
 
-        neighbor = generateNeighborFunc(state.deepCopy())
         temperature = get_temperature(i, max_iterations)
+        neighbor = generateNeighborFunc(state.deepCopy(), temperature)
 
         # If the new plan has a lower value, calculate the acceptance threshold of still accepting this state (probability decreases as temperature does)
         if neighbor.getPlanValue() < state.getPlanValue():

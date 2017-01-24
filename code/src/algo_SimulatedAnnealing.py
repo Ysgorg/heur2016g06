@@ -5,28 +5,25 @@ import time
 
 from src.GroundplanFrame import GroundplanFrame
 
-def get_acceptance_threshold(current_value, new_value, temperature, max_temperature):
-    difference = int(new_value - current_value)
+def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
+    if temperature == 0:
+        return 0.0
+    else:
+        difference = new_value - current_value
+        threshold = exp(difference / (temperature * float(max_temperature)))
 
-    print temperature, new_value, current_value, new_value - current_value
-
-    threshold = exp(difference / temperature)
-
-    print "Threshold:", threshold, "\n"
-
-    return threshold
-    #return current_value - new_value / temperature # old function
+        return threshold
 
 def get_temperature(i, max_i):
-    return max_i - i
-    #return max_i - (i + 1 / max_i)
+    #return float(max_i - i)
+    return (1.0 - (float(i + 1) / float(max_i)))
 
 def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize, timeout):
-
-    #print init_state.isValid()
-
     state = init_state.deepCopy()
     best_state = state
+
+    jump_count = 0 # Number of probabilistic jumps to a lower value state
+    quartile = 1
 
     if visualize:
         frame = GroundplanFrame(state)
@@ -45,20 +42,33 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             frame.repaint(state)
             bframe.repaint(best_state)
 
+        if i >= ((max_iterations / 4) * quartile):
+            print "Jumps in quartile", quartile, ":", jump_count
+            quartile += 1
+            jump_count = 0
+
         neighbor = generateNeighborFunc(state.deepCopy(),timeout)
         temperature = get_temperature(i, max_iterations)
 
-        accept_threshold = get_acceptance_threshold(int(state.getPlanValue()), int(neighbor.getPlanValue()), temperature, max_iterations)
-        random_val = random()
+        # If the new plan has a lower value, calculate the acceptance threshold of still accepting this state (probability decreases as temperature does)
+        if neighbor.getPlanValue() < state.getPlanValue():
+            accept_probability = get_acceptance_probability(state.getPlanValue(), neighbor.getPlanValue(), temperature, max_iterations)
+            random_val = random()
 
-        if neighbor.getPlanValue() >= state.getPlanValue():
-            state = neighbor.deepCopy()
-            if state.getPlanValue() > best_state.getPlanValue():
-                best_state = state.deepCopy()
-        elif accept_threshold > random_val:
-            state = neighbor.deepCopy()
+            if accept_probability > random_val:
+                state = neighbor.deepCopy()
+                jump_count += 1
+                #print "Accepted new state with probability: ", accept_probability, ">", random_val
 
-    #print ((time.time()-ms) / max_iterations )*1000, "ms per iteration"
+        else:
+            state = neighbor.deepCopy()
+            #print "Better state found"
+
+        if state.getPlanValue() > best_state.getPlanValue():
+            best_state = state.deepCopy()
+            print "T =", temperature, "New best value:", state.getPlanValue()
+
+    print "Jumps in quartile", quartile, ":", jump_count
     print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()
 
     return best_state

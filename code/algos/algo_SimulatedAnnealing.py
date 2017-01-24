@@ -5,8 +5,8 @@ from math import exp
 from src.GroundplanFrame import GroundplanFrame
 
 # A list of JUMP_SAMPLES number of jumps will be stored
-JUMP_SAMPLES = 10
-MIN_PERCENTAGE_CHANGE = 0.00001 # Minimum percentage change (out of 1) between new best and last best, which when reached terminates the search
+JUMP_SAMPLES = 4
+MIN_PERCENTAGE_CHANGE = 0.001 # Minimum percentage change (out of 100) between new best and last best, which when reached terminates the search
 
 def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
     if temperature == 0:
@@ -66,12 +66,12 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             best_state = state.deepCopy()
             print "T =", temperature, "New best value:", state.getPlanValue()
 
-            if (1.0 - prev_best.getPlanValue() / best_state.getPlanValue()) <= MIN_PERCENTAGE_CHANGE:
-                print "Change between previous best and current best less than", MIN_PERCENTAGE_CHANGE, "Terminating search."
+            if (1.0 - prev_best.getPlanValue() / best_state.getPlanValue()) * 100 <= MIN_PERCENTAGE_CHANGE:
+                print "Change between previous best and current best less than", MIN_PERCENTAGE_CHANGE, "% Terminating search."
                 break
 
     jumps_list[sample_number-1] = jump_count
     print "Probabilistic jumps made in each section:", jumps_list
-    print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()
+    print "Max value found in", i, "iterations:", best_state.getPlanValue()
 
     return best_state

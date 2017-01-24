@@ -7,32 +7,8 @@ from districtobjects.Waterbody import Waterbody
 from src.ConfigLogger import ConfigLogger
 from src.GroundplanFrame import GroundplanFrame
 
-
-from functools import wraps
-import errno
-import os
-import signal
-
-class TimeoutError(Exception):
-    pass
-def timeout(seconds=10, error_message=os.strerror(errno.ETIME)):
-    def decorator(func):
-        def _handle_timeout(signum, frame):raise TimeoutError(error_message)
-        def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
-            try:result = func(*args, **kwargs)
-            finally:signal.alarm(0)
-            return result
-        return wraps(func)(wrapper)
-    return decorator
-
-
-
 class algo_Evolver(object):
     ITERATIONS_BEFORE_RESET = 4
-
-
 
     @staticmethod
     def findValidHouse(plan, type_to_place, pre):
@@ -136,7 +112,6 @@ class algo_Evolver(object):
     def getPlan(self): return self.plan
 
     # input key to continue existing thread of evolution
-    @timeout(1)
     def __init__(self, base, key=None, visualize=True,max_iterations=100,frame=None):
 
         iterations = 0

@@ -2,13 +2,6 @@ import os
 from random import random
 from math import exp
 
-import time
-
-import errno
-
-import signal
-from six import wraps
-
 from src.GroundplanFrame import GroundplanFrame
 
 def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
@@ -24,7 +17,7 @@ def get_temperature(i, max_i):
     #return float(max_i - i)
     return (1.0 - (float(i + 1) / float(max_i)))
 
-def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize, timeout):
+def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize):
     state = init_state.deepCopy()
     best_state = state
 
@@ -35,15 +28,7 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
         frame = GroundplanFrame(state)
         bframe = GroundplanFrame(state)
 
-    init_time=time.time()
-
     for i in range(max_iterations):
-
-        run_time = time.time()-init_time
-
-        if run_time >= timeout:
-            return best_state
-
         if visualize:
             frame.repaint(state)
             bframe.repaint(best_state)
@@ -53,7 +38,7 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             quartile += 1
             jump_count = 0
 
-        neighbor = generateNeighborFunc(state.deepCopy(),timeout)
+        neighbor = generateNeighborFunc(state.deepCopy())
         temperature = get_temperature(i, max_iterations)
 
         # If the new plan has a lower value, calculate the acceptance threshold of still accepting this state (probability decreases as temperature does)

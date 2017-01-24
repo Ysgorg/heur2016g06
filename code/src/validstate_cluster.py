@@ -82,7 +82,7 @@ class validstate_cluster(object):
             define_cluster(4,2,Mansion,self.factors[2])
         ]
 
-    def developGroundplan(self,timeout):
+    def developGroundplan(self):
         #while True:pass
         pass
 

@@ -12,6 +12,7 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
+
 def neighbor_random(state, temperature):
     def getTypeFunc(k):
         if k == "FamilyHome":

@@ -9,7 +9,7 @@ from districtobjects.Waterbody import Waterbody
 
 # a modified evolver, returns first valid solution it finds
 from src.GroundplanFrame import GroundplanFrame
-
+from src.timeout import timeout
 
 
 class validstate_rndm(object):
@@ -111,10 +111,11 @@ class validstate_rndm(object):
         return self.plan
 
     # input key to continue existing thread of evolution
+    @timeout(3)
     def __init__(self, plan,visualize=False):
 
         self.plan = plan
-        frame = GroundplanFrame(plan)
+        #frame = GroundplanFrame(plan)
 
         i = 0
 
@@ -131,4 +132,5 @@ class validstate_rndm(object):
             if self.plan.isValid():
                 break
             else:
-                frame.repaint(plan)
+                pass
+                #frame.repaint(plan)

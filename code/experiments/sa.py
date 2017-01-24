@@ -17,9 +17,14 @@ def perform_experiment(variables,frame):
             for base in variables[2]:
                 b = base(num_houses=nh,enable_playground=pg).developGroundplan()
                 for init_s in variables[3]:
+                    print nh,pg,base,init_s
                     if init_s==validstate_tight.validstate_tight:
                         ins = init_s(b.deepCopy(),1.0,1.0,1.0).getPlan().deepCopy()
-                    else:ins = init_s(b.deepCopy()).getPlan().deepCopy()
+                    else:
+                        try:
+                            ins = init_s(b.deepCopy()).getPlan().deepCopy()
+                        except Exception:
+                            continue
                     frame.repaint(ins)
                     for ng in variables[4]:
                         if ng==neighbor_tight.neighbor_tight and not init_s==validstate_tight.validstate_tight: continue

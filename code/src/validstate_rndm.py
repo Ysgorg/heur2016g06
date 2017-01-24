@@ -114,6 +114,7 @@ class validstate_rndm(object):
     def __init__(self, plan,visualize=False):
 
         self.plan = plan
+        frame = GroundplanFrame(plan)
 
         i = 0
 
@@ -129,3 +130,5 @@ class validstate_rndm(object):
 
             if self.plan.isValid():
                 break
+            else:
+                frame.repaint(plan)

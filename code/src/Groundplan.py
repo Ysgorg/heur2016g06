@@ -49,6 +49,7 @@ class Groundplan(object):
         for i in self.residences:
             h = self.getResidenceFunc(i.getType())(i.getX(), i.getY())
             if i.flipped: h.flip()
+            #h.minimumClearance = i.minimumClearance
             plan.addResidence(h)
         for i in self.waterbodies:
             wb = Waterbody(i.getX(), i.getY(), i.getWidth(), i.getHeight())

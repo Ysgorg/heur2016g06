@@ -143,7 +143,7 @@ var initForce = function() {
     for (var i = 0; i < dataNodes.length; i++){
         for (var j = i + 1; j < dataNodes.length; j++){
             var l = Edge(dataNodes[i].id,dataNodes[j].id,linkWeight(dataNodes[i],dataNodes[j]))
-            dataLinks.push(l)
+        //    dataLinks.push(l)
         }
     }
 
@@ -160,7 +160,7 @@ var initForce = function() {
     // the `gravity` a bit more than its default value of `0.1`. We'll
     // explore this property in more detail in another example.
 
-    force.gravity(0.1);
+     force.gravity(-0.1);
 
     // Define the `linkDistance` for the graph. This is the
     // distance we desire between connected nodes.
@@ -179,7 +179,7 @@ var initForce = function() {
     // attraction and can be helpful for other visualization types.)
 
     force.charge(function(node) {
-        return node.weight * 10
+        return node.weight * -10
     });
 
     // Next we'll add the nodes and links to the visualization.

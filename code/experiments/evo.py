@@ -5,6 +5,8 @@ from src.GroundplanFrame import GroundplanFrame
 
 def perform_experiment(variables,frame):
 
+    print "Performing all evolution experiments"
+
     MAX_ITERATIONS = 100
 
     results = []
@@ -23,7 +25,7 @@ def perform_experiment(variables,frame):
             for base in variables[2]:
                 b = base(num_houses=num_houses,enable_playground=enable_pg)
                 k = genKey(num_houses,enable_pg,b)
-                print(k),
+                #print(k),
                 try:
                     r = algo_Evolver(
                         b.developGroundplan().deepCopy(),
@@ -32,9 +34,9 @@ def perform_experiment(variables,frame):
                         frame=frame
                     ).getPlan().deepCopy()
                     v =  r.getPlanValue()
-                    print "  " + str(v)
+                    #print "  " + str(v)
                 except Exception:
-                    print " timeout"
+                    #print " timeout"
                     r = None
                     v = 0
                 #print r

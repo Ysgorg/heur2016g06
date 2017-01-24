@@ -17,14 +17,18 @@ def perform_all_experiments():
 
     frame = GroundplanFrame(base_b(num_houses=40,enable_playground=True).developGroundplan())
 
+    print "Performing all experiments"
+
     report = {
         #"evolution": evo.report(frame),
         #"simulated_annealing": sa.report(frame),
         "tight": tight.report(frame)
     }
+    #print report
+    report['best'] = best.report(report)
 
-    #report['best'] = best.report(report,frame)
+    from algos.algo_Evolver import algo_Evolver
+    overall_best = algo_Evolver(report['best'][6].deepCopy(),frame=frame).getPlan()
+    frame.repaint(overall_best)
 
-    #for r in report:
-     #   printer.print_report(report,frame)
 

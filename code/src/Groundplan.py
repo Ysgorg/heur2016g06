@@ -242,6 +242,31 @@ class Groundplan(object):
                 planValue -= playground.getPrice()
         return planValue
 
+    def getUsableArea(self):
+        usableArea = 0
+
+        bm = [[0 for y in range(self.HEIGHT)] for x in range(self.WIDTH)]
+
+        for x in range(0, self.WIDTH):
+            for y in range(0, self.HEIGHT):
+                m = Mansion(x, y)
+                b = Bungalow(x, y)
+                h = FamilyHome(x, y)
+
+                if self.correctlyPlaced(m):
+                    bm[x][y] = 1
+                if self.correctlyPlaced(h):
+                    bm[x][y] = 1
+                if self.correctlyPlaced(b):
+                    bm[x][y] = 1
+
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                if bm[x][y]:
+                    usableArea += 1
+
+        return usableArea
+
     def getResidenceValue(self, residence):
         value_residence = residence.getValue()
         distance = self.getMinimumDistance(residence)

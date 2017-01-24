@@ -123,8 +123,10 @@ class validstate_rndm(object):
 
             # plan = self.mutateWater(plan)
             #print "ok"
-            res = self.mutateAHouse(plan, i)
-
+            try:
+                res = self.mutateAHouse(plan, i)
+            except Exception:
+                break
             if res[1]:  # if succeeded in house mutation
                 self.plan = res[0]
                 i += 1

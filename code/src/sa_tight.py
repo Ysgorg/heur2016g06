@@ -12,10 +12,10 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
     MIN = 10.0
     MAX = 80.0
 
-    base = base_dynamic(enable_playground,num_houses).developGroundplan(1000)
+    base = base_dynamic(enable_playground,num_houses).developGroundplan()
 
     def state(i,j,k):
-        s = validstate_tight(base.deepCopy(),float(i)/10,float(j)/10,float(k/10),visualize=False).getPlan().deepCopy()
+        s = validstate_tight(base.deepCopy(),float(i)/10,float(j)/10,float(k/10)).getPlan().deepCopy()
         v = 0 if not s.isValid() else s.getPlanValue()
         return [i,j,k,v,s]
 
@@ -23,8 +23,8 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
 
         def factor():
             v = random()*(1+temp)
-            if random()>0.5:v*=1.0
-            return v
+            if random()>0.5:v*=-1.0
+            return v*10*temp
 
         def set_param(p,f):
             if random()<0.9:
@@ -32,7 +32,6 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
                 if p > MAX: p = MAX
                 elif p < MIN : p = MIN
             return p
-
         a = seed[0]
         b = seed[1]
         c = seed[2]
@@ -41,14 +40,11 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
         j = set_param(b,factor())
         k = set_param(c,factor())
 
-        print "a to i",a,i
-        #while True:pass
-
         return state(i,j,k)
 
 
 
-    current_state = state(30.0,30.0,30.0)
+    current_state = state(10.0,10.0,10.0)
 
     init_state = current_state
 
@@ -65,13 +61,9 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
 
     init_time=time.time()
 
-    for i in range(max_iterations):
+    for i in range(max_iterations-1):
 
-        # run_time = time.time()-init_time
-        #while True:pass
-
-        temperature = float(i + 1) / max_iterations
-        #print "cur",current_state,temperature
+        temperature = 1-(float(i + 1) / max_iterations)
 
         neigbor = gen_neigbor(current_state,temperature)
         if visualize:
@@ -88,8 +80,10 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
             if visualize: current_frame.repaint(neigbor[4])
 
 
+        print round(temperature,3) , round(best_state[4].getPlanValue())
+
 
     print ((time.time()-init_time)/ max_iterations )*1000, "ms per iteration"
     print "Max value found in", max_iterations, "iterations:", best_state[3]
-
+    print best_state
     return best_state[4]

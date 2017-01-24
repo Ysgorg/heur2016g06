@@ -79,6 +79,7 @@ def perform_experiment(variables,frame):
     best = best_res(allresults)
 
     frame.repaint(best[6])
+    print best
     return allresults
 
 def construct_report(experiment):
@@ -89,10 +90,9 @@ def report(frame):
         [#40, 70,
          100],
         [False],
-        [base_dynamic.base_dynamic, base_a.base_a, base_b.base_b, base_c.base_c
+        [base_dynamic.base_dynamic#, base_a.base_a, base_b.base_b, base_c.base_c
          ],
-        [#validstate_tight,
-         validstate_tight2
+        [validstate_tight#,validstate_tight2
          ]
     ]
     return construct_report(perform_experiment(experiment_variables,frame))

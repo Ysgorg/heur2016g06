@@ -45,7 +45,7 @@ if sys.argv[1]=="other":other()
 def sat():
     ## fail
 
-    sa_tight(1000,True,40,True)
+    sa_tight(100,False,100,True)
     while True:pass
 
 if sys.argv[1]=="sat":sat()

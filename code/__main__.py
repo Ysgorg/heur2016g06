@@ -157,7 +157,7 @@ def single_experiment(args):
             elif b == "b":from bases.base_b import base_b as d
             elif b == "c":from bases.base_c import base_c as d
 
-            return d(enable_playground,num_houses).developGroundplan(float(timeout))
+            return d(enable_playground,num_houses).developGroundplan()
 
         base = parseBase(args['base'],parseBool(args['pg']),int(args['nh']))
         if not base.isValid(stage="base"):
@@ -183,9 +183,9 @@ def single_experiment(args):
 
                     def parse_initState(s,base):
                         if s=="rndm":
-                            return validstate_rndm(base, int(timeout), args['vis']).getPlan()
+                            return validstate_rndm(base, args['vis']).getPlan()
                         elif s=="tight":
-                            return validstate_tight(base,int(timeout), args['vis']).getPlan()
+                            return validstate_tight(base, args['vis']).getPlan()
                         #elif s=="cluster":return validstate_cluster(base, int(timeout)).getPlan()
 
                     init_state = parse_initState(args['inits'], base)
@@ -195,7 +195,7 @@ def single_experiment(args):
 
                     #print "Initial state found"
 
-                    return simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize,timeout=timeout)
+                    return simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize)
                 else:
                     print 'inits arg missing!'
             else:

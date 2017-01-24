@@ -49,7 +49,7 @@ if sys.argv[1]=="other":other()
 def sat():
     ## fail
 
-    sa_tight(1000,True,40,True)
+    sa_tight(100,False,100,True)
     while True:pass
 
 if sys.argv[1]=="sat":sat()
@@ -193,7 +193,7 @@ def single_experiment(args):
                         if s=="rndm":
                             return validstate_rndm(base, args['vis']).getPlan()
                         elif s=="tight":
-                            return validstate_tight(base, args['vis']).getPlan()
+                            return validstate_tight(base, 1.0,1.0,1.0).getPlan()
                         #elif s=="cluster":return validstate_cluster(base, int(timeout)).getPlan()
 
                     # Keep trying until we find a valid starting state
@@ -204,7 +204,7 @@ def single_experiment(args):
                     while init_state.isValid() == False:
                         frame.repaint(init_state)
                         parse_initState(args['inits'], base)
-
+                    print "init sa"
                     return simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize)
                 else:
                     print 'inits arg missing!'

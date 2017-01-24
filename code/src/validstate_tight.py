@@ -60,7 +60,7 @@ class validstate_tight(object):
         else: return Mansion
 
 
-    def __init__(self, plan, i=2.0,j=2.0,k=2.0,frame=None):
+    def __init__(self, plan, i,j,k,frame=None):
 
             #print "satight",i,j,k
             self.f_clearance = i
@@ -69,5 +69,6 @@ class validstate_tight(object):
             self.fam_tresh = plan.NUMBER_OF_HOUSES * plan.MINIMUM_FAMILYHOMES_PERCENTAGE
             self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (plan.MINIMUM_FAMILYHOMES_PERCENTAGE +
                                                            plan.MINIMUM_BUNGALOW_PERCENTAGE)
-
+            print i,j,k
             self.plan = self.place_residences(plan,frame=frame)
+            self.plan.params = [i,j,k]

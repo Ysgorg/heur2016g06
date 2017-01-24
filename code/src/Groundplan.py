@@ -19,7 +19,7 @@ class Groundplan(object):
     MAXIMUM_PLAYGROUND_DISTANCE = 50
 
     def __init__(self, number_of_houses, playground):
-
+        self.params = []
         self.PLAYGROUND = playground
         self.NUMBER_OF_HOUSES = number_of_houses
 
@@ -59,6 +59,7 @@ class Groundplan(object):
             pg = Playground(i.getX(), i.getY())
             if i.flipped: pg.flip()
             plan.addPlayground(pg)
+        plan.params = self.params
         return plan
 
     def getNumberOfHouses(self):

@@ -7,8 +7,11 @@ from algos.algo_Evolver import algo_Evolver
 from algos.algo_SimulatedAnnealing import simulated_annealing
 from algos.algo_TreeSearcher import algo_TreeSearcher
 from bases.base_dynamic import base_dynamic
+from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 from src.evaluate_base import evaluate_base
+
+from src.validstate_tight2 import validstate_tight2
 from src.plot_evolver_data import plot_evolver_data
 from src.sa_tight import sa_tight
 from src.validstate_rndm import validstate_rndm
@@ -34,7 +37,14 @@ python . single algo=ex pg=True nh=40 vis=True
 python . single other=evoplot f=somekey
 """
 
+def other():
+    thing = Groundplan(40,False)
+    f = GroundplanFrame(thing)
+    r = validstate_tight2(thing,1.0,1.0,1.0).getPlan()
+    f.repaint(r)
+    while True:pass
 
+if sys.argv[1]=="other":other()
 
 def sat():
     ## fail

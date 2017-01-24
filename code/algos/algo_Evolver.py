@@ -78,7 +78,7 @@ class algo_Evolver(object):
 
         while True:
             print i
-            res = self.mutateAHouse(plan, i)
+            res = self.mutateAHouse(plan.deepCopy(), i)
             if res[1]:  # if succeeded in house mutation
                 if res[0].isValid() and res[0].getPlanValue() > plan.getPlanValue():
                     plan = res[0].deepCopy()

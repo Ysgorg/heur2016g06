@@ -1,5 +1,6 @@
 from algos.algo_Evolver import algo_Evolver
 from bases import base_a, base_b, base_c, base_dynamic
+from src.validstate_tight2 import validstate_tight2
 from src.validstate_tight import validstate_tight
 
 
@@ -40,7 +41,8 @@ def perform_experiment(variables,frame):
                     b = float(j)/10
                     for k in range(k_min,k_max,interval):
                         c = float(k)/10
-                        r = validstate_tight(bas.deepCopy(), a, b, c).getPlan().deepCopy()
+                        r = validstate_tight2(bas.deepCopy(),a,b,c).getPlan()
+                        #r = validstate_tight(bas.deepCopy(), a, b, c).getPlan().deepCopy()
                         v = r.getPlanValue() if r.isValid() else -1
                         if v < 0: break
                         frame.repaint(r)
@@ -87,7 +89,7 @@ def report(frame):
         [#40, 70,
          100],
         [False],
-        [base_dynamic.base_dynamic, base_a.base_a#, base_b.base_b, base_c.base_c
+        [base_dynamic.base_dynamic#, base_a.base_a#, base_b.base_b, base_c.base_c
          ]
     ]
     return construct_report(perform_experiment(experiment_variables,frame))

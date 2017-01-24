@@ -29,6 +29,7 @@ def perform_all_experiments():
 
     from algos.algo_Evolver import algo_Evolver
     overall_best = algo_Evolver(report['best'][6].deepCopy(),frame=frame).getPlan()
+    print "best:",overall_best
     frame.repaint(overall_best)
 
 

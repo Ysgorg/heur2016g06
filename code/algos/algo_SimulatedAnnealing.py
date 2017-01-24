@@ -4,6 +4,9 @@ from math import exp
 
 from src.GroundplanFrame import GroundplanFrame
 
+# A list of JUMP_SAMPLES number of jumps will be stored
+JUMP_SAMPLES = 4
+
 def get_acceptance_probability(current_value, new_value, temperature, max_temperature):
     if temperature == 0:
         return 0.0
@@ -20,9 +23,9 @@ def get_temperature(i, max_i):
 def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visualize):
     state = init_state.deepCopy()
     best_state = state
-
+    jumps_list = [None]*JUMP_SAMPLES
     jump_count = 0 # Number of probabilistic jumps to a lower value state
-    quartile = 1
+    sample_number = 0
 
     if visualize:
         frame = GroundplanFrame(state)
@@ -33,9 +36,9 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             frame.repaint(state)
             bframe.repaint(best_state)
 
-        if i >= ((max_iterations / 4) * quartile):
-            print "Jumps in quartile", quartile, ":", jump_count
-            quartile += 1
+        if i >= ((max_iterations / JUMP_SAMPLES) * sample_number):
+            jumps_list[sample_number-1] = jump_count
+            sample_number += 1
             jump_count = 0
 
         neighbor = generateNeighborFunc(state.deepCopy())
@@ -59,7 +62,8 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
             best_state = state.deepCopy()
             print "T =", temperature, "New best value:", state.getPlanValue()
 
-    print "Jumps in quartile", quartile, ":", jump_count
+    jumps_list[sample_number-1] = jump_count
+    print "Probabilistic jumps made in each section:", jumps_list
     print "Max value found in", max_iterations, "iterations:", best_state.getPlanValue()
 
     return best_state

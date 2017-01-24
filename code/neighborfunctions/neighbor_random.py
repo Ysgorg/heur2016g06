@@ -92,7 +92,12 @@ def neighbor_random(state, temperature):
     for i in range(int(random() * 10)):
 
         if random() < 0.5:  res = randomSwap(state)
-        else:               res = mutateAHouse(state)
+        else:
+
+            try:
+                res = mutateAHouse(state)
+            except Exception:
+                break
         if res[1]:          state = res[0].deepCopy()
         else:               print "invalid"
 

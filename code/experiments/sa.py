@@ -15,7 +15,7 @@ def perform_experiment(variables,frame):
     for nh in variables[0]:
         for pg in variables[1]:
             for base in variables[2]:
-                if base==base_c.base_c and pg==False:continue
+                if base==base_c.base_c and pg==True:continue
                 b = base(num_houses=nh,enable_playground=pg).developGroundplan()
                 for init_s in variables[3]:
                     print nh,pg,base,init_s

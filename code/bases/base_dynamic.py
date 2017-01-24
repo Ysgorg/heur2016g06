@@ -131,8 +131,7 @@ class base_dynamic(object):
 
         return plan
 
-    def developGroundplan(self,timeout
-                          ):
+    def developGroundplan(self,timeout=10000):
         plan = Groundplan(self.num_houses, self.enable_playground)
         self.placeWater(plan, 1)
         if plan.PLAYGROUND: self.placePlaygrounds(plan)

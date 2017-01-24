@@ -1,39 +1,19 @@
 # Setting absolute path to avoid pathing annoyances
 import os
 import sys
-from pprint import pprint
-
 import time
-from random import random
 
-from docopt import docopt
-
-# for getting the proportion of a run
+from algos.algo_Evolver import algo_Evolver
+from algos.algo_SimulatedAnnealing import simulated_annealing
+from algos.algo_TreeSearcher import algo_TreeSearcher
+from bases.base_dynamic import base_dynamic
 from src.GroundplanFrame import GroundplanFrame
 from src.evaluate_base import evaluate_base
-
-# gen_neighbor functions for simulated annealing
 from src.neighbor_random import neighbor_random
-
-# residence placers
+from src.plot_evolver_data import plot_evolver_data
 from src.sa_tight import sa_tight
 from src.validstate_rndm import validstate_rndm
 from src.validstate_tight import validstate_tight
-from src.validstate_cluster import validstate_cluster
-
-# water and playground placers
-from src.base_dynamic import base_dynamic
-from src.base_a import base_a
-from src.base_b import base_b
-from src.base_c import base_c
-
-# plan optimizers
-from src.algo_SimulatedAnnealing import simulated_annealing
-from src.algo_Evolver import algo_Evolver
-from src.algo_TreeSearcher import algo_TreeSearcher
-
-# data analysis
-from src.plot_evolver_data import plot_evolver_data
 
 """
 # example commands
@@ -60,6 +40,17 @@ def sat():
     while True:pass
 
 if sys.argv[1]=="sat":sat()
+
+
+def full_clean():
+    ## fail
+
+    from experiments.all import perform_all_experiments
+    perform_all_experiments()
+    while True:pass
+
+if sys.argv[1]=="fullclean":full_clean()
+
 
 def cluster_experiment():
 
@@ -128,7 +119,7 @@ def cluster_experiment():
     #bframe.repaint(best_plan)
     print "best found: ", best_vals , best_val
     # simulated_annealing(best_plan,1000,neighbor_random,True,10000) # doesn't help much
-    algo_Evolver(best_plan,key="lol"+str(round(random()*100)))
+    algo_Evolver(best_plan)
     while True: pass
 
 
@@ -152,10 +143,10 @@ def single_experiment(args):
     if args['algo'] in algos and args['algo'] != 'ex':
 
         def parseBase(b,enable_playground,num_houses):
-            if b == "dynamic": from src.base_dynamic import base_dynamic as d
-            elif b == "a":  from src.base_a import base_a as d
-            elif b == "b":from src.base_b import base_b as d
-            elif b == "c":from src.base_c import base_c as d
+            if b == "dynamic": from bases.base_dynamic import base_dynamic as d
+            elif b == "a":  from bases.base_a import base_a as d
+            elif b == "b":from bases.base_b import base_b as d
+            elif b == "c":from bases.base_c import base_c as d
 
             return d(enable_playground,num_houses).developGroundplan(float(timeout))
 

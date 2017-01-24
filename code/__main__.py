@@ -9,11 +9,14 @@ from algos.algo_TreeSearcher import algo_TreeSearcher
 from bases.base_dynamic import base_dynamic
 from src.GroundplanFrame import GroundplanFrame
 from src.evaluate_base import evaluate_base
-from src.neighbor_random import neighbor_random
 from src.plot_evolver_data import plot_evolver_data
 from src.sa_tight import sa_tight
 from src.validstate_rndm import validstate_rndm
 from src.validstate_tight import validstate_tight
+
+# Neighbor functions
+from neighborfunctions.neighbor_random import neighbor_random
+from neighborfunctions.neighbor_tight import neighbor_tight
 
 """
 # example commands
@@ -167,9 +170,13 @@ def single_experiment(args):
             if 'max_i' in args:
                 if 'inits' in args:
                     def parseGenNeighborFunction(s):
-                        if s == "rndm": return neighbor_random
+                        if s == "rndm":
+                            return neighbor_random
+                        elif s == "tight":
+                            return neighbor_tight
 
-                    if args['ng'] in neigens: ng = parseGenNeighborFunction(args['ng'])
+                    #if args['ng'] in args:
+                    ng = parseGenNeighborFunction(args['ng'])
                     max_iter = int(args['max_i'])
 
                     def parse_initState(s,base):
@@ -179,12 +186,14 @@ def single_experiment(args):
                             return validstate_tight(base, args['vis']).getPlan()
                         #elif s=="cluster":return validstate_cluster(base, int(timeout)).getPlan()
 
+                    # Keep trying until we find a valid starting state
                     init_state = parse_initState(args['inits'], base)
-                    #while True:pass
+                    frame = GroundplanFrame(init_state)
 
-                    if not init_state.isValid(): return init_state
-
-                    #print "Initial state found"
+                    print "Searching for valid init state"
+                    while init_state.isValid() == False:
+                        frame.repaint(init_state)
+                        parse_initState(args['inits'], base)
 
                     return simulated_annealing(init_state=init_state,max_iterations=max_iter,generateNeighborFunc=ng,visualize=visualize)
                 else:
@@ -295,7 +304,13 @@ def reactToInput(args):
 
     if "cluster" in args: cluster_experiment()
     elif "full" in args: all_experiments()
-    else: single_experiment(args)
+    else:
+        result = single_experiment(args)
+        #frame = GroundplanFrame(result)
+        #frame.repaint(result)
+        #while True:
+        #    pass
+
 
 # set working dir
 os.chdir(os.path.dirname(os.path.abspath(__file__)))

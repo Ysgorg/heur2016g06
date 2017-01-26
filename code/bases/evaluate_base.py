@@ -38,7 +38,7 @@ def evaluate_base(plan, visualize):
 
     if visualize:
 
-        from GroundplanFrame import GroundplanFrame
+        from src.GroundplanFrame import GroundplanFrame
         frame = GroundplanFrame(plan)
         frame.repaint(plan)
 

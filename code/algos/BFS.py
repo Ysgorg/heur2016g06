@@ -1,11 +1,3 @@
-# this thing generates a tree as it traverses it,
-
-"""
-def get_valid_water_dimensions(plan, s1, num_bodies):
-    # input plan and length of one side and desired number of water bodies
-    # output the necessary length of the other side
-    return (((plan.HEIGHT * plan.WIDTH) * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / s1
-"""
 
 import time
 from Queue import Queue

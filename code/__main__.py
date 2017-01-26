@@ -3,23 +3,19 @@ import os
 import sys
 import time
 
-from algos.algo_Evolver import algo_Evolver
-from algos.algo_SimulatedAnnealing import simulated_annealing
-from algos.algo_TreeSearcher import algo_TreeSearcher
+from algos.BFS import algo_TreeSearcher
+from algos.SimulatedAnnealing import simulated_annealing
+from algos.TightFit_A import validstate_tight
+from algos.TightFit_B import validstate_tight2
+from algos.Hillclimber_Random import HillClimber
 from bases.base_dynamic import base_dynamic
-from src.Groundplan import Groundplan
-from src.GroundplanFrame import GroundplanFrame
-from src.evaluate_base import evaluate_base
-
-from src.validstate_tight2 import validstate_tight2
-from src.plot_evolver_data import plot_evolver_data
-from src.sa_tight import sa_tight
-from src.validstate_rndm import validstate_rndm
-from src.validstate_tight import validstate_tight
-
-# Neighbor functions
+from bases.evaluate_base import evaluate_base
+from experiments.sa_tight import sa_tight
 from neighborfunctions.neighbor_random import neighbor_random
 from neighborfunctions.neighbor_tight import neighbor_tight
+from src.Groundplan import Groundplan
+from src.GroundplanFrame import GroundplanFrame
+from src.plot_evolver_data import plot_evolver_data
 
 """
 # example commands
@@ -49,7 +45,9 @@ if sys.argv[1]=="other":other()
 def sat():
     ## fail
 
-    sa_tight(100,False,100,True)
+    s = sa_tight(100,True,100,True)
+    s = HillClimber(s,1000).getPlan()
+    GroundplanFrame(s).repaint(s)
     while True:pass
 
 if sys.argv[1]=="sat":sat()
@@ -132,7 +130,7 @@ def cluster_experiment():
     #bframe.repaint(best_plan)
     print "best found: ", best_vals , best_val
     # simulated_annealing(best_plan,1000,neighbor_random,True,10000) # doesn't help much
-    algo_Evolver(best_plan)
+    HillClimber(best_plan)
     while True: pass
 
 
@@ -191,7 +189,7 @@ def single_experiment(args):
 
                     def parse_initState(s,base):
                         if s=="rndm":
-                            return validstate_rndm(base, args['vis']).getPlan()
+                            return HillClimber(base, args['vis']).getPlan()
                         elif s=="tight":
                             return validstate_tight(base, 1.0,1.0,1.0).getPlan()
                         #elif s=="cluster":return validstate_cluster(base, int(timeout)).getPlan()
@@ -216,7 +214,7 @@ def single_experiment(args):
 
     elif args['algo'] == "evo":
 
-        algo_Evolver(base=base, key=args['f'], visualize=visualize)
+        HillClimber(base=base, key=args['f'], visualize=visualize)
 
     elif args['algo'] == "base":
 

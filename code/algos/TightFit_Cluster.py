@@ -33,14 +33,6 @@ class validstate_cluster(object):
             return plan
 
 
-        """
-        x = 0
-        y = 0
-        for c in clusters:
-            self.plan = put_cluster(c,x,y,self.plan)
-            y+=c[1]
-        """
-
         self.plan = put_cluster(clusters[0],0,0,self.plan)
         self.plan = put_cluster(clusters[1],self.plan.WIDTH-clusters[1][0],0,self.plan)
         self.plan = put_cluster(clusters[2],0,self.plan.waterbodies[0].getY()-clusters[2][1],self.plan)
@@ -60,16 +52,10 @@ class validstate_cluster(object):
             # input number houses per col and row, the residence class, and the clearance factor for this class.
 
             h = housetype()
-            #print h.minimumClearance, clearance_factor
             clearance = h.minimumClearance * clearance_factor
-            #print cols, rows, clearance , rows , h.width, h.height
             max_x = (cols+1) * clearance + cols * h.width
             max_y = (rows+1) * clearance + rows * h.height
             return [max_x,max_y,cols,rows,clearance,housetype]
-
-        # MINIMUM_FAMILYHOMES_PERCENTAGE = 0.50
-        # MINIMUM_BUNGALOW_PERCENTAGE = 0.30
-        # MINIMUM_MANSION_PERCENTAGE = 0.20
 
         num_fh = int(self.plan.NUMBER_OF_HOUSES*self.plan.MINIMUM_FAMILYHOMES_PERCENTAGE)
         num_b = int(self.plan.NUMBER_OF_HOUSES*self.plan.MINIMUM_BUNGALOW_PERCENTAGE)

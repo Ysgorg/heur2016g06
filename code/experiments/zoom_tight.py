@@ -1,7 +1,9 @@
-from algos.algo_Evolver import algo_Evolver
-from bases import base_a, base_b, base_c, base_dynamic
-from src.validstate_tight2 import validstate_tight2
-from src.validstate_tight import validstate_tight
+import time
+
+from algos.TightFitWB import TightFitWB
+from algos.TightFit_B import validstate_tight2
+from bases import base_a
+from src.Groundplan import Groundplan
 
 
 def best_res(res):
@@ -13,17 +15,17 @@ def best_res(res):
 
 def perform_experiment(variables,frame):
 
-    print "Performing all tight experiments"
+    print "Performing all zoom tight experiments"
 
     MIN = 10
     MAX = 80
-    INTERVAL = 10
-
+    INTERVAL = 5
 
 
     def find_best_params(num_houses,enable_playground,base,f,frame):
 
-        bas = base(num_houses=num_houses,enable_playground=enable_playground).developGroundplan().deepCopy()
+        if base=="gp": bas = Groundplan(num_houses,enable_playground).deepCopy()
+        else: bas = base(num_houses=num_houses,enable_playground=enable_playground).developGroundplan().deepCopy()
 
         interval = INTERVAL
         i_min = MIN
@@ -32,24 +34,32 @@ def perform_experiment(variables,frame):
         j_max = MAX
         k_min = MIN
         k_max = MAX
+
         res=[]
+
         while True:
             results = []
-            for i in range(i_min,i_max,interval):
+            i=i_min
+            while i_min <= i < i_max:
                 a = float(i)/10
-                for j in range(j_min,j_max,interval):
-                    b = float(j)/10
-                    for k in range(k_min,k_max,interval):
-                        c = float(k)/10
-                        r = f(bas.deepCopy(),a,b,c).getPlan().deepCopy()
-                        #r = validstate_tight(bas.deepCopy(), a, b, c).getPlan().deepCopy()
-                        v = r.getPlanValue() if r.isValid() else -1
-                        if v < 0: break
-                        frame.repaint(r)
-                        results.append([num_houses,enable_pg,base, i, j, k, r, v])
+                j = j_min
+                while j_min <= j < j_max:
 
+                    b = float(j)/10
+                    k = k_min
+                    while k_min <= k < k_max:
+                        c = float(k)/10
+                        r = f(bas.deepCopy(),a,b,c,frame).getPlan().deepCopy()
+                        frame.repaint(r)
+                        v = r.getPlanValue() if r.isValid() else -1
+                        results.append([num_houses,enable_pg,base, i, j, k, r, v])
+                        k+= interval
+                    j += interval
+                i += interval
             best = best_res(results)
             res.append(best)
+
+
 
             i_ = best[3]
             j_ = best[4]
@@ -61,8 +71,8 @@ def perform_experiment(variables,frame):
             j_max = min(MAX, j_ + interval*2)
             k_min = max(MIN, k_ - interval*2)
             k_max = min(MAX, k_ + interval*2)
-            interval=int(interval/2)
-            if interval==0:
+            interval*=0.5
+            if interval<0.25:
                 break
 
         overall_best = best_res(res)
@@ -76,10 +86,12 @@ def perform_experiment(variables,frame):
                 for f in variables[3]:
                     allresults.append(find_best_params(num_houses,enable_pg,base,f,frame))
 
+    print allresults
+
     best = best_res(allresults)
 
     frame.repaint(best[6])
-    print best
+
     return allresults
 
 def construct_report(experiment):
@@ -87,12 +99,20 @@ def construct_report(experiment):
 
 def report(frame):
     experiment_variables = [
-        [#40, 70,
-         100],
-        [False],
-        [base_dynamic.base_dynamic#, base_a.base_a, base_b.base_b, base_c.base_c
+        [
+            #40#, #70,
+            100
          ],
-        [validstate_tight#,validstate_tight2
+        [False],
+        [#base_dynamic.base_dynamic,#,
+         #base_a.base_a#,
+         #base_b.base_b#, base_c.base_c
+            "gp"
+         ],
+        [#validstate_tight
+          #  ,
+         #validstate_tight2
+            TightFitWB
          ]
     ]
     return construct_report(perform_experiment(experiment_variables,frame))

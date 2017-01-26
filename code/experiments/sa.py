@@ -1,6 +1,6 @@
-from algos.algo_SimulatedAnnealing import simulated_annealing
-from bases import base_a, base_b, base_c, base_dynamic
-from src import validstate_tight, validstate_rndm
+from algos import TightFit_A
+from algos.SimulatedAnnealing import simulated_annealing
+from bases import base_b, base_c, base_dynamic
 from neighborfunctions import neighbor_random, neighbor_tight
 
 
@@ -18,8 +18,8 @@ def perform_experiment(variables,frame):
                 if base==base_c.base_c and pg==True:continue
                 b = base(num_houses=nh,enable_playground=pg).developGroundplan()
                 for init_s in variables[3]:
-                    print nh,pg,base,init_s
-                    if init_s==validstate_tight.validstate_tight:
+                    #print nh,pg,base,init_s
+                    if init_s== TightFit_A.validstate_tight:
                         ins = init_s(b.deepCopy(),1.0,1.0,1.0).getPlan().deepCopy()
                     else:
                         try:
@@ -28,7 +28,7 @@ def perform_experiment(variables,frame):
                             continue
                     frame.repaint(ins)
                     for ng in variables[4]:
-                        if ng==neighbor_tight.neighbor_tight and not init_s==validstate_tight.validstate_tight: continue
+                        if ng==neighbor_tight.neighbor_tight and not init_s== TightFit_A.validstate_tight: continue
                         r = simulated_annealing(ins.deepCopy(),MAX_ITERATIONS,ng)
                         frame.repaint(r)
                         v = r.getPlanValue() if r.isValid() else -1
@@ -42,10 +42,17 @@ def construct_report(experiment):
 
 def report(frame):
     experiment_variables = [
-        [40, 70, 100],
-        [True, False],
-        [base_dynamic.base_dynamic, base_a.base_a, base_b.base_b, base_c.base_c],
-        [validstate_rndm.validstate_rndm, validstate_tight.validstate_tight],
+        [40#,# 70,
+         #100
+         ],
+        [True#, False
+         ],
+        [base_dynamic.base_dynamic
+            #, base_a.base_a
+            , base_b.base_b#, base_c.base_c
+              ],
+        [#validstate_rndm.validstate_rndm,
+         TightFit_A.validstate_tight],
         [neighbor_random.neighbor_random, neighbor_tight.neighbor_tight]
     ]
     return construct_report(perform_experiment(experiment_variables,frame))

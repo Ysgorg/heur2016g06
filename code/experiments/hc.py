@@ -1,4 +1,4 @@
-from algos.algo_Evolver import algo_Evolver
+from algos.Hillclimber_Random import HillClimber
 from bases import base_a, base_b, base_c, base_dynamic
 from src.GroundplanFrame import GroundplanFrame
 
@@ -27,7 +27,7 @@ def perform_experiment(variables,frame):
                 k = genKey(num_houses,enable_pg,b)
                 #print(k),
                 try:
-                    r = algo_Evolver(
+                    r = HillClimber(
                         b.developGroundplan().deepCopy(),
                         key=k,
                         max_iterations=MAX_ITERATIONS,

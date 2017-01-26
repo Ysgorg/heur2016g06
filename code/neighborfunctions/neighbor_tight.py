@@ -1,13 +1,13 @@
 from random import random
 
-from src.validstate_tight import validstate_tight
-from src.GroundplanFrame import GroundplanFrame
+from algos.TightFit_A import validstate_tight
+
 
 def neighbor_tight(state, temperature):
     MIN = 1.0
     MAX = 8.0
 
-    print temperature, state.params
+   # print temperature, state.params
 
     temperature = 1 - temperature
 

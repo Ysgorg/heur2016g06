@@ -1,23 +1,24 @@
 import time
 from random import random
 
+from algos.TightFitWB import TightFitWB
+from algos.TightFit_A import validstate_tight
 from bases.base_dynamic import base_dynamic
-
+from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
-from src.validstate_tight import validstate_tight
 
 
 def sa_tight(max_iterations,enable_playground,num_houses,visualize):
 
+
     MIN = 10.0
     MAX = 80.0
 
-
-
-    base = base_dynamic(enable_playground,num_houses).developGroundplan()
+    base = Groundplan(num_houses,False)
 
     def state(i,j,k):
-        s = validstate_tight(base.deepCopy(),float(i)/10,float(j)/10,float(k/10)).getPlan().deepCopy()
+
+        s = TightFitWB(base.deepCopy(),float(i)/10,float(j)/10,float(k/10)).getPlan().deepCopy()
         v = 0 if not s.isValid() else s.getPlanValue()
         return [i,j,k,v,s]
 
@@ -84,7 +85,7 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
 
         print round(temperature,3) , round(best_state[4].getPlanValue())
 
-
+    print "time",time.time()-init_time
     print ((time.time()-init_time)/ max_iterations )*1000, "ms per iteration"
     print "Max value found in", max_iterations, "iterations:", best_state[3]
     print best_state

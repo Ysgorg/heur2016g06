@@ -64,14 +64,14 @@ def simulated_annealing(init_state, max_iterations, generateNeighborFunc, visual
         if state.getPlanValue() > best_state.getPlanValue():
             prev_best = best_state.deepCopy()
             best_state = state.deepCopy()
-            print "T =", temperature, "New best value:", state.getPlanValue()
+            #print "T =", temperature, "New best value:", state.getPlanValue()
 
             if (1.0 - prev_best.getPlanValue() / best_state.getPlanValue()) * 100 <= MIN_PERCENTAGE_CHANGE:
-                print "Change between previous best and current best less than", MIN_PERCENTAGE_CHANGE, "% Terminating search."
+                #print "Change between previous best and current best less than", MIN_PERCENTAGE_CHANGE, "% Terminating search."
                 break
 
     jumps_list[sample_number-1] = jump_count
-    print "Probabilistic jumps made in each section:", jumps_list
-    print "Max value found in", i, "iterations:", best_state.getPlanValue()
+    #print "Probabilistic jumps made in each section:", jumps_list
+    #print "Max value found in", i, "iterations:", best_state.getPlanValue()
 
     return best_state

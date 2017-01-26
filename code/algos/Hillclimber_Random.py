@@ -12,7 +12,7 @@ from src.GroundplanFrame import GroundplanFrame
 from src.timeout import timeout
 
 
-class validstate_rndm(object):
+class HillClimber(object):
     ITERATIONS_BEFORE_RESET = 4
 
     @staticmethod

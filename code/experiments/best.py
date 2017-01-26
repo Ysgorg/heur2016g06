@@ -1,8 +1,3 @@
-from algos.algo_Evolver import algo_Evolver
-from bases import base_a, base_b, base_c, base_dynamic
-from src.validstate_tight import validstate_tight
-
-
 def report(r):
 
     best_v = None
@@ -14,6 +9,6 @@ def report(r):
             if best is None or v > best_v:
                 best_v = v
                 best = r1
-    print best
+   # print best
     return best
 

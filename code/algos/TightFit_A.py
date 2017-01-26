@@ -69,6 +69,6 @@ class validstate_tight(object):
             self.fam_tresh = plan.NUMBER_OF_HOUSES * plan.MINIMUM_FAMILYHOMES_PERCENTAGE
             self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (plan.MINIMUM_FAMILYHOMES_PERCENTAGE +
                                                            plan.MINIMUM_BUNGALOW_PERCENTAGE)
-            print i,j,k
+            #print i,j,k
             self.plan = self.place_residences(plan,frame=frame)
             self.plan.params = [i,j,k]

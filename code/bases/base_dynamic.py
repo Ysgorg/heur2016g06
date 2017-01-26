@@ -161,5 +161,5 @@ class base_dynamic(object):
 
         best_plan = plan.deepCopy() # Temporary
 
-        print "Best plan area:", best_plan.getUsableArea()
+        #print "Best plan area:", best_plan.getUsableArea()
         return best_plan

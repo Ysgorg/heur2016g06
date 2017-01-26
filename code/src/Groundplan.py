@@ -17,6 +17,7 @@ class Groundplan(object):
     MINIMUM_BUNGALOW_PERCENTAGE = 0.30
     MINIMUM_MANSION_PERCENTAGE = 0.20
     MAXIMUM_PLAYGROUND_DISTANCE = 50
+    MINIMUM_WATERBODY_RATIO = 4
 
     def __init__(self, number_of_houses, playground):
         self.params = []
@@ -168,7 +169,7 @@ class Groundplan(object):
             smaller = min(o.width, o.height)
             greater = max(o.width, o.height)
             ratio = float(greater) / smaller
-            if ratio > 4: return False
+            if ratio > self.MINIMUM_WATERBODY_RATIO: return False
 
         for wb in self.waterbodies:
             if wb != o and self.overlap(wb, o): return False

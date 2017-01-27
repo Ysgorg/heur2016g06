@@ -1,15 +1,9 @@
 from random import random
 
-import time
-
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
-
-# a modified evolver, returns first valid solution it finds
-from src.GroundplanFrame import GroundplanFrame
-from src.timeout import timeout
 
 
 class HillClimber(object):
@@ -19,7 +13,6 @@ class HillClimber(object):
     def findValidHouse(plan, type_to_place, pre):
 
         h = None
-
 
         while True:
 
@@ -33,17 +26,21 @@ class HillClimber(object):
             if type_to_place is "FamilyHome":
                 # skip flipping because FamilyHome has w==h
                 h = FamilyHome(x, y)
-                if plan.correctlyPlaced(h): return h
+                if plan.correctlyPlaced(h):
+                    return h
 
             elif type_to_place is "Bungalow":
                 h = Bungalow(x, y)
             elif type_to_place is "Mansion":
                 h = Mansion(x, y)
 
-            if random() < 0.5: h = h.flip()
-            if plan.correctlyPlaced(h): break
+            if random() < 0.5:
+                h = h.flip()
+            if plan.correctlyPlaced(h):
+                break
             h = h.flip()
-            if plan.correctlyPlaced(h): break
+            if plan.correctlyPlaced(h):
+                break
 
         return h
 
@@ -55,7 +52,8 @@ class HillClimber(object):
 
         # remove a random water body
         if num_wbs > 0:
-            plan.removeWaterbody(plan.getWaterbodies()[int(random() * num_wbs)])
+            plan.removeWaterbody(
+                plan.getWaterbodies()[int(random() * num_wbs)])
             num_wbs -= 1
 
         # dimensions of water bodies
@@ -65,7 +63,8 @@ class HillClimber(object):
         # try many times to place wbs until 4 have been placed
         while True:
 
-            if num_wbs >= 4: break
+            if num_wbs >= 4:
+                break
 
             x = int(random() * plan.WIDTH)
             y = int(random() * plan.HEIGHT)
@@ -103,7 +102,8 @@ class HillClimber(object):
 
         h = self.findValidHouse(plan, type_to_place, toberemoved)
 
-        if h is not None: plan.addResidence(h)
+        if h is not None:
+            plan.addResidence(h)
 
         return [plan, h is not None]
 
@@ -111,18 +111,18 @@ class HillClimber(object):
         return self.plan
 
     # input key to continue existing thread of evolution
-    @timeout(3)
-    def __init__(self, plan,visualize=False):
+    #@timeout(3)
+    def __init__(self, plan, num_iterations):
 
         self.plan = plan
-        #frame = GroundplanFrame(plan)
+        # frame = GroundplanFrame(plan)
 
         i = 0
 
-        while True:
-
+        while i < num_iterations:
+            i += 1
             # plan = self.mutateWater(plan)
-            #print "ok"
+            # print "ok"
             try:
                 res = self.mutateAHouse(plan, i)
             except Exception:
@@ -135,4 +135,4 @@ class HillClimber(object):
                 break
             else:
                 pass
-                #frame.repaint(plan)
+                # frame.repaint(plan)

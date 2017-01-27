@@ -1,6 +1,5 @@
 import math
 
-from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
 
@@ -8,7 +7,8 @@ from src.Groundplan import Groundplan
 def get_valid_water_dimensions(plan, num_bodies):
     # input plan and desired number of water bodies
     # output the dimensions that give exactly MINIMUM_WATER_PERCENTAGE
-    x = math.sqrt(((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
+    x = math.sqrt(
+        ((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
     return [x, x * 4]
 
 
@@ -18,9 +18,7 @@ class base_c(object):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
 
-    def developGroundplan(self):
-
-        flip = False
+    def develop_ground_plan(self):
 
         plan = Groundplan(self.num_houses, self.enable_playground)
 
@@ -29,14 +27,13 @@ class base_c(object):
         factor = 13
 
         plan.addWaterbody(Waterbody(0, 40, dims[0], dims[1]))
-        plan.addWaterbody(Waterbody(dims[0]+factor, 40, dims[0], dims[1]))
-        plan.addWaterbody(Waterbody(2*(dims[0]+factor), 40, dims[0], dims[1]))
-        plan.addWaterbody(Waterbody(3*(dims[0]+factor),40, dims[0], dims[1]))
-
+        plan.addWaterbody(Waterbody(dims[0] + factor, 40, dims[0], dims[1]))
+        plan.addWaterbody(
+            Waterbody(2 * (dims[0] + factor), 40, dims[0], dims[1]))
+        plan.addWaterbody(
+            Waterbody(3 * (dims[0] + factor), 40, dims[0], dims[1]))
 
         return plan
-
-
 
     """
     dummy_pg = Playground(0, 0)

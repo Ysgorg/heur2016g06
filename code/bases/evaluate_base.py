@@ -1,10 +1,11 @@
+from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
-from districtobjects.Bungalow import Bungalow
 
 
-def evaluate_base(plan, visualize):
-    # returns the proportion of area of a plan which can potentially be covered by a residence
+def evaluate_base(plan, frame):
+    # returns the proportion of area of a plan which can potentially be
+    # covered by a residence
 
     bm = [[0 for y in range(plan.HEIGHT)] for x in range(plan.WIDTH)]
 
@@ -16,15 +17,18 @@ def evaluate_base(plan, visualize):
 
             if plan.correctlyPlaced(h):
                 bm[x][y] = 1
-                bm[min(int(x + h.getWidth()), plan.WIDTH - 1)][min(int(y + h.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + h.getWidth()), plan.WIDTH - 1)][
+                    min(int(y + h.getHeight()), plan.HEIGHT - 1)] = 1
 
             if plan.correctlyPlaced(m):
                 bm[x][y] = 1
-                bm[min(int(x + m.getWidth()), plan.WIDTH - 1)][min(int(y + m.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + m.getWidth()), plan.WIDTH - 1)][
+                    min(int(y + m.getHeight()), plan.HEIGHT - 1)] = 1
 
             if plan.correctlyPlaced(b):
                 bm[x][y] = 1
-                bm[min(int(x + b.getWidth()), plan.WIDTH - 1)][min(int(y + b.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + b.getWidth()), plan.WIDTH - 1)][
+                    min(int(y + b.getHeight()), plan.HEIGHT - 1)] = 1
 
     count = 0
     tot = plan.WIDTH * plan.HEIGHT
@@ -36,15 +40,14 @@ def evaluate_base(plan, visualize):
 
     print "Useful proportion:", useful_proportion, "Count:", count
 
-    if visualize:
+    if frame is not None:
 
-        from src.GroundplanFrame import GroundplanFrame
-        frame = GroundplanFrame(plan)
         frame.repaint(plan)
 
         for x in range(plan.WIDTH):
             for y in range(plan.HEIGHT):
-                if bm[x][y]: frame.mark(x, y, 'black')
+                if bm[x][y]:
+                    frame.mark(x, y, 'black')
 
         frame.updateit()
 

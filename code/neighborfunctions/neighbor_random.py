@@ -1,12 +1,4 @@
-import os
 from random import random
-
-import time
-
-import signal
-
-import errno
-from six import wraps
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
@@ -43,10 +35,13 @@ def neighbor_random(state, temperature):
                 if plan.correctlyPlaced(h):
                     return h
 
-            if random() < 0.5: h = h.flip()
-            if plan.correctlyPlaced(h): return h
+            if random() < 0.5:
+                h = h.flip()
+            if plan.correctlyPlaced(h):
+                return h
             h = h.flip()
-            if plan.correctlyPlaced(h): return h
+            if plan.correctlyPlaced(h):
+                return h
 
         return h
 
@@ -62,7 +57,8 @@ def neighbor_random(state, temperature):
 
         h = findValidHouse(plan, type_to_place, toberemoved)
 
-        if h is not None: plan.addResidence(h)
+        if h is not None:
+            plan.addResidence(h)
 
         return [plan, h is not None]
 
@@ -88,17 +84,19 @@ def neighbor_random(state, temperature):
                         temp.addResidence(n2)
                         return [temp, True]
 
-
     for i in range(int(random() * 10)):
 
-        if random() < 0.5:  res = randomSwap(state)
+        if random() < 0.5:
+            res = randomSwap(state)
         else:
 
             try:
                 res = mutateAHouse(state)
             except Exception:
                 break
-        if res[1]:          state = res[0].deepCopy()
-        else:               print "invalid"
+        if res[1]:
+            state = res[0].deepCopy()
+        else:
+            print "invalid"
 
     return state

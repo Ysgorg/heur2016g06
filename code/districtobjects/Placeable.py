@@ -1,4 +1,5 @@
 class Placeable(object):
+
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y
@@ -35,7 +36,7 @@ class Placeable(object):
     def getOrientation(self): return self.flipped
 
     def flip(self):
-        self.flipped = False if self.flipped == True else True
+        self.flipped = False if self.flipped else True
         self.width, self.height = self.height, self.width
         return self
 

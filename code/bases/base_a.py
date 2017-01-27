@@ -4,6 +4,7 @@ from src.Groundplan import Groundplan
 
 
 class base_a(object):
+
     def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
@@ -12,7 +13,7 @@ class base_a(object):
         # self.frame.root.mainloop()
 
     @staticmethod
-    def placeWater(plan):
+    def place_water(plan):
         w = int(plan.WIDTH / 2)
         h = int(plan.HEIGHT / 5)
         plan.addWaterbody(Waterbody(0, 0, w, h))
@@ -20,7 +21,7 @@ class base_a(object):
         return plan
 
     @staticmethod
-    def placePlaygrounds(plan):
+    def place_playgrounds(plan):
         center_y = plan.HEIGHT / 2
         dummy_pg = Playground(0, 0)
         y = int(center_y - dummy_pg.getHeight() / 2)
@@ -30,8 +31,9 @@ class base_a(object):
         plan.addPlayground(Playground(x2, int(y - int(plan.HEIGHT / 5) / 2)))
         return plan
 
-    def developGroundplan(self):
+    def develop_ground_plan(self):
         plan = Groundplan(self.num_houses, self.enable_playground)
-        if self.enable_playground: self.placePlaygrounds(plan)
-        self.placeWater(plan)
+        if self.enable_playground:
+            self.place_playgrounds(plan)
+        self.place_water(plan)
         return plan

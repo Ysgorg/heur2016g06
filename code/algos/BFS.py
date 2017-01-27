@@ -1,4 +1,3 @@
-
 import time
 from Queue import Queue
 from random import random
@@ -6,12 +5,12 @@ from random import random
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
-from src.GroundplanFrame import GroundplanFrame
 
 
 def determine_type_to_place(i):
     tot = i.getNumberOfHouses()
-    if tot % 10 == 0: return FamilyHome
+    if tot % 10 == 0:
+        return FamilyHome
     if float(i.number_of_familyhomes) / tot < 0.5:
         return FamilyHome
     elif float(i.number_of_bungalows) / tot < 0.3:
@@ -38,28 +37,27 @@ def determine_coordinates(plan, f):
 
 
 class algo_TreeSearcher(object):
+
     class Tree(object):
+
         def __init__(self, depth):
             self.children = []
             self.data = None
             self.depth = depth
 
-    def __init__(self, base, beam_width, height, visualize=True):
+    def getPlan(self):
+        return self.plan
+
+    def __init__(self, base, beam_width, height, frame=None):
 
         # get init plan from other module
         self.best_plan = base.deepCopy()
         self.thetree = self.Tree(0)
 
-        if visualize:
-            frame = GroundplanFrame(self.best_plan)
-            bframe = GroundplanFrame(self.best_plan)
-
         while not self.best_plan.getNumberOfHouses() == base.num_houses:
             tree = self.Tree(self.thetree.depth)
-            if visualize:
+            if frame is not None:
                 frame.repaint(tree.data)
-                bframe.repaint(self.best_plan)
-            print tree.depth
             tree.data = self.best_plan
             q = Queue()
             q.put(tree)
@@ -71,10 +69,6 @@ class algo_TreeSearcher(object):
                     child = self.Tree(n.depth + 1)
                     child.data = n.data.deepCopy()
 
-                    ####
-                    """
-                    modify child here
-                    """
                     f = determine_type_to_place(child.data)
                     if f is None:
                         print
@@ -105,7 +99,8 @@ class algo_TreeSearcher(object):
                     if node.data.getNumberOfHouses() == base.num_houses:
                         return "yes"
                 print self.c, node.depth, node.data.getPlanValue()
-                for c in node.children: traverse(c)
+                for c in node.children:
+                    traverse(c)
 
             ms = time.time()
             if traverse(tree) == "yes":
@@ -113,6 +108,6 @@ class algo_TreeSearcher(object):
             end = time.time()
             print "built tree of ", self.c, "nodes in ", buildt, "sec, then traversed it in", (end - ms), "sec"
 
-        if visualize:
+        if frame is not None:
             frame.repaint(self.best_plan)
-        while True: pass
+        self.plan = self.best_plan

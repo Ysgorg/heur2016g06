@@ -2,7 +2,9 @@ from Placeable import Placeable
 
 
 class Residence(Placeable):
-    def __init__(self, x, y, width, height, ID, value, minimumClearance, addedValuePercentage, color):
+
+    def __init__(self, x, y, width, height, ID, value,
+                 minimumClearance, addedValuePercentage, color):
         super(Residence, self).__init__(x, y, width, height)
 
         self.ID = ID

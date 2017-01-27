@@ -33,28 +33,36 @@ class GroundplanFrame(object):
         for residence in self.plan.getResidences():
             self.canvas.create_rectangle(residence.getX() * self.SCALE,
                                          residence.getY() * self.SCALE,
-                                         (residence.getX() + residence.getWidth()) * self.SCALE,
-                                         (residence.getY() + residence.getHeight()) * self.SCALE,
+                                         (residence.getX() + residence.getWidth()) *
+                                         self.SCALE,
+                                         (residence.getY() + residence.getHeight()) *
+                                         self.SCALE,
                                          fill=residence.getColor())
 
         for waterbody in self.plan.getWaterbodies():
             self.canvas.create_rectangle(waterbody.getX() * self.SCALE,
                                          waterbody.getY() * self.SCALE,
-                                         (waterbody.getX() + waterbody.getWidth()) * self.SCALE,
-                                         (waterbody.getY() + waterbody.getHeight()) * self.SCALE,
+                                         (waterbody.getX() + waterbody.getWidth()) *
+                                         self.SCALE,
+                                         (waterbody.getY() + waterbody.getHeight()) *
+                                         self.SCALE,
                                          fill=self.COLOR_WATER)
 
         for playground in self.plan.getPlaygrounds():
             self.canvas.create_rectangle(playground.getX() * self.SCALE,
                                          playground.getY() * self.SCALE,
-                                         (playground.getX() + playground.getWidth()) * self.SCALE,
-                                         (playground.getY() + playground.getHeight()) * self.SCALE,
+                                         (playground.getX() + playground.getWidth()) *
+                                         self.SCALE,
+                                         (playground.getY() + playground.getHeight()) *
+                                         self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
 
             # For visualising the effective area
             r = 57.5
-            x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX() + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
-            x0, y0, x1, y1 = map(lambda x: x * self.SCALE, (x0, y0, x1, y1))  # Scale the coords
+            x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX(
+            ) + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
+            x0, y0, x1, y1 = map(
+                lambda x: x * self.SCALE, (x0, y0, x1, y1))  # Scale the coords
             self.canvas.create_rectangle(x0, y0, x1, y1,
                                          outline=self.COLOR_PLAYGROUND, width=1)
 
@@ -72,7 +80,8 @@ class GroundplanFrame(object):
 
     def mark(self, x, y, c):
 
-        self.canvas.create_line(x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
+        self.canvas.create_line(
+            x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
 
     def updateit(self):
 

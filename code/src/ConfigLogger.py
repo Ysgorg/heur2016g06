@@ -1,11 +1,12 @@
 import json
-from src.Groundplan import Groundplan
+import os
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
-from districtobjects.Waterbody import Waterbody
 from districtobjects.Playground import Playground
-import os
+from districtobjects.Waterbody import Waterbody
+from src.Groundplan import Groundplan
 
 
 class ConfigLogger(object):
@@ -28,13 +29,17 @@ class ConfigLogger(object):
             elif t == "Mansion":
                 return 'm'
 
-        config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND, [], [], [], metad['deaths'], metad['mutations']]
+        config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND,
+                  [], [], [], metad['deaths'], metad['mutations']]
         for i in plan.getResidences():
-            #print "dsadsadsa",i.minimumClearance
-            config[2].append([i.x, i.y, minify(i.getType()), i.flipped#, i.minimumClearance
+            # print "dsadsadsa",i.minimumClearance
+            config[2].append([i.x, i.y, minify(i.getType()), i.flipped  # , i.minimumClearance
                               ])
-        for i in plan.getWaterbodies(): config[3].append([i.x, i.y, i.getWidth(), i.getHeight(), i.flipped])
-        for i in plan.getPlaygrounds(): config[4].append([i.x, i.y, i.flipped])
+        for i in plan.getWaterbodies():
+            config[3].append(
+                [i.x, i.y, i.getWidth(), i.getHeight(), i.flipped])
+        for i in plan.getPlaygrounds():
+            config[4].append([i.x, i.y, i.flipped])
         return config
 
     @staticmethod
@@ -48,25 +53,30 @@ class ConfigLogger(object):
                 h = Mansion(i[0], i[1])
             elif i[2] == "f":
                 h = FamilyHome(i[0], i[1])
-            if i[3]: h = h.flip()
-            #h.minimumClearance = float(i[4])
+            if i[3]:
+                h = h.flip()
+            # h.minimumClearance = float(i[4])
             plan.addResidence(h)
         for i in d[3]:
             wb = Waterbody(i[0], i[1], i[2], i[3])
-            if i[4]: wb = wb.flip()
+            if i[4]:
+                wb = wb.flip()
             plan.addWaterbody(wb)
         for i in d[4]:
             pg = Playground(i[0], i[1])
-            if i[2]: pg = pg.flip()
+            if i[2]:
+                pg = pg.flip()
             plan.addPlayground(pg)
 
         return plan
 
     @classmethod
     def appendToConfigLog(cls, key, plan, metad):
-        with open(cls.FOLDER + key) as f: data = json.load(f)
+        with open(cls.FOLDER + key) as f:
+            data = json.load(f)
         data['d'].append(ConfigLogger().serialize_plan(plan, metad))
-        with open(cls.FOLDER + key, 'w') as f: json.dump(data, f)
+        with open(cls.FOLDER + key, 'w') as f:
+            json.dump(data, f)
 
     @classmethod
     def loadConfig(cls, key):
@@ -78,4 +88,5 @@ class ConfigLogger(object):
 
     @classmethod
     def createConfigLog(cls, key):
-        with open(cls.FOLDER + key, 'w') as data: json.dump({'d': []}, data)
+        with open(cls.FOLDER + key, 'w') as data:
+            json.dump({'d': []}, data)

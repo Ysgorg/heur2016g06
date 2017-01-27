@@ -30,6 +30,7 @@ class validstate_tight(object):
         i = 0
         r = self.next_to_place(i)
         r1 = r(0,0)
+        r1.original_min_clearance = r1.minimumClearance
         r1.minimumClearance = self.compute_clearance(r1)
         x = r1.minimumClearance
 
@@ -38,6 +39,7 @@ class validstate_tight(object):
 
             while y+r(0,0).width+r(0,0).minimumClearance < plan.HEIGHT:
                 r1 = r(x,y)
+                r1.original_min_clearance = r1.minimumClearance
                 r1.minimumClearance = self.compute_clearance(r1)
                 if plan.correctlyPlaced(r1):
                     plan.addResidence(r1)

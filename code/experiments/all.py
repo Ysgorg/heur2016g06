@@ -2,6 +2,7 @@ from pprint import pprint
 
 import hc, zoom_tight, sa, best, printer
 from bases.base_b import base_b
+from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
 
@@ -15,7 +16,7 @@ def perform_all_experiments():
 
     clean_out_data()
 
-    frame = GroundplanFrame(base_b(num_houses=40,enable_playground=True).developGroundplan())
+    frame = GroundplanFrame(Groundplan(0,False))
 
     print "Performing all experiments"
 
@@ -25,7 +26,6 @@ def perform_all_experiments():
         "tight": zoom_tight.report(frame)
     }
     report['best'] = best.report(report)
-    pprint(report)
     frame.repaint(report['best'][6])
     print "Best: " , report
     while True:pass

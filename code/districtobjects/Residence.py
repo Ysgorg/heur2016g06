@@ -10,6 +10,7 @@ class Residence(Placeable):
         self.minimumClearance = minimumClearance
         self.addedValuePercentage = addedValuePercentage
         self.color = color
+        self.original_min_clearance = minimumClearance
 
     def getType(self): return self.ID
 

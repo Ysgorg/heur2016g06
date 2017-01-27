@@ -45,8 +45,8 @@ if sys.argv[1]=="other":other()
 def sat():
     ## fail
 
-    s = sa_tight(100,True,100,True)
-    s = HillClimber(s,1000).getPlan()
+    s = sa_tight(1000,True,100,True)
+    s = HillClimber(s,10000).getPlan()
     GroundplanFrame(s).repaint(s)
     while True:pass
 
@@ -199,7 +199,7 @@ def single_experiment(args):
                     frame = GroundplanFrame(init_state)
 
                     print "Searching for valid init state"
-                    while init_state.isValid() == False:
+                    while not init_state.isValid():
                         frame.repaint(init_state)
                         parse_initState(args['inits'], base)
                     print "init sa"

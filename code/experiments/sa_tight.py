@@ -11,6 +11,8 @@ from src.GroundplanFrame import GroundplanFrame
 def sa_tight(max_iterations,enable_playground,num_houses,visualize):
 
 
+    visualize = False
+
     MIN = 10.0
     MAX = 80.0
 
@@ -22,12 +24,15 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
         v = 0 if not s.isValid() else s.getPlanValue()
         return [i,j,k,v,s]
 
-    def gen_neigbor(seed,temp):
+    def gen_neigbor(seed, temperature):
 
         def factor():
-            v = random()*(1+temp)
+
+            magnitude = 100
+
+            v = random()*(1 + temperature)
             if random()>0.5:v*=-1.0
-            return v*10*temp
+            return v * magnitude * temperature
 
         def set_param(p,f):
             if random()<0.9:
@@ -35,19 +40,16 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
                 if p > MAX: p = MAX
                 elif p < MIN : p = MIN
             return p
-        a = seed[0]
-        b = seed[1]
-        c = seed[2]
 
-        i = set_param(a,factor())
-        j = set_param(b,factor())
-        k = set_param(c,factor())
+        i = set_param(seed[0],factor())
+        j = set_param(seed[1],factor())
+        k = set_param(seed[2],factor())
 
         return state(i,j,k)
 
 
 
-    current_state = state(10.0,10.0,10.0)
+    current_state = state(10.0,10.0,25.0)
 
     init_state = current_state
 
@@ -59,31 +61,31 @@ def sa_tight(max_iterations,enable_playground,num_houses,visualize):
     neigbor_frame = GroundplanFrame(best_state[4])
 
     current_frame.repaint(init_state[4])
-    best_frame.repaint(best_state[4])
-
 
     init_time=time.time()
 
     for i in range(max_iterations-1):
-
+        current_frame.repaint(current_state[4])
         temperature = 1-(float(i + 1) / max_iterations)
+        if i % 10 == 0 : print temperature
 
         neigbor = gen_neigbor(current_state,temperature)
-        if visualize:
-            neigbor_frame.repaint(neigbor[4])
+
+        if neigbor[3] == 0: continue
+
+        #if visualize:neigbor_frame.repaint(neigbor[4])
 
         if neigbor[3] > current_state[3]:
             current_state = neigbor
-            if visualize: current_frame.repaint(neigbor[4])
+            #if visualize: current_frame.repaint(neigbor[4])
             if current_state[3] > best_state[3]:
-                if visualize: best_frame.repaint(best_state[4])
+                #if visualize: best_frame.repaint(best_state[4])
                 best_state = current_state
         elif (current_state[3] - neigbor[3]) / temperature > random():
             current_state = neigbor
-            if visualize: current_frame.repaint(neigbor[4])
+            #if visualize: current_frame.repaint(neigbor[4])
 
 
-        print round(temperature,3) , round(best_state[4].getPlanValue())
 
     print "time",time.time()-init_time
     print ((time.time()-init_time)/ max_iterations )*1000, "ms per iteration"

@@ -50,7 +50,8 @@ class Groundplan(object):
         for i in self.residences:
             h = self.getResidenceFunc(i.getType())(i.getX(), i.getY())
             if i.flipped: h.flip()
-            #h.minimumClearance = i.minimumClearance
+            h.original_min_clearance = i.original_min_clearance
+            h.minimumClearance = i.minimumClearance
             plan.addResidence(h)
         for i in self.waterbodies:
             wb = Waterbody(i.getX(), i.getY(), i.getWidth(), i.getHeight())
@@ -273,7 +274,7 @@ class Groundplan(object):
         value_residence = residence.getValue()
         distance = self.getMinimumDistance(residence)
         value_increase = residence.getAddedValuePercentage() * value_residence
-        return value_residence + (max(distance - residence.minimumClearance, 0)) * value_increase
+        return value_residence + (max(distance - residence.original_min_clearance, 0)) * value_increase
 
     def getMinimumDistance(self, residence):
         minimum = residence.x1

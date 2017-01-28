@@ -4,6 +4,7 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
+from src.timeout import timeout
 
 
 class HillClimber(object):
@@ -81,6 +82,7 @@ class HillClimber(object):
 
         return plan
 
+    @timeout(2)
     def mutateAHouse(self, plan, i):
 
         toberemoved = None

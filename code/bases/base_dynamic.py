@@ -40,6 +40,10 @@ class base_dynamic(object):
     def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
+        self.plan = self.develop_ground_plan()
+
+    def deepCopy(self):
+        return self.plan.deepCopy()
 
     @staticmethod
     def placeWater(plan, num_bodies):

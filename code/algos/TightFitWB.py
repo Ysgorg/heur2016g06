@@ -144,7 +144,7 @@ class TightFitWB(object):
         return self.plan
 
     def __init__(self, plan, i, j, k, frame=None):
-        print i,j,k
+
         self.num_mansions_in_grid = 0
         self.f_clearance = i
         self.b_clearance = j
@@ -152,8 +152,8 @@ class TightFitWB(object):
 
         self.wb_width = self.compute_wb_min_side_length(plan, 4)
 
-        self.mansion_tresh = plan.NUMBER_OF_HOUSES * \
-            plan.MINIMUM_MANSION_PERCENTAGE
+        self.mansion_tresh = plan.NUMBER_OF_HOUSES * plan.MINIMUM_MANSION_PERCENTAGE
+
         self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (
             plan.MINIMUM_MANSION_PERCENTAGE + plan.MINIMUM_BUNGALOW_PERCENTAGE)
 

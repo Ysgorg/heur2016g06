@@ -8,9 +8,13 @@ class base_a(object):
     def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
+        self.plan = self.develop_ground_plan()
         # self.frame = GroundplanFrame(self.plan)
         # self.frame.setPlan()
         # self.frame.root.mainloop()
+
+    def deepCopy(self):
+        return self.plan.deepCopy()
 
     @staticmethod
     def place_water(plan):

@@ -17,6 +17,11 @@ class base_c(object):
     def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
+        self.plan = self.develop_ground_plan()
+
+    def deepCopy(self):
+        return self.plan.deepCopy()
+
 
     def develop_ground_plan(self):
 

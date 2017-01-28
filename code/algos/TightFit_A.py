@@ -3,7 +3,7 @@ from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
 
-class validstate_tight(object):
+class TightFit_A(object):
 
     def compute_clearance(self, r):
         if isinstance(r, Mansion):

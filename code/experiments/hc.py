@@ -1,62 +1,34 @@
+import time
+
 from algos.Hillclimber_Random import HillClimber
 from bases import base_a, base_b, base_c, base_dynamic
 
 
-def perform_experiment(variables, frame):
-    print "Performing all evolution experiments"
-
-    MAX_ITERATIONS = 100
+def perform_experiments(num_houses,enable_pg, bases, max_iterations, frame):
 
     results = []
 
-    def genKey(p1, p2, p3):
-
-        if isinstance(p3, base_a.base_a):
-            p3 = 'a'
-        elif isinstance(p3, base_b.base_b):
-            p3 = 'b'
-        elif isinstance(p3, base_c.base_c):
-            p3 = 'c'
-        elif isinstance(p3, base_dynamic.base_dynamic):
-            p3 = 'D'
-
-        return "evo_" + str(p1) + '_' + str(p2) + '_' + p3 + '.json'
-
-    for num_houses in variables[0]:
-        for enable_pg in variables[1]:
-            for base in variables[2]:
-                b = base(num_houses=num_houses, enable_playground=enable_pg)
-                k = genKey(num_houses, enable_pg, b)
-                # print(k),
-                try:
-                    r = HillClimber(
-                        b.develop_ground_plan().deepCopy(),
-                        num_iterations=1000
-                    ).getPlan().deepCopy()
-                    v = r.getPlanValue()
-                    # print "  " + str(v)
-                except Exception:
-                    # print " timeout"
-                    r = None
-                    v = 0
-                # print r
-                results.append([num_houses, enable_pg, base, r, v])
+    for base in bases:
+        t=time.time()
+        b = base(num_houses, enable_pg).deepCopy()
+        r = HillClimber(b.deepCopy(),max_iterations).getPlan()
+        v = r.getPlanValue() if r.isValid() else 0
+        results.append(
+            {
+                "Parameters":{
+                    "base":b.deepCopy()
+                },
+                "Processing time":time.time()-t,
+                "Plan":r,
+                "Value":v
+            }
+        )
 
     return results
 
+def report(nh, pg, bases, settings, frame):
 
-def construct_report(experiment):
-    return experiment
-
-
-def report(frame):
-    experiment_variables = [
-        [40  # , 70, 100
-         ],
-        [  # True,
-            False],
-        [base_dynamic.base_dynamic, base_a.base_a, base_b.base_b
-         #   , base_c.base_c
-         ]
-    ]
-    return construct_report(perform_experiment(experiment_variables, frame))
+    return {
+        "Constants":settings['constants']["max_iterations"],
+        "Results": perform_experiments(nh,pg,bases, settings['constants']["max_iterations"], frame)
+    }

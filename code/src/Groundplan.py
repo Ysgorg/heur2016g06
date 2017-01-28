@@ -133,6 +133,7 @@ class Groundplan(object):
         def correctNumElements():
 
             def correctProportion(num_elements, threshold):
+                if self.NUMBER_OF_HOUSES < 1 : return False
                 return float(num_elements) / self.NUMBER_OF_HOUSES == threshold
 
             if (len(self.waterbodies) <= self.MAXIMUM_WATER_BODIES

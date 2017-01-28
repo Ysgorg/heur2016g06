@@ -1,34 +1,31 @@
-import best
+
 import zoom_tight
 from experiments import hc
-from experiments import sa
+from experiments import sa_1
+from experiments import sa_2
+from src.Groundplan import Groundplan
+from src.GroundplanFrame import GroundplanFrame
 
 
-def clean_out_data():
-    import os
-    filelist = [f for f in os.listdir("plans")]
-    for f in filelist:
-        os.remove("plans/" + f)
+def perform_all_experiments(nh, pg, bases, algo_specific_params, frame=None):
 
-
-def perform_all_experiments(frame):
-    clean_out_data()
+    if frame is None: frame = GroundplanFrame(Groundplan(0,False))
 
     print "Performing all experiments"
 
-    report = {
-        #"GreedyRandom": hc.report(frame),
-        #"simulated_annealing": sa.report(frame),
-        "tight": zoom_tight.report(frame)
-    }
-    report['best'] = best.report(report)
-    frame.repaint(report['best'][6])
-    print "Best: ", report
-    while True:
-        pass
-    """
-    from algos.Hillclimber_Random import HillClimber
-    overall_best = HillClimber(report['best'][6].deepCopy(),frame=frame).getPlan()
-    print "best:",overall_best
-    frame.repaint(overall_best)
-    """
+    report = {}
+    for n in nh:
+        report[n] = {}
+        for p in pg:
+            report[n][p] = {
+                "HillClimberRandom": hc.report(n, p, bases, algo_specific_params["HillClimberRandom"], frame),
+                "SimulatedAnnealing_2": sa_2.report(n, p, bases, algo_specific_params["SimulatedAnnealing_2"], frame),
+                "Zoom": zoom_tight.report(n, p, bases, algo_specific_params["Zoom"], frame)
+
+                # sa_1 requires an init_state, which screws up the structure of the batch experiments
+                #
+                #"SimulatedAnnealing_1": sa_1.report(n, p, bases, algo_specific_params["SimulatedAnnealing_1"], frame),
+
+            }
+
+    return report

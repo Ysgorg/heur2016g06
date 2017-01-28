@@ -4,12 +4,7 @@ from random import random
 from src.Groundplan import Groundplan
 
 
-def sa_tight(max_iterations, enable_playground, num_houses, frame, f):
-
-    MIN = 1.0
-    MAX = 10.0
-
-    base = Groundplan(num_houses, enable_playground)
+def sa_tight(constants, enable_playground, num_houses, frame, f, base):
 
     def state(i, j, k, f):
         s = f(base.deepCopy(), i, j, k).getPlan().deepCopy()
@@ -27,8 +22,8 @@ def sa_tight(max_iterations, enable_playground, num_houses, frame, f):
         def set_param(p, f):
             if random() < 0.9:
                 p += f * (0.5)
-                if p > MAX: p = MAX
-                elif p < MIN: p = MIN
+                if p > constants['max']: p = constants['max']
+                elif p < constants['min']: p = constants['min']
             return p
 
         i = set_param(seed[0], factor())
@@ -47,10 +42,9 @@ def sa_tight(max_iterations, enable_playground, num_houses, frame, f):
 
     init_time = time.time()
 
-    for i in range(max_iterations - 1):
+    for i in range(constants['max_iterations'] - 1):
         frame.repaint(current_state[4])
-        temperature = 1 - (float(i + 1) / max_iterations)
-        if i % 10 == 0: print "temperature",round(temperature)
+        temperature = 1 - (float(i + 1) / constants['max_iterations'])
 
         neigbor = gen_neigbor(current_state, temperature, f)
 
@@ -63,9 +57,27 @@ def sa_tight(max_iterations, enable_playground, num_houses, frame, f):
         elif (current_state[3] - neigbor[3]) / temperature > random():
             current_state = neigbor
 
-    print "time", time.time() - init_time
-    print ((time.time() - init_time) / max_iterations) * \
-        1000, "ms per iteration"
-    print "Max value found in", max_iterations, "iterations:", best_state[3]
-    print best_state
-    return best_state[4]
+    pt = time.time() - init_time
+
+    return {
+        'Plan':best_state[4],
+        'Value': best_state[3],
+        'Processing time': pt,
+        'Parameters':{
+            'base':base.deepCopy(),
+            'algorithm':f,
+            'familyhome_min_clearance':best_state[0],
+            'bungalow_min_clearance':best_state[1],
+            'mansion_min_clearance':best_state[2]
+        }
+    }
+
+def perform_experiments(nh,pg,bases,algorithms,constants,frame):
+    results = []
+    for b in bases:
+        for f in algorithms:
+            results.append(sa_tight(constants,pg,nh,frame,f,b(nh,pg).deepCopy()))
+    return {"Constants":constants,"Results":results}
+
+def report(nh, pg, bases, settings, frame=None):
+    return perform_experiments(nh, pg, bases, settings['algorithms'], settings['constants'], frame)

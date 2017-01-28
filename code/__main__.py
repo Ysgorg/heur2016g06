@@ -1,20 +1,37 @@
+
 import os
 import sys
+import unittest
+from pprint import pprint
 
 from algos.BFS import algo_TreeSearcher
 from algos.Hillclimber_Random import HillClimber
 from algos.SimulatedAnnealing import simulated_annealing
 from algos.TightFitWB import TightFitWB
-from algos.TightFit_A import validstate_tight
+from algos.TightFit_A import TightFit_A
+from algos.TightFit_B import TightFit_B
+from bases.base_a import base_a
+from bases.base_b import base_b
+from bases.base_c import base_c
+from bases.base_dynamic import base_dynamic
 from bases.evaluate_base import evaluate_base
-from experiments.sa_tight import sa_tight
+from experiments.all import perform_all_experiments
+from experiments.sa_2 import sa_tight
 from neighborfunctions.neighbor_random import neighbor_random
 from neighborfunctions.neighbor_tight import neighbor_tight
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
+
+
+
+
+
 """
 # example commands
+
+python . run_main # most relevant
+
 
 python . sat
 python . full # runs all single_experiments
@@ -29,6 +46,71 @@ python . single algo=ex pg=True nh=40 vis=True
 python . single other=evoplot f=somekey
 """
 
+def run_main(frame):
+    problem_instances_nh = [40,70,100]
+    problem_instances_pg = [True, False]
+    bases = [Groundplan, base_a, base_b, base_c, base_dynamic]
+    tight_algos = [TightFitWB, TightFit_A, TightFit_B]
+    pprint(
+        perform_all_experiments(
+            problem_instances_nh,
+            problem_instances_pg,
+            bases,
+            {
+                "Zoom":{
+                    "algorithms":tight_algos,
+                    "constants":
+                        {
+                            'min':1.0,
+                            'max':10.0,
+                            'interval':1,
+                             'interval_shrink_factor': 0.75,
+                             'min_interval':0.5
+                         }
+                 },
+                 "HillClimberRandom":{
+                     "constants":{
+                         "max_iterations":100
+                     }
+                 },
+                 #
+                 #"SimulatedAnnealing_1":{
+                 #    "algorithms":[TightFitWB],
+                 #    "constants":{
+                 #        "neigbor_functions" : [neighbor_tight, neighbor_random],
+                 #        "init_state_functions": []
+                 #    }
+                 #},
+                 "SimulatedAnnealing_2":{
+                     "algorithms":tight_algos,
+                     "constants":{
+                         "max_iterations": 100,
+                         'min': 1,
+                         'max': 10
+                     }
+                 }
+            },
+            frame
+        )
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def sat(frame):
     s = sa_tight(1000, True, 100,frame, TightFitWB)
     s = HillClimber(s, 10000).getPlan()
@@ -36,7 +118,7 @@ def sat(frame):
 
 def full_clean(frame):
     from experiments.all import perform_all_experiments
-    perform_all_experiments(frame)
+    perform_all_experiments([40,70,100],[True,False])
 
 def parse_boolean(s): return s == "True"
 
@@ -54,7 +136,7 @@ def parse_generate_neigbor_function(s):
 
 def parse_init_state(s, base):
     if s == "rndm": return HillClimber(base,num_iterations=1000).getPlan()
-    elif s == "tight": return validstate_tight(base, 1.0, 1.0, 1.0).getPlan()
+    elif s == "tight": return TightFit_A(base, 1.0, 1.0, 1.0).getPlan()
 
 def single_experiment(args,frame):
 
@@ -121,6 +203,7 @@ def parseArgs(strs):
         if i == "full": args["full"] = True
         elif i == "single": args["single"] = True
         elif i == "cluster": args["cluster"] = True
+        elif i == "run_main": args["run_main"] = True
         elif i == "sat": args["sat"] = True
         elif i == "fullclean": args["fullclean"] = True
         else:
@@ -135,11 +218,13 @@ def reactToInput(args):
 
     if "sat" in args: sat(frame)
     if "fullclean" in args: full_clean(frame)
+    if "run_main" in args: run_main(frame)
     elif "full" in args: all_experiments(frame)
     else: frame.repaint(single_experiment(args,frame))
 
 # set working dir
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 # run program
 reactToInput(parseArgs(sys.argv))

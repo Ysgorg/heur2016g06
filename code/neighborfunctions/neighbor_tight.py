@@ -1,6 +1,6 @@
 from random import random
 
-from algos.TightFit_A import validstate_tight
+from algos.TightFit_A import TightFit_A
 
 
 def neighbor_tight(state, temperature):
@@ -17,7 +17,7 @@ def neighbor_tight(state, temperature):
         seed.removeResidence(seed.getResidence(0))
 
     def generate_state(i, j, k):
-        return validstate_tight(seed.deepCopy(), i, j, k).getPlan().deepCopy()
+        return TightFit_A(seed.deepCopy(), i, j, k).getPlan().deepCopy()
 
     def factor():
         v = random() * (1 + temperature)

@@ -6,7 +6,7 @@ from districtobjects.Mansion import Mansion
 # a modified evolver, returns first valid solution it finds
 
 
-class validstate_tight2(object):
+class TightFit_B(object):
 
     def getPlan(self):
         return self.plan
@@ -69,5 +69,5 @@ class validstate_tight2(object):
         except Exception:
             return plan
 
-    def __init__(self, plan, i, j, k):
+    def __init__(self, plan, i, j, k, frame=None):
         self.plan = self.develop_ground_plan(plan.deepCopy(), i, j, k)

@@ -32,7 +32,6 @@ class ConfigLogger(object):
         config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND,
                   [], [], [], metad['deaths'], metad['mutations']]
         for i in plan.getResidences():
-            # print "dsadsadsa",i.minimumClearance
             config[2].append([i.x, i.y, minify(i.getType()), i.flipped  # , i.minimumClearance
                               ])
         for i in plan.getWaterbodies():
@@ -90,3 +89,9 @@ class ConfigLogger(object):
     def createConfigLog(cls, key):
         with open(cls.FOLDER + key, 'w') as data:
             json.dump({'d': []}, data)
+
+    @classmethod
+    def clean_out_data(cls):
+        import os
+        filelist = [f for f in os.listdir(cls.FOLDER)]
+        for f in filelist: os.remove(cls.FOLDER + f)

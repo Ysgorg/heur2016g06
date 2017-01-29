@@ -19,7 +19,7 @@ def get_acceptance_probability(
 
 def get_temperature(i, max_i):
     # return float(max_i - i)
-    return (1.0 - (float(i + 1) / float(max_i)))
+    return 1.0 - (float(i + 1) / float(max_i))
 
 
 def simulated_annealing(
@@ -51,7 +51,7 @@ def simulated_annealing(
         if neighbor.getPlanValue() < state.getPlanValue():
             accept_probability = get_acceptance_probability(
                 state.getPlanValue(), neighbor.getPlanValue(), temperature,
-                                                            max_iterations)
+                max_iterations)
             random_val = random()
 
             if accept_probability > random_val:

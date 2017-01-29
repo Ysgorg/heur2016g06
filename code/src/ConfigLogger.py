@@ -79,7 +79,6 @@ class ConfigLogger(object):
 
     @classmethod
     def loadConfig(cls, key):
-        print key, cls.FOLDER + key
         with open(cls.FOLDER + key, 'r') as data:
             d = json.load(data)
             d = d['d']

@@ -38,7 +38,7 @@ class validstate_cluster(object):
 
         return self.plan
 
-    def compute_residence_groups(self):
+    def compute_residence_groups(self, plan):
 
         def define_cluster(cols, rows, housetype, clearance_factor):
             # input number houses per col and row, the residence class, and the
@@ -61,13 +61,20 @@ class validstate_cluster(object):
         # while True:pass
         pass
 
-    def __init__(
-        self, plan, timeout, visualize=False, clearance_familyhome=3.8, clearance_bungalow=4.5,
-                 clearance_mansion=2.5):
+    def valid_plan(self, in_plan):
+        if len(self.expects) != len(in_plan.puts): return False
+        for i in in_plan.puts:
+            if i not in self.expects:
+                return False
+        return True
 
-        self.timeout = timeout
-        self.visualize = visualize
-        self.factors = [
-            clearance_familyhome, clearance_bungalow, clearance_mansion]
-        self.plan = plan.deepCopy()
-        self.put_clusters(self.compute_residence_groups())
+    def __init__(self, plan, i, j, k, frame=None):
+
+        self.name = "TightFit_Cluster"
+        self.expects = ['Waterbodies', "Playgrounds"]
+        self.places = ["Residences"]
+        self.factors = [i, j, k]
+        if self.valid_plan(plan):
+            self.plan = self.put_clusters(self.compute_residence_groups(plan))
+        else:
+            self.plan = None

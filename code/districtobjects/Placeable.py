@@ -1,6 +1,5 @@
 class Placeable(object):
-
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, flipped=False):
         self.x = x
         self.y = y
         self.width = width
@@ -10,6 +9,7 @@ class Placeable(object):
         self.y1 = self.y
         self.y2 = self.y1 + self.height
         self.flipped = False
+        if flipped: self.flip()
 
     def setX(self, x): self.x = x
 

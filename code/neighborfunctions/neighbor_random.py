@@ -97,6 +97,6 @@ def neighbor_random(state, temperature):
         if res[1]:
             state = res[0].deepCopy()
         else:
-            print "invalid"
+            pass
 
     return state

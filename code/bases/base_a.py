@@ -4,14 +4,15 @@ from src.Groundplan import Groundplan
 
 
 class base_a(object):
+    def __init__(self, num_houses, enable_playground, width, height):
+        self.name = 'base_a'
+        self.puts = ['Waterbodies', 'Playgrounds']
 
-    def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
-        self.plan = self.develop_ground_plan()
-        # self.frame = GroundplanFrame(self.plan)
-        # self.frame.setPlan()
-        # self.frame.root.mainloop()
+        self.width = width
+        self.height = height
+        self.plan = self.develop_ground_plan(width, height)
 
     def deepCopy(self):
         return self.plan.deepCopy()
@@ -35,8 +36,9 @@ class base_a(object):
         plan.addPlayground(Playground(x2, int(y - int(plan.HEIGHT / 5) / 2)))
         return plan
 
-    def develop_ground_plan(self):
-        plan = Groundplan(self.num_houses, self.enable_playground)
+    def develop_ground_plan(self, width, height):
+        plan = Groundplan(self.num_houses, self.enable_playground, name=self.name, width=width, height=height,
+                          puts=self.puts)
         if self.enable_playground:
             self.place_playgrounds(plan)
         self.place_water(plan)

@@ -1,3 +1,5 @@
+import inspect
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Ground import Ground
@@ -8,32 +10,138 @@ from districtobjects.Waterbody import Waterbody
 
 
 class Groundplan(object):
-    WIDTH = 200
-    HEIGHT = 170
-    AREA = WIDTH * HEIGHT
-    MINIMUM_WATER_PERCENTAGE = 0.2
-    MAXIMUM_WATER_BODIES = 4
-    MINIMUM_FAMILYHOMES_PERCENTAGE = 0.50
-    MINIMUM_BUNGALOW_PERCENTAGE = 0.30
-    MINIMUM_MANSION_PERCENTAGE = 0.20
-    MAXIMUM_PLAYGROUND_DISTANCE = 50
-    MINIMUM_WATERBODY_RATIO = 4
+    def toString(self):
+        return [[name, thing] for name, thing in inspect.getmembers(self)]
 
-    def __init__(self, number_of_houses, playground):
-        self.params = []
-        self.PLAYGROUND = playground
+    @staticmethod
+    def deserialize(s):
+        def parse_residence_type(k):
+            if k == "Mansion":
+                return Mansion
+            elif k == "Bungalow":
+                return Bungalow
+            elif k == "FamilyHome":
+                return FamilyHome
+
+        return Groundplan(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10], s[11], s[12],
+                          [parse_residence_type(r[2])(r[0], r[1], flipped=r[3], minimumClearance=r[4],
+                                                      original_min_clearance=r[5]) for r in s[13]],
+                          [Waterbody(wb.x, wb.y, wb.width, wb.height) for wb in s[14]],
+                          [Playground(pg.x, pg.y, pg.flipped) for pg in s[15]],
+                          s[16])
+
+    def serialize(self):
+        return [
+            self.NUMBER_OF_HOUSES,
+            self.PLAYGROUND,
+            self.name,
+            self.puts,
+            self.WIDTH,
+            self.HEIGHT,
+            self.MINIMUM_WATERBODY_RATIO,
+            self.MAXIMUM_PLAYGROUND_DISTANCE,
+            self.MINIMUM_MANSION_PERCENTAGE,
+            self.MINIMUM_BUNGALOW_PERCENTAGE,
+            self.MINIMUM_FAMILYHOMES_PERCENTAGE,
+            self.MAXIMUM_WATER_BODIES,
+            self.MINIMUM_WATER_PERCENTAGE,
+            [[r.x, r.y, r.getType(), r.flipped, r.minimumClearance, float(r.original_min_clearance)] for r in
+             self.residences],
+            [[wb.x, wb.y, wb.width, wb.height, wb.flipped] for wb in self.waterbodies],
+            [[pg.x, pg.y, pg.flipped] for pg in self.playgrounds],
+            self.params
+        ]
+
+    def deepCopy(self):
+
+        c = Groundplan(self.NUMBER_OF_HOUSES,
+                       self.PLAYGROUND,
+                       name=self.name,
+                       puts=self.puts,
+                       width=self.WIDTH,
+                       height=self.HEIGHT,
+                       min_wb_ratio=self.MINIMUM_WATERBODY_RATIO,
+                       max_pg_distance=self.MAXIMUM_PLAYGROUND_DISTANCE,
+                       mansion_proportion=self.MINIMUM_MANSION_PERCENTAGE,
+                       bungalow_proportion=self.MINIMUM_BUNGALOW_PERCENTAGE,
+                       familyhome_proportion=self.MINIMUM_FAMILYHOMES_PERCENTAGE,
+                       max_wbs=self.MAXIMUM_WATER_BODIES,
+                       min_water_proportion=self.MINIMUM_WATER_PERCENTAGE,
+                       residences=self.residences,
+                       waterbodies=self.waterbodies,
+                       playgrounds=self.playgrounds,
+                       params=self.params,
+                       )
+        return c
+
+    def __init__(self,
+
+                 number_of_houses=10,  #
+                 enable_playground=True,  #
+                 name="groundplan",  #
+                 puts=[],  #
+                 width=200,  #
+                 height=170,  #
+                 min_wb_ratio=4,  #
+                 max_pg_distance=50,  #
+                 mansion_proportion=0.2,  #
+                 bungalow_proportion=0.3,  #
+                 familyhome_proportion=0.5,  #
+                 max_wbs=4,  #
+                 min_water_proportion=0.2,  #
+                 residences=[],
+                 waterbodies=[],
+                 playgrounds=[],
+                 params=[]  #
+                 ):
+
         self.NUMBER_OF_HOUSES = number_of_houses
+        self.PLAYGROUND = enable_playground
+        self.name = name
+        self.puts = puts
+        self.WIDTH = width
+        self.HEIGHT = height
+        self.MINIMUM_WATERBODY_RATIO = min_wb_ratio
+        self.MAXIMUM_PLAYGROUND_DISTANCE = max_pg_distance
+        self.MAXIMUM_WATER_BODIES = max_wbs
+        self.MINIMUM_WATER_PERCENTAGE = min_water_proportion
+        self.MINIMUM_MANSION_PERCENTAGE = mansion_proportion
+        self.MINIMUM_BUNGALOW_PERCENTAGE = bungalow_proportion
+        self.MINIMUM_FAMILYHOMES_PERCENTAGE = familyhome_proportion
+        self.residences = []
+        self.waterbodies = []
+        self.playgrounds = []
+        self.params = params
+
+        self.AREA = self.WIDTH * self.HEIGHT
 
         self.ground = Ground(0, 0, self.WIDTH, self.HEIGHT)
 
+        # counters
         self.number_of_familyhomes = 0
         self.number_of_bungalows = 0
         self.number_of_mansions = 0
         self.num_houses = 0
 
-        self.residences = []
-        self.waterbodies = []
-        self.playgrounds = []
+        # avoid accidental shared pointers
+
+        for i in playgrounds:
+            pg = Playground(i.getX(), i.getY())
+            if i.flipped:
+                pg.flip()
+            self.addPlayground(pg)
+        for i in residences:
+            h = self.getResidenceFunc(i.getType())(i.getX(), i.getY())
+            if i.flipped:
+                h.flip()
+            h.original_min_clearance = i.original_min_clearance
+            h.minimumClearance = i.minimumClearance
+            self.addResidence(h)
+        for i in waterbodies:
+            wb = Waterbody(i.getX(), i.getY(), i.getWidth(), i.getHeight())
+            if i.flipped:
+                wb.flip()
+            self.addWaterbody(wb)
 
     @staticmethod
     def getResidenceFunc(t):
@@ -44,28 +152,6 @@ class Groundplan(object):
             return Bungalow
         elif t == "Mansion":
             return Mansion
-
-    def deepCopy(self):
-        plan = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND)
-        for i in self.residences:
-            h = self.getResidenceFunc(i.getType())(i.getX(), i.getY())
-            if i.flipped:
-                h.flip()
-            h.original_min_clearance = i.original_min_clearance
-            h.minimumClearance = i.minimumClearance
-            plan.addResidence(h)
-        for i in self.waterbodies:
-            wb = Waterbody(i.getX(), i.getY(), i.getWidth(), i.getHeight())
-            if i.flipped:
-                wb.flip()
-            plan.addWaterbody(wb)
-        for i in self.playgrounds:
-            pg = Playground(i.getX(), i.getY())
-            if i.flipped:
-                pg.flip()
-            plan.addPlayground(pg)
-        plan.params = self.params
-        return plan
 
     def getNumberOfHouses(self):
         return self.num_houses
@@ -133,7 +219,7 @@ class Groundplan(object):
         def correctNumElements():
 
             def correctProportion(num_elements, threshold):
-                if self.NUMBER_OF_HOUSES < 1 : return False
+                if self.NUMBER_OF_HOUSES < 1: return False
                 return float(num_elements) / self.NUMBER_OF_HOUSES == threshold
 
             if (len(self.waterbodies) <= self.MAXIMUM_WATER_BODIES
@@ -141,7 +227,7 @@ class Groundplan(object):
                 and correctProportion(self.number_of_bungalows, self.MINIMUM_BUNGALOW_PERCENTAGE)
                 and correctProportion(self.number_of_mansions, self.MINIMUM_MANSION_PERCENTAGE)
                 and self.num_houses == self.NUMBER_OF_HOUSES
-                    ):
+                ):
                 return True
             else:
                 return False
@@ -171,8 +257,8 @@ class Groundplan(object):
         if ((o.y1 < self.ground.y1 or o.x2 > self.ground.x2 or o.y2 > self.ground.y2 or o.x1 < self.ground.x1)
             or (isinstance(o, Residence) and (o.y1 < o.minimumClearance or
                                                       o.x2 > self.ground.x2 -
-                                                          o.minimumClearance or o.y2 > self.ground.y2 -
-                                                              o.minimumClearance
+                                                      o.minimumClearance or o.y2 > self.ground.y2 -
+                o.minimumClearance
                                               or o.x1 < o.minimumClearance))):
             return False
 

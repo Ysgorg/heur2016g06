@@ -14,24 +14,28 @@ def get_valid_water_dimensions(plan, num_bodies):
 
 
 class base_b(object):
+    def __init__(self, num_houses, enable_playground, width, height):
 
-    def __init__(self, enable_playground, num_houses):
+        self.name = 'base_b'
+        self.puts = ['Waterbodies', 'Playgrounds']
+
         self.enable_playground = enable_playground
         self.num_houses = num_houses
-        self.plan = self.develop_ground_plan()
+        self.plan = self.develop_ground_plan(width, height)
 
     def deepCopy(self):
         return self.plan.deepCopy()
 
-
-    def develop_ground_plan(self):
+    def develop_ground_plan(self, width, height):
+        plan = Groundplan(self.num_houses, self.enable_playground, name=self.name, width=width, height=height,
+                          puts=self.puts)
 
         flip = False
 
-        plan = Groundplan(self.num_houses, self.enable_playground)
         dims = get_valid_water_dimensions(plan, 1)
         wb = Waterbody(0, 0, dims[0], dims[1])
         plan.addWaterbody(wb)
+
         if not self.enable_playground:
             return plan
 

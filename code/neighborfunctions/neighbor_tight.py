@@ -27,7 +27,7 @@ def neighbor_tight(state, temperature):
 
     def set_param(p, f):
         if random() < 0.9:
-            p += f * (0.5)
+            p += f * 0.5
             if p > MAX:
                 p = MAX
             elif p < MIN:

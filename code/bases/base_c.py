@@ -7,25 +7,25 @@ from src.Groundplan import Groundplan
 def get_valid_water_dimensions(plan, num_bodies):
     # input plan and desired number of water bodies
     # output the dimensions that give exactly MINIMUM_WATER_PERCENTAGE
-    x = math.sqrt(
-        ((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
+    x = math.sqrt(((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
     return [x, x * 4]
 
 
 class base_c(object):
+    def __init__(self, num_houses, enable_playground, width, height):
+        self.name = 'base_c'
+        self.puts = ['Waterbodies']
 
-    def __init__(self, enable_playground, num_houses):
         self.enable_playground = enable_playground
         self.num_houses = num_houses
-        self.plan = self.develop_ground_plan()
+        self.plan = self.develop_ground_plan(width, height)
 
     def deepCopy(self):
         return self.plan.deepCopy()
 
-
-    def develop_ground_plan(self):
-
-        plan = Groundplan(self.num_houses, self.enable_playground)
+    def develop_ground_plan(self, width, height):
+        plan = Groundplan(self.num_houses, self.enable_playground, name=self.name, width=width, height=height,
+                          puts=self.puts)
 
         dims = get_valid_water_dimensions(plan, 4)
 

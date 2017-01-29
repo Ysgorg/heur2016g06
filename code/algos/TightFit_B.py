@@ -7,9 +7,12 @@ from districtobjects.Mansion import Mansion
 
 
 class TightFit_B(object):
+    name = "TightFit_B"
+    expects = ['Waterbodies', "Playgrounds"]
+    puts = ["Residences"]
 
     def getPlan(self):
-        return self.plan
+        return self.plan.deepCopy()
 
     @staticmethod
     def determine_goal(plan, r):
@@ -31,7 +34,7 @@ class TightFit_B(object):
             res[1] = plan.HEIGHT - res[1]
         return res
 
-    def coords(self, plan, rt, factor, t):
+    def coords(self, plan, rt, factor, t, frame):
 
         r = rt(0, 0)
         c = r.minimumClearance * factor
@@ -60,14 +63,17 @@ class TightFit_B(object):
 
         return plan
 
-    def develop_ground_plan(self, plan, i, j, k):
+    def develop_ground_plan(self, plan, i, j, k, frame):
         try:
-            plan = self.coords(plan, FamilyHome, i, 0)
-            plan = self.coords(plan, Bungalow, j, 1)
-            plan = self.coords(plan, Mansion, k, 2)
+            plan = self.coords(plan, FamilyHome, i, 0, frame)
+            plan = self.coords(plan, Bungalow, j, 1, frame)
+            plan = self.coords(plan, Mansion, k, 2, frame)
             return plan
         except Exception:
             return plan
 
     def __init__(self, plan, i, j, k, frame=None):
-        self.plan = self.develop_ground_plan(plan.deepCopy(), i, j, k)
+
+        self.factors = [i, j, k]
+        self.plan = self.develop_ground_plan(plan.deepCopy(), i, j, k, frame).deepCopy()
+        # frame.repaint(self.plan)

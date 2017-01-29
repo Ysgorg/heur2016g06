@@ -7,6 +7,9 @@ from districtobjects.Waterbody import Waterbody
 
 
 class TightFitWB(object):
+    name = "TightFit_WB"
+    expects = []
+    puts = ["Waterbodies", "Residences"]
 
     def compute_clearance(self, r):
         if isinstance(r, Mansion):
@@ -60,11 +63,9 @@ class TightFitWB(object):
 
                     m = Mansion(x + self.wb_width + scale, y)
                     m.minimumClearance = t.minimumClearance
-
                     if plan.correctlyPlaced(m):
                         self.num_mansions_in_grid += 1
                         plan.addResidence(m)
-
             return plan.deepCopy()
 
         i = 0
@@ -121,7 +122,7 @@ class TightFitWB(object):
                 superBreak = False
                 continue
             x += r1.width + \
-                max(self.compute_clearance(r(0, 0)), r1.minimumClearance)
+                 max(self.compute_clearance(r(0, 0)), r1.minimumClearance)
 
         return plan
 
@@ -133,9 +134,8 @@ class TightFitWB(object):
     @staticmethod
     def compute_other_wb_side(plan, num_bodies, side_1):
         side_2 = (
-            (plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / side_1
+                     (plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / side_1
         if max(side_1, side_2) / min(side_1, side_2) > plan.MINIMUM_WATERBODY_RATIO:
-            print "Too high wb proportion:", max(side_1, side_2) / min(side_1, side_2)
             raise Exception
         else:
             return side_2
@@ -145,7 +145,14 @@ class TightFitWB(object):
 
     def __init__(self, plan, i, j, k, frame=None):
 
+        self.name = "TightFit_WB"
+        self.expects = []
+        self.puts = ["Waterbodies", "Residences"]
+
+        self.factors = [i, j, k]
+
         self.num_mansions_in_grid = 0
+
         self.f_clearance = i
         self.b_clearance = j
         self.m_clearance = k
@@ -153,10 +160,9 @@ class TightFitWB(object):
         self.wb_width = self.compute_wb_min_side_length(plan, 4)
 
         self.mansion_tresh = plan.NUMBER_OF_HOUSES * plan.MINIMUM_MANSION_PERCENTAGE
-
         self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (
             plan.MINIMUM_MANSION_PERCENTAGE + plan.MINIMUM_BUNGALOW_PERCENTAGE)
 
-        self.plan = self.place_residences(
-            plan.deepCopy(), frame=frame).deepCopy()
+        self.plan = self.place_residences(plan.deepCopy(), frame=frame).deepCopy()
+        # frame.repaint(self.plan)
         self.plan.params = [i, j, k]

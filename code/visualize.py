@@ -41,7 +41,7 @@ def doit2(k1,k2,r):
         line.append(result[k2])
 
     import matplotlib.pyplot as plt
-    plt.plot(config['Problem instances']['Number of residences'],line)
+    plt.plot(config['Problem instances']['Number of residences'],line,marker='o',linestyle='--',color='r')
     plt.xlabel('Number of Residences')
     plt.ylabel(k2.upper())
     plt.savefig(k1+k2+'.png')

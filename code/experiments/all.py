@@ -51,7 +51,7 @@ def perform_all_experiments(experiment_config, frame=None):
 
                                     report['Results'].append({
                                         'coordinates': {'nh': nh, 'pg': pg, 'dim': dim, 'prop': prop,
-                                                        'experiment key': experiment_key, 'base': base.name,
+                                                        'algo': experiment_key, 'base': base.name,
                                                         'tf': t.name},
                                         'result': param_search_method(base.deepCopy(), experiment, t, frame)
                                     })
@@ -64,7 +64,7 @@ def perform_all_experiments(experiment_config, frame=None):
                                     report['Results'].append(
                                         {
                                             'coordinates': {'nh': nh, 'pg': pg, 'dim': dim, 'prop': prop,
-                                                            'experiment key': experiment_key, 'base': base.name,
+                                                            'algo': experiment_key, 'base': base.name,
                                                             'nc': i},
                                             'result': param_search_method(base.deepCopy(), experiment, i, frame)
                                         }

@@ -41,6 +41,7 @@ def perform_all_experiments(experiment_config, frame=None):
                         for b in experiment['variables']['Bases']:
 
                             base = b(nh, pg, width=dim['width'], height=dim['height']).deepCopy()
+                            print base.name
 
                             if experiment_key == 'Zoom' or experiment_key == 'SimulatedAnnealing_2':
 

@@ -46,6 +46,26 @@ def multiline_double_plot(
             # plot the values
 
 
+def plot_variable(x_series_lists, y_series_lists, y_label, y_tick_labels, title):
+    # create and save a plot titled title, plots each x_series in x_series_list
+    fig, ax1 = plt.subplots()
+
+    ax1.plot(y_series_lists[0], line, marker='o', linestyle='--')
+    ax1.set_xlabel(x_series_lists)
+    ax1.set_ylabel(y_label[0], color='b')
+    ax1.tick_params(y_tick_labels[0], colors='b')
+
+    ax2 = ax1.twinx()
+    ax2.plot(y_series_lists[1], line, marker='o', linestyle='-.')
+    ax2.set_ylabel(y_label[1], color='r')
+    ax2.tick_params(y_tick_labels[1], colors='r')
+
+    plt.title(title)
+    fig.tight_layout()
+    plt.show()
+    plt.gcf().clear()
+
+
 def test_mdp():  # test multiline double plot
 
     multiline_double_plot([

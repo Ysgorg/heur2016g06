@@ -4,7 +4,7 @@ from pprint import pprint
 
 import time
 
-from algos.cleverer import make_great_plan
+from algos.c2 import make_great_plan
 from experiments.all import perform_all_experiments
 from main_config import main_config
 from src.Groundplan import Groundplan
@@ -22,7 +22,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 frame = GroundplanFrame(Groundplan())
 
-make_great_plan(frame)
+if len(sys.argv) > 1 and sys.argv[1] == "other":
+    make_great_plan(frame)
+    exit(0)
 
 
 import json

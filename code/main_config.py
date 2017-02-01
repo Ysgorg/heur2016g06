@@ -29,7 +29,7 @@ main_config = {
         #        "init_state_functions": []
         #    }
         # },
-        "SimulatedAnnealing_2": {
+        "SA": {
             "variables": {
                 "Bases": bases,
                 "Tight Fit functions": tight_fit_algos
@@ -53,7 +53,7 @@ main_config = {
                 'min_interval': 0.5
             }
         },
-        "HillClimberRandom": {
+        "HC": {
             "variables": {
                 "Bases": bases,
                 "Number of candidate moves": [1]

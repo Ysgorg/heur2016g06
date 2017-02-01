@@ -62,7 +62,7 @@ test_config = {
     },
     "Experiments": {
         "Zoom":zoom,
-        "HillClimberRandom":hc,
-        "SimulatedAnnealing_2": sa_2
+        "HC":hc,
+        "SA": sa_2
     }
 }

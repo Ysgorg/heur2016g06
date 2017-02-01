@@ -4,10 +4,15 @@ Y1 = 1
 Y2 = 2
 
 
-def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,name):
+def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,names):
 
-    import numpy as np
+
+
+
+
     import matplotlib.pyplot as plt
+    import numpy as np
+
 
     fig, ax1 = plt.subplots()
 
@@ -25,9 +30,8 @@ def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,na
 
     for i in range(len(y1_list)):
 
-        pretty = name
-        l1 = pretty
-        l2 = pretty
+        l1 = names[i]
+        l2 = names[i]
 
         s1 = y1_list[i]
         s2 = y2_list[i]
@@ -48,17 +52,14 @@ def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,na
 
 
 def prettify(param):
-    parts = ['algo', 'base']
-    if 'nc' in param: parts.append('nc')
-    elif 'tf' in param : parts.append('tf')
 
-    s = ''
-    for i in parts:
-        if i=='base':
-            bst = str(param['base'])
-            s += bst[len(bst)-1]
-        else:
-            s += str(param[i])[:2]+':'
+    parts = [param['algo'], param['base']]
+    if 'nc' in param: parts.append(param['nc'])
+    elif 'tf' in param : parts.append(param['tf'])
+    s=''
+    for i in parts: s+=str(i)+':'
+
+    assert isinstance(s,str)
     return s
 
 
@@ -83,6 +84,7 @@ def multiline_double_plot(
     x_lists = []
     y1_lists = []
     y2_lists = []
+    names = []
 
     for series in dataseries:
         assert isinstance(series, list)
@@ -102,8 +104,6 @@ def multiline_double_plot(
         x_list = []
         y1_list = []
         y2_list = []
-        names = []
-
         for d in datapoints:
             assert isinstance(d, list)
             assert len(d) == 3
@@ -114,14 +114,16 @@ def multiline_double_plot(
             x_list.append(d[X])
             y1_list.append(d[Y1])
             y2_list.append(d[Y2])
-
-        names.append(prettify(meta))
+        prettified = prettify(meta)
+        assert isinstance(prettified,str)
+        print ':::::',prettified
+        names.append(prettified)
         x_lists.append(x_list)
         y1_lists.append(y1_list)
         y2_lists.append(y2_list)
 
         # plot the values
-
+    print names
     plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label,names)
 
 
@@ -158,7 +160,7 @@ def test_mdp():  # test multiline double plot
                 'pg': False,
                 'nh': '**variant**',
                 'base': 'base_a',
-                'algo': 'SimmulatedAnnealing_2',
+                'algo': 'SA',
                 'tf': 'TightFit_WB',
                 'variant': 'nh'
             },

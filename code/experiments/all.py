@@ -30,8 +30,6 @@ def perform_all_experiments(experiment_config, frame=None):
     # loops tailored for our experiments
     # todo generify
 
-    init_time = time.time()
-
     for nh in ec['Problem instances']['Number of residences']:
         counters[0]+=1
         for pg in ec['Problem instances']['Enable playgrounds']:
@@ -47,8 +45,8 @@ def perform_all_experiments(experiment_config, frame=None):
                         if "Bases" not in experiment['variables']:continue
 
                         if experiment_key == 'Zoom': f = zoom.zoom
-                        elif experiment_key == 'SimulatedAnnealing_2': f = sa_2
-                        elif experiment_key == 'HillClimberRandom': f = hc
+                        elif experiment_key == 'SA': f = sa_2
+                        elif experiment_key == 'HC': f = hc
 
                         for b in experiment['variables']['Bases']:
 
@@ -63,8 +61,7 @@ def perform_all_experiments(experiment_config, frame=None):
 
                             # todo generify
 
-                            if experiment_key == 'Zoom' or experiment_key == 'SimulatedAnnealing_2':
-                                coordinates['max_iterations'] = experiment['variables']['Tight Fit functions']
+                            if experiment_key == 'Zoom' or experiment_key == 'SA':
                                 variable = experiment['variables']['Tight Fit functions']
                                 for v in variable:
                                     if not valid_plan(base,v):

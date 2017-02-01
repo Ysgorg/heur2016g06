@@ -81,6 +81,9 @@ class base_dynamic(object):
 
     @staticmethod
     def placePlaygrounds(plan, y_invert):
+
+
+
         dummy_pg = Playground(0, 0)
         # print "Place Playgrounds!"
         # Reach is defined by the the playground size, plus its usable radius
@@ -89,15 +92,22 @@ class base_dynamic(object):
         # print "Playground reach:", playgroundReachX, ",", playgroundReachY
 
         utilisableX = plan.WIDTH
-        utilisableY = int(plan.HEIGHT * (1 - plan.AREA * plan.MINIMUM_WATER_PERCENTAGE))
+        utilisableY = plan.HEIGHT-plan.MINIMUM_WATER_PERCENTAGE*plan.HEIGHT#int(plan.HEIGHT * (plan.AREA * plan.MINIMUM_WATER_PERCENTAGE))
+
+        print utilisableX,utilisableY
+
 
         # print "Utilisable area:", utilisableX, "x", utilisableY, "=",
         # utilisableX * utilisableY
 
         # Floor the total utilisable width and height by our playground reach
         # to find optimal number to fit
+
         numberPlaygroundsX = int(utilisableX // playgroundReachX)
         numberPlaygroundsY = int(utilisableY // playgroundReachY)
+
+        print numberPlaygroundsX,numberPlaygroundsY
+
 
         # Ceil the total utilisable width and height by our playground reach to find optimal number to fit
         # numberPlaygroundsX = int(ceil(utilisableX / playgroundReachX))
@@ -106,7 +116,8 @@ class base_dynamic(object):
         # print "Total utilisable playgrounds:", totalPlaygrounds,
         # numberPlaygroundsX, "x", numberPlaygroundsY, "\n"
 
-        for x in range(1, numberPlaygroundsX + 1):
+        for x in range(1, numberPlaygroundsX+1):
+
             xSpread = X_SPREAD
             yOffset = Y_OFFSET
 
@@ -117,7 +128,8 @@ class base_dynamic(object):
             locationX = ((plan.MAXIMUM_PLAYGROUND_DISTANCE * x) + X_OFFSET) + (
                 plan.MAXIMUM_PLAYGROUND_DISTANCE * (x - 1)) + xSpread
 
-            for y in range(1, numberPlaygroundsY + 1):
+            for y in range(1,numberPlaygroundsY+1):
+
                 ySpread = Y_SPREAD
 
                 if y <= numberPlaygroundsY / 2:  # if y is in the lower half, invert the offset
@@ -129,7 +141,12 @@ class base_dynamic(object):
                 playground = Playground(locationX, locationY)
                 # if plan.correctlyPlaced(playground, verbose=True):
                 #    print "Playground placed at:", locationX, ",", locationY
-                plan.addPlayground(playground)
+                if plan.correctlyPlaced(playground):
+                    plan.addPlayground(playground)
+                    assert len(plan.playgrounds)>0
+                    print 'ye'
+                else:
+                    print 'no'
                 # else:
                 # print "Could not place playground:", locationX, ",",
                 # locationY
@@ -138,12 +155,14 @@ class base_dynamic(object):
 
     def develop_ground_plan(self, width, height):
         plan = Groundplan(self.num_houses, self.enable_playground, name=self.name, width=width, height=height,
-                          puts=self.puts)
+                          puts=self.puts).deepCopy()
         # frame = GroundplanFrame(plan)
 
-        self.placeWater(plan, 1)
+        plan = self.placeWater(plan, 1).deepCopy()
+
         if plan.PLAYGROUND:
-            self.placePlaygrounds(plan, 0)
+            plan = self.placePlaygrounds(plan, 0).deepCopy()
+            assert len(plan.playgrounds)>0
 
         """
         for num_water_bodies in range(MIN_WATER_BODIES, MAX_WATER_BODIES+1):

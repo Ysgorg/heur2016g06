@@ -37,7 +37,13 @@ class Placeable(object):
 
     def flip(self):
         self.flipped = False if self.flipped else True
-        self.width, self.height = self.height, self.width
+        t = self.width
+        self.width = self.height
+        self.height = t
+
+        self.x2 = self.x1 + self.width
+        self.y2 = self.y1 + self.height
+
         return self
 
     def toString(self):

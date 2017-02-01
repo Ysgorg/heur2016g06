@@ -2,6 +2,9 @@ from Tkinter import *
 
 
 class GroundplanFrame(object):
+
+    extra = 11
+
     MARGINLEFT = 25
     MARGINTOP = 25
 
@@ -29,6 +32,21 @@ class GroundplanFrame(object):
 
         self.text = Text(self.root, bd=4, width=80, height=2)
 
+    def draw_circumference(self, o, r, col):
+
+
+        print r
+
+        self.line(o.x1, o.y1 - r, o.x2, o.y1 - r, col)
+        self.line(o.x2 + r, o.y1, o.x2 + r, o.y2, col)
+        self.line(o.x1 - r, o.y1, o.x1 - r, o.y2, col)
+        self.line(o.x1, o.y2 + r, o.x2, o.y2 + r, col)
+        self.circular_edge(o.x1, o.y1, r, -1.0, -1.0)
+        self.circular_edge(o.x1, o.y2, r, -1.0, 1.0)
+        self.circular_edge(o.x2, o.y1, r, 1.0, -1.0)
+        self.circular_edge(o.x2, o.y2, r, 1.0, 1.0)
+
+
     def setPlan(self):
         for residence in self.plan.getResidences():
             self.canvas.create_rectangle(residence.getX() * self.SCALE,
@@ -38,6 +56,7 @@ class GroundplanFrame(object):
                                          (residence.getY() + residence.getHeight()) *
                                          self.SCALE,
                                          fill=residence.getColor())
+            self.draw_circumference(residence,residence.minimumClearance,'black')
 
         for waterbody in self.plan.getWaterbodies():
             self.canvas.create_rectangle(waterbody.getX() * self.SCALE,
@@ -48,6 +67,7 @@ class GroundplanFrame(object):
                                          self.SCALE,
                                          fill=self.COLOR_WATER)
 
+
         for playground in self.plan.getPlaygrounds():
             self.canvas.create_rectangle(playground.getX() * self.SCALE,
                                          playground.getY() * self.SCALE,
@@ -57,14 +77,8 @@ class GroundplanFrame(object):
                                          self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
 
-            # For visualising the effective area
-            r = 57.5
-            x0, y0, x1, y1 = playground.getX() - r, playground.getY() - r, playground.getX(
-            ) + playground.getWidth() + r, playground.getHeight() + playground.getY() + r
-            x0, y0, x1, y1 = map(
-                lambda x: x * self.SCALE, (x0, y0, x1, y1))  # Scale the coords
-            self.canvas.create_rectangle(x0, y0, x1, y1,
-                                         outline=self.COLOR_PLAYGROUND, width=1)
+            self.draw_circumference(playground,self.plan.MAXIMUM_PLAYGROUND_DISTANCE ,'green')
+
 
         self.text.insert(INSERT, "Value of plan is: ")
         self.text.insert(INSERT, self.plan.getPlanValue())
@@ -82,6 +96,28 @@ class GroundplanFrame(object):
 
         self.canvas.create_line(
             x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
+
+    def circular_edge(self,x,y,distance,x_dir,y_dir):
+
+        def compute_y(x,distance):
+
+            x = float(x)
+            distance = float(distance)
+            assert x >= 0
+            assert distance > 0
+
+            y = abs((distance**2 - x**2))**0.5
+            return y
+
+        x_dist = 0.5
+        while x_dist < distance:
+            y_dist = compute_y(x_dist,int(distance))
+            self.mark(x+x_dist*x_dir,y+y_dist*y_dir,'green')
+            x_dist+=0.5
+
+    def line(self,x1,y1,x2,y2,c):
+        self.canvas.create_line(
+            x1 * self.SCALE, y1 * self.SCALE, x2 * self.SCALE, y2 * self.SCALE, fill=c)
 
     def updateit(self):
 

@@ -58,9 +58,7 @@ def doit(r,r1,r2,r3,j):
 
 def plot_1(r):
     for r1 in r:
-        print('\n' + str(r1) + '\n')
         for r2 in r[r1]:
-            print('\n' + str(r2) + '\n')
             for r3 in r[r1][r2]:
                 for j in r[r1][r2][r3]:
                     doit(r,r1,r2,r3,j)

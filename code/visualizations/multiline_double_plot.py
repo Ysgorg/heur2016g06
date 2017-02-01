@@ -4,6 +4,64 @@ Y1 = 1
 Y2 = 2
 
 
+def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,name):
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    fig, ax1 = plt.subplots()
+
+    ax1.set_xlabel(x_label)
+
+    ax1.set_ylabel(y1_label, color='b')
+    ax1.tick_params('y', colors='b')
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel(y2_label, color='r')
+    ax2.tick_params('y', colors='r')
+
+    legends = []
+    labels = []
+
+    for i in range(len(y1_list)):
+
+        pretty = name
+        l1 = pretty
+        l2 = pretty
+
+        s1 = y1_list[i]
+        s2 = y2_list[i]
+
+        p1, = ax1.plot(x_list[i], s1, '-', label=l1)
+        p2, = ax2.plot(x_list[i], s2, '.', label=l2)
+
+        legends.append(p1)
+        legends.append(p2)
+        labels.append(l1)
+        labels.append(l2)
+
+    plt.legend(legends, labels)
+
+    fig.tight_layout()
+    plt.show()
+
+
+
+def prettify(param):
+    parts = ['algo', 'base']
+    if 'nc' in param: parts.append('nc')
+    elif 'tf' in param : parts.append('tf')
+
+    s = ''
+    for i in parts:
+        if i=='base':
+            bst = str(param['base'])
+            s += bst[len(bst)-1]
+        else:
+            s += str(param[i])[:2]+':'
+    return s
+
+
 def multiline_double_plot(
         dataseries,
         x_name="Number of houses",
@@ -13,6 +71,7 @@ def multiline_double_plot(
 
     # assert that the input is as expected
 
+
     assert isinstance(x_name, str)
     assert isinstance(y1_name, str)
     assert isinstance(y2_name, str)
@@ -20,6 +79,10 @@ def multiline_double_plot(
 
     assert isinstance(dataseries, list)
     assert len(dataseries) > 0
+
+    x_lists = []
+    y1_lists = []
+    y2_lists = []
 
     for series in dataseries:
         assert isinstance(series, list)
@@ -36,6 +99,11 @@ def multiline_double_plot(
 
         datapoints = series[1]
 
+        x_list = []
+        y1_list = []
+        y2_list = []
+        names = []
+
         for d in datapoints:
             assert isinstance(d, list)
             assert len(d) == 3
@@ -43,30 +111,24 @@ def multiline_double_plot(
             assert isinstance(d[Y1], float) or d[Y1] == 0
             assert isinstance(d[Y2], float)
 
-            # plot the values
+            x_list.append(d[X])
+            y1_list.append(d[Y1])
+            y2_list.append(d[Y2])
 
+        names.append(prettify(meta))
+        x_lists.append(x_list)
+        y1_lists.append(y1_list)
+        y2_lists.append(y2_list)
 
-def plot_variable(x_series_lists, y_series_lists, y_label, y_tick_labels, title):
-    # create and save a plot titled title, plots each x_series in x_series_list
-    fig, ax1 = plt.subplots()
+        # plot the values
 
-    ax1.plot(y_series_lists[0], line, marker='o', linestyle='--')
-    ax1.set_xlabel(x_series_lists)
-    ax1.set_ylabel(y_label[0], color='b')
-    ax1.tick_params(y_tick_labels[0], colors='b')
+    plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label,names)
 
-    ax2 = ax1.twinx()
-    ax2.plot(y_series_lists[1], line, marker='o', linestyle='-.')
-    ax2.set_ylabel(y_label[1], color='r')
-    ax2.tick_params(y_tick_labels[1], colors='r')
-
-    plt.title(title)
-    fig.tight_layout()
-    plt.show()
-    plt.gcf().clear()
 
 
 def test_mdp():  # test multiline double plot
+
+    #plot_2_vals()
 
     multiline_double_plot([
         [  # this is a separate data series. it should have it's own color in the output visualization
@@ -114,3 +176,5 @@ def test_mdp():  # test multiline double plot
             ]
         ]]
     )
+
+#test_mdp()

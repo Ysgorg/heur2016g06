@@ -10,6 +10,7 @@ from districtobjects.Waterbody import Waterbody
 
 
 class Groundplan(object):
+
     def toString(self):
         return [[name, thing] for name, thing in inspect.getmembers(self)]
 
@@ -83,7 +84,7 @@ class Groundplan(object):
                  width=200,  #
                  height=170,  #
                  min_wb_ratio=4,  #
-                 max_pg_distance=50,  #
+                 max_pg_distance=50.0,  #
                  mansion_proportion=0.2,  #
                  bungalow_proportion=0.3,  #
                  familyhome_proportion=0.5,  #
@@ -214,39 +215,27 @@ class Groundplan(object):
         self.num_houses -= 1
         self.residences.remove(residence)
 
-    def isValid(self, stage='full'):
+    def isValid(self):
 
-        def correctNumElements():
+        def correctProportion(num_elements, threshold):
+            assert float(num_elements) / self.NUMBER_OF_HOUSES == threshold
 
-            def correctProportion(num_elements, threshold):
-                if self.NUMBER_OF_HOUSES < 1: return False
-                return float(num_elements) / self.NUMBER_OF_HOUSES == threshold
+        try:
 
-            if (len(self.waterbodies) <= self.MAXIMUM_WATER_BODIES
-                and correctProportion(self.number_of_familyhomes, self.MINIMUM_FAMILYHOMES_PERCENTAGE)
-                and correctProportion(self.number_of_bungalows, self.MINIMUM_BUNGALOW_PERCENTAGE)
-                and correctProportion(self.number_of_mansions, self.MINIMUM_MANSION_PERCENTAGE)
-                and self.num_houses == self.NUMBER_OF_HOUSES
-                ):
-                return True
-            else:
-                return False
-
-        def enoughWater():
             total_wb_area = 0
             for wb in self.waterbodies:
-                if not self.correctlyPlaced(wb):
-                    return False
+                assert self.correctlyPlaced(wb)
                 total_wb_area += wb.getSurface()
             return (float(total_wb_area) / self.AREA) >= self.MINIMUM_WATER_PERCENTAGE
-
-        def residencesCorrectlyPlaced():
-            for r in self.residences:
-                if not self.correctlyPlaced(r):
-                    return False
+            assert len(self.waterbodies) <= self.MAXIMUM_WATER_BODIES
+            assert correctProportion(self.number_of_familyhomes, self.MINIMUM_FAMILYHOMES_PERCENTAGE)
+            assert correctProportion(self.number_of_bungalows, self.MINIMUM_BUNGALOW_PERCENTAGE)
+            assert correctProportion(self.number_of_mansions, self.MINIMUM_MANSION_PERCENTAGE)
+            assert self.num_houses == self.NUMBER_OF_HOUSES
+            for r in self.residences: assert self.correctlyPlaced(r)
             return True
-
-        return enoughWater() and (stage == 'base' or (residencesCorrectlyPlaced() and correctNumElements()))
+        except:
+            return False
 
     @staticmethod
     def overlap(o1, o2):
@@ -254,56 +243,36 @@ class Groundplan(object):
 
     def correctlyPlaced(self, o):
 
-        if ((o.y1 < self.ground.y1 or o.x2 > self.ground.x2 or o.y2 > self.ground.y2 or o.x1 < self.ground.x1)
-            or (isinstance(o, Residence) and (o.y1 < o.minimumClearance or
-                                                      o.x2 > self.ground.x2 -
-                                                      o.minimumClearance or o.y2 > self.ground.y2 -
-                o.minimumClearance
-                                              or o.x1 < o.minimumClearance))):
+        def is_within_reach_of_pg(pgs,o):
+
+            assert len(pgs) > 0
+            for pg in pgs:
+                if self.getDistance(pg, o) <= self.MAXIMUM_PLAYGROUND_DISTANCE: return True
             return False
 
-        if isinstance(o, Waterbody):
-            smaller = min(o.width, o.height)
-            greater = max(o.width, o.height)
-            ratio = float(greater) / smaller
-            if ratio > self.MINIMUM_WATERBODY_RATIO:
-                return False
+        try:
+            assert o.y1 >= self.ground.y1
+            assert o.x2 <= self.ground.x2
+            assert o.y2 <= self.ground.y2
+            assert o.x1 >= self.ground.x1
 
-        for wb in self.waterbodies:
-            if wb != o and self.overlap(wb, o):
-                return False
+            for r in self.residences: assert not self.overlap(r, o)
+            for r in self.playgrounds: assert not self.overlap(r, o)
+            for r in self.waterbodies: assert not self.overlap(r, o)
 
-        self_clearance = o.minimumClearance if (
-            isinstance(o, Residence)) else 0
+            if isinstance(o,Waterbody): assert max(o.width, o.height) / min(o.width, o.height) <= self.MINIMUM_WATERBODY_RATIO
+            if isinstance(o,Residence):
+                assert o.y1 >= o.minimumClearance
+                assert o.x1 >= o.minimumClearance
+                assert o.x2 <= self.ground.x2 - o.minimumClearance
+                assert o.y2 <= self.ground.y2 - o.minimumClearance
+                for r in self.residences: assert self.getDistance(r, o) >= r.minimumClearance
+                assert not self.PLAYGROUND or is_within_reach_of_pg(self.playgrounds,o)
 
-        if not isinstance(o, Waterbody):
-            for r in self.residences:
-                if r is o:
-                    continue
-                if self.overlap(r, o) or self.getDistance(r, o) < max(self_clearance, r.minimumClearance):
-                    return False
+            return True
 
-        if self.PLAYGROUND:
-
-            if len(self.playgrounds) is 0:
-                return False
-
-            ok = False if isinstance(o, Residence) else True
-
-            for pg in self.playgrounds:
-
-                if self.overlap(o, pg):
-                    return False
-
-                if not ok and isinstance(o, Residence):
-                    if self.getDistance(pg, o) <= self.MAXIMUM_PLAYGROUND_DISTANCE:
-                        ok = True
-                        continue
-
-            if not ok:
-                return False
-
-        return True
+        except:
+            return False
 
     def getDistance(self, o1, o2):
 

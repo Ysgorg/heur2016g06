@@ -36,8 +36,7 @@ class TightFitWB(object):
 
             num_waterbodies = 4
 
-            mansions_to_place = int(
-                plan.NUMBER_OF_HOUSES * plan.MINIMUM_MANSION_PERCENTAGE)
+            mansions_to_place = int(plan.NUMBER_OF_HOUSES * plan.MINIMUM_MANSION_PERCENTAGE)
 
             mansions_per_col = int(math.ceil(mansions_to_place * 1.0 / 4))
 

@@ -38,11 +38,16 @@ class TightFit_A(object):
                 r1 = r(x, y)
                 r1.original_min_clearance = r1.minimumClearance
                 r1.minimumClearance = self.compute_clearance(r1)
+
+                #print plan.PLAYGROUND
+
                 if plan.correctlyPlaced(r1):
+
 
                     plan.addResidence(r1)
                     if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses():
                         return plan
+                    #if frame is not None: frame.repaint(plan)
                     y += r1.height + r1.minimumClearance
                     i += 1
                     r = self.next_to_place(i)
@@ -74,5 +79,6 @@ class TightFit_A(object):
             plan.MINIMUM_FAMILYHOMES_PERCENTAGE + plan.MINIMUM_BUNGALOW_PERCENTAGE)
 
         self.plan = self.place_residences(plan, frame=frame).deepCopy()
+        if frame is not None: frame.repaint(self.plan)
         # frame.repaint(self.plan)
         self.plan.params = [i, j, k]

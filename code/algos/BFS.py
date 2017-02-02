@@ -8,7 +8,7 @@ from districtobjects.Mansion import Mansion
 
 
 def determine_type_to_place(i):
-    tot = len(i.residences)
+    tot = i.getNumberOfHouses()
     if tot % 10 == 0:
         return FamilyHome
     if float(i.number_of_familyhomes) / tot < 0.5:
@@ -54,7 +54,7 @@ class algo_TreeSearcher(object):
         self.best_plan = base.deepCopy()
         self.thetree = self.Tree(0)
 
-        while not len(self.best_plan.getNumberOfHouses) == base.num_houses:
+        while not self.best_plan.getNumberOfHouses() == base.num_houses:
             tree = self.Tree(self.thetree.depth)
             if frame is not None:
                 frame.repaint(tree.data)
@@ -74,7 +74,7 @@ class algo_TreeSearcher(object):
                         print
                     coords = determine_coordinates(n.data, f)
                     if coords is not None:
-                        n.data.residences.append(f(coords[0], coords[1]))
+                        n.data.addResidence(f(coords[0], coords[1]))
                         n.children.append(child)
                         q.put(n.children[len(n.children) - 1])
 
@@ -90,13 +90,13 @@ class algo_TreeSearcher(object):
                 self.c += 1
                 # print self.c , n.depth
                 val = node.data.getPlanValue()
-                if val > self.best_plan_val and not len(node.data.residences) > base.num_houses:
+                if val > self.best_plan_val and not node.data.getNumberOfHouses() > base.num_houses:
                     self.best_plan = node.data.deepCopy()
                     self.best_plan_val = val
                     self.thetree = self.Tree(node.depth)
                     self.thetree.data = self.best_plan.deepCopy()
 
-                    if len(node.data.residences) == base.num_houses:
+                    if node.data.getNumberOfHouses() == base.num_houses:
                         return "yes"
                 print self.c, node.depth, node.data.getPlanValue()
                 for c in node.children:

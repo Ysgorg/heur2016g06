@@ -116,14 +116,14 @@ def multiline_double_plot(
             y2_list.append(d[Y2])
         prettified = prettify(meta)
         assert isinstance(prettified,str)
-
+        print ':::::',prettified
         names.append(prettified)
         x_lists.append(x_list)
         y1_lists.append(y1_list)
         y2_lists.append(y2_list)
 
         # plot the values
-
+    print names
     plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label,names)
 
 

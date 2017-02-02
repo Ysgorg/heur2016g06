@@ -9,9 +9,8 @@ from src.Groundplan import Groundplan
 
 tight_fit_algos = [TightFitWB, TightFit_A, TightFit_B]
 
-bases = [Groundplan,
-         base_a, base_b, base_c,
-         base_dynamic,
+bases = [Groundplan, #base_a, base_b, base_c,
+         #base_dynamic
          base_b
          ]
 
@@ -35,7 +34,7 @@ hc = {
         "Number of candidate moves": [2]
     },
     "constants": {
-        "max_iterations": 100
+        "max_iterations": 10
     }
 }
 
@@ -45,7 +44,7 @@ sa_2 = {
         "Tight Fit functions": tight_fit_algos
     },
     "constants": {
-        "max_iterations": 2,
+        "max_iterations": 10,
         'min': 1.0,
         'max': 8.0
     }

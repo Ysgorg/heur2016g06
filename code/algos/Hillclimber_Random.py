@@ -21,7 +21,7 @@ class HillClimber(object):
             h = f(random() * plan.WIDTH, random() * plan.HEIGHT)
             while not plan.correctlyPlaced(h): h = f(random() * plan.WIDTH, random() * plan.HEIGHT)
             temp = plan.deepCopy()
-            temp.residences.append(h)
+            temp.addResidence(h)
 
             if frame is not None: frame.repaint(temp)
             val = temp.getPlanValue()
@@ -44,7 +44,7 @@ class HillClimber(object):
         while i < constants['max_iterations'] and not plan.isValid() and len(plan.residences) < plan.NUMBER_OF_HOUSES:
             f = self.decide_residence_type(i)
             h = self.best_among_candidates(plan.deepCopy(), f, number_of_candidate_moves,frame)
-            plan.residences.append(h)
+            plan.addResidence(h)
             if frame is not None: frame.repaint(plan)
             i += 1
         self.plan = plan

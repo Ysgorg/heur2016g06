@@ -6,7 +6,7 @@ import datetime
 
 import time
 
-from algos.heur_kno import make_great_plan
+from algos.c2 import make_great_plan
 from experiments.all import perform_all_experiments
 from main_config import main_config
 from src.Groundplan import Groundplan

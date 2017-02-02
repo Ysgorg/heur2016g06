@@ -34,7 +34,7 @@ class base_b(object):
 
         dims = get_valid_water_dimensions(plan, 1)
         wb = Waterbody(0, 0, dims[0], dims[1])
-        plan.waterbodies.append(wb)
+        plan.addWaterbody(wb)
 
         if not self.enable_playground:
             return plan
@@ -43,18 +43,18 @@ class base_b(object):
         if flip:
             dummy_pg = dummy_pg.flip()
 
-        pgy1 = plan.HEIGHT / 3 - dummy_pg.height / 2
-        pgy2 = plan.HEIGHT / 3 * 2 - dummy_pg.height / 2
+        pgy1 = plan.HEIGHT / 3 - dummy_pg.getHeight() / 2
+        pgy2 = plan.HEIGHT / 3 * 2 - dummy_pg.getHeight() / 2
 
-        pgx = plan.WIDTH / 2 + dims[0] / 2 - dummy_pg.width / 2
+        pgx = plan.WIDTH / 2 + dims[0] / 2 - dummy_pg.getWidth() / 2
 
         factor = 5
         pg1 = Playground(pgx + factor, pgy1 + factor)
         if flip:
             pg1 = pg1.flip()
-        plan.playgrounds.append(pg1)
+        plan.addPlayground(pg1)
         pg2 = Playground(pgx - factor, pgy2 - factor)
         if flip:
             pg2 = pg2.flip()
-        plan.playgrounds.append(pg2)
+        plan.addPlayground(pg2)
         return plan

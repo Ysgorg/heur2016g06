@@ -73,7 +73,7 @@ class base_dynamic(object):
             wb = Waterbody(x, y, w, h)
 
             # if plan.correctlyPlaced(wb, verbose=True):
-            plan.waterbodies.append(wb)
+            plan.addWaterbody(wb)
             #    print "Waterbody", i, "placed"
             x += w + 1  # +1 so that the bodies are not touching
 
@@ -94,6 +94,7 @@ class base_dynamic(object):
         utilisableX = plan.WIDTH
         utilisableY = plan.HEIGHT-plan.MINIMUM_WATER_PERCENTAGE*plan.HEIGHT#int(plan.HEIGHT * (plan.AREA * plan.MINIMUM_WATER_PERCENTAGE))
 
+        print utilisableX,utilisableY
 
 
         # print "Utilisable area:", utilisableX, "x", utilisableY, "=",
@@ -105,7 +106,7 @@ class base_dynamic(object):
         numberPlaygroundsX = int(utilisableX // playgroundReachX)
         numberPlaygroundsY = int(utilisableY // playgroundReachY)
 
-
+        print numberPlaygroundsX,numberPlaygroundsY
 
 
         # Ceil the total utilisable width and height by our playground reach to find optimal number to fit
@@ -141,11 +142,11 @@ class base_dynamic(object):
                 # if plan.correctlyPlaced(playground, verbose=True):
                 #    print "Playground placed at:", locationX, ",", locationY
                 if plan.correctlyPlaced(playground):
-                    plan.playgrounds.append(playground)
+                    plan.addPlayground(playground)
                     assert len(plan.playgrounds)>0
-
-
-
+                    print 'ye'
+                else:
+                    print 'no'
                 # else:
                 # print "Could not place playground:", locationX, ",",
                 # locationY

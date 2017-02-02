@@ -31,6 +31,8 @@ public class Example {
 	public Groundplan planDistrict() throws Exception {
 		Groundplan plan = new Groundplan(NR_HOUSES, PLAYGROUND);
 		frame.setPlan(plan);
+		int sleepTime = 500; // Time between 
+		double ss = 0.5; // StepSize
 
 		double wBSize = Math.sqrt(170*200*0.2/4/4); // Size of ratio 1 of 4 water bodies
 
@@ -60,15 +62,73 @@ public class Example {
 			bunY = 3;
 		}
 
-		frame.repaint(); Thread.sleep(100); // Repainting can throw errors when done too quickly
+		Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
 
-		double ss = 0.5; // StepSize
+		double maxX = 200 - 7.5; // 7.5 minimum house dimension.
+		double maxY = 170 - 7.5;
+		double y = maxY;
 		x = 3;
-		double y = 3;
-		double maxX = 200 - 7.9;
-		double maxY = 170 - 7.9;
 
-		while (x < maxX) {
+		// As there is unused space at bottom of plan, these bungalows will fill up:
+		while (y > 0) { //////////// This places bottom row of bungalows.
+			boolean rowPlaced = false;
+
+			while (x < maxX) {
+				Bungalow bun = new Bungalow(x,y);
+				bun.flip();
+
+				if (plan.isCorrectlyPlaced(bun)) {
+					plan.addResidence(bun);
+					rowPlaced = true;
+
+					//Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
+				}
+
+				x += ss;
+			}
+
+			if (rowPlaced) {
+				Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
+				break;
+			}
+
+			x = 3;
+			y -= ss;
+		}
+
+		y = 0;
+		x = maxX;
+
+		// As there is unused space at bottom of plan, these bungalows will fill up:
+		while (x > 0) { ///////// This palces right row of bungalows
+			boolean rowPlaced = false;
+
+			while (y < maxY) {
+				Bungalow bun = new Bungalow(x,y);
+
+				if (plan.isCorrectlyPlaced(bun)) {
+					plan.addResidence(bun);
+					rowPlaced = true;
+
+					//Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
+				}
+
+				y += ss;
+			}
+
+			if (rowPlaced)
+				break;
+
+			Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
+			y = 3;
+			x -= ss;
+		}
+
+
+		x = 3; // 3 is minimum distance of bungalow
+		y = 3;
+
+		while (x < maxX) { ///////////////// This places all family houses
 
 			while (y < maxY) {
 				FamilyHome fam = new FamilyHome(x,y);
@@ -76,26 +136,28 @@ public class Example {
 				if (plan.isCorrectlyPlaced(fam)) {
 					plan.addResidence(fam);
 
-					Thread.sleep(100);frame.repaint(); // Repainting can throw errors when done too quickly
+					//Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
 				}
 
 				y += ss;
 			}
 
-			//try {Thread.sleep(50);frame.repaint();} catch (InterruptedException e) {} // Repainting can throw errors when done too quickly
+			Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
 			y = 0;
 			x += ss;
 		}
 
-		System.out.println("Is Plan Valid? " + plan.isValid());
+		if (plan.isValid())
+		{
+			System.out.println("Plan is valid.");
+			System.out.println("Plan value: " + plan.getPlanValue());
+		} else {
+			System.out.println("Plan is invalid!");
+		}
 
 		frame.setPlan(plan);
-		try {
-			frame.repaint();
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Thread.sleep(2000); // Sleep enough to make sure plan is finished setting.
+		frame.repaint();
 
 		return plan;
 	}

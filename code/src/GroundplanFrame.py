@@ -24,8 +24,8 @@ class GroundplanFrame(object):
 
         self.canvas = Canvas(self.frame,
                              bg="white",
-                             width=self.plan.getWidth() * self.SCALE,
-                             height=self.plan.getHeight() * self.SCALE)
+                             width=self.plan.WIDTH * self.SCALE,
+                             height=self.plan.HEIGHT * self.SCALE)
 
         self.canvas.bind("<Button-1>", self.processMouseEvent)
         self.canvas.focus_set()
@@ -33,9 +33,6 @@ class GroundplanFrame(object):
         self.text = Text(self.root, bd=4, width=80, height=2)
 
     def draw_circumference(self, o, r, col):
-
-
-        print r
 
         self.line(o.x1, o.y1 - r, o.x2, o.y1 - r, col)
         self.line(o.x2 + r, o.y1, o.x2 + r, o.y2, col)
@@ -48,32 +45,32 @@ class GroundplanFrame(object):
 
 
     def setPlan(self):
-        for residence in self.plan.getResidences():
-            self.canvas.create_rectangle(residence.getX() * self.SCALE,
-                                         residence.getY() * self.SCALE,
-                                         (residence.getX() + residence.getWidth()) *
+        for residence in self.plan.residences:
+            self.canvas.create_rectangle(residence.x1 * self.SCALE,
+                                         residence.y1 * self.SCALE,
+                                         (residence.x1 + residence.width) *
                                          self.SCALE,
-                                         (residence.getY() + residence.getHeight()) *
+                                         (residence.y1 + residence.height) *
                                          self.SCALE,
                                          fill=residence.getColor())
             self.draw_circumference(residence,residence.minimumClearance,'black')
 
-        for waterbody in self.plan.getWaterbodies():
-            self.canvas.create_rectangle(waterbody.getX() * self.SCALE,
-                                         waterbody.getY() * self.SCALE,
-                                         (waterbody.getX() + waterbody.getWidth()) *
+        for waterbody in self.plan.waterbodies:
+            self.canvas.create_rectangle(waterbody.x1 * self.SCALE,
+                                         waterbody.y1 * self.SCALE,
+                                         (waterbody.x1 + waterbody.width) *
                                          self.SCALE,
-                                         (waterbody.getY() + waterbody.getHeight()) *
+                                         (waterbody.y1 + waterbody.height) *
                                          self.SCALE,
                                          fill=self.COLOR_WATER)
 
 
-        for playground in self.plan.getPlaygrounds():
-            self.canvas.create_rectangle(playground.getX() * self.SCALE,
-                                         playground.getY() * self.SCALE,
-                                         (playground.getX() + playground.getWidth()) *
+        for playground in self.plan.playgrounds:
+            self.canvas.create_rectangle(playground.x1 * self.SCALE,
+                                         playground.y1 * self.SCALE,
+                                         (playground.x1 + playground.width) *
                                          self.SCALE,
-                                         (playground.getY() + playground.getHeight()) *
+                                         (playground.y1 + playground.height) *
                                          self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
 
@@ -131,5 +128,5 @@ class GroundplanFrame(object):
         self.setPlan()
 
     def processMouseEvent(self, event):
-        coordinates = ((event.x / self.SCALE), ",", (event.y / self.SCALE))
-        self.canvas.create_text(event.x, event.y, text=coordinates)
+        coordinates = ((event.x1 / self.SCALE), ",", (event.y1 / self.SCALE))
+        self.canvas.create_text(event.x1, event.y1, text=coordinates)

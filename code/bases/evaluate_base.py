@@ -17,18 +17,18 @@ def evaluate_base(plan, frame):
 
             if plan.correctlyPlaced(h):
                 bm[x][y] = 1
-                bm[min(int(x + h.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + h.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + h.width), plan.WIDTH - 1)][
+                    min(int(y + h.height), plan.HEIGHT - 1)] = 1
 
             if plan.correctlyPlaced(m):
                 bm[x][y] = 1
-                bm[min(int(x + m.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + m.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + m.width), plan.WIDTH - 1)][
+                    min(int(y + m.height), plan.HEIGHT - 1)] = 1
 
             if plan.correctlyPlaced(b):
                 bm[x][y] = 1
-                bm[min(int(x + b.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + b.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + b.width), plan.WIDTH - 1)][
+                    min(int(y + b.height), plan.HEIGHT - 1)] = 1
 
     count = 0
     tot = plan.WIDTH * plan.HEIGHT

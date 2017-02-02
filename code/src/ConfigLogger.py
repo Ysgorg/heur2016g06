@@ -31,14 +31,14 @@ class ConfigLogger(object):
 
         config = [plan.NUMBER_OF_HOUSES, plan.PLAYGROUND,
                   [], [], [], metad['deaths'], metad['mutations']]
-        for i in plan.getResidences():
-            config[2].append([i.x, i.y, minify(i.getType()), i.flipped  # , i.minimumClearance
+        for i in plan.residences:
+            config[2].append([i.x1, i.y1, minify(i.getType()), i.flipped  # , i.minimumClearance
                               ])
-        for i in plan.getWaterbodies():
+        for i in plan.waterbodies:
             config[3].append(
-                [i.x, i.y, i.getWidth(), i.getHeight(), i.flipped])
-        for i in plan.getPlaygrounds():
-            config[4].append([i.x, i.y, i.flipped])
+                [i.x1, i.y1, i.width, i.height, i.flipped])
+        for i in plan.playgrounds:
+            config[4].append([i.x1, i.y1, i.flipped])
         return config
 
     @staticmethod
@@ -55,17 +55,17 @@ class ConfigLogger(object):
             if i[3]:
                 h = h.flip()
             # h.minimumClearance = float(i[4])
-            plan.addResidence(h)
+            plan.residences.append(h)
         for i in d[3]:
             wb = Waterbody(i[0], i[1], i[2], i[3])
             if i[4]:
                 wb = wb.flip()
-            plan.addWaterbody(wb)
+            plan.waterbodies.append(wb)
         for i in d[4]:
             pg = Playground(i[0], i[1])
             if i[2]:
                 pg = pg.flip()
-            plan.addPlayground(pg)
+            plan.playgrounds.append(pg)
 
         return plan
 

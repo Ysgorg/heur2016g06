@@ -24,7 +24,6 @@ def perform_all_experiments(experiment_config, frame=None):
 
     report = {"Config": experiment_config, "Results": []}
 
-
     counters = [0,0,0,0,0]
 
     # loops tailored for our experiments

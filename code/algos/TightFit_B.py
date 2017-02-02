@@ -58,7 +58,7 @@ class TightFit_B(object):
                 res = self.translate(plan, c, h, w, x, y, t)
                 house = rt(res[0], res[1])
                 if plan.correctlyPlaced(house):
-                    plan.addResidence(house)
+                    plan.residences.append(house)
                     placed_houses += 1
 
         return plan

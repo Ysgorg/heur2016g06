@@ -47,7 +47,7 @@ class TightFitWB(object):
 
                 x = i * (self.wb_width + t.width + scale * 2)
 
-                plan.addWaterbody(
+                plan.waterbodies.append(
                     Waterbody(x, 0, self.wb_width, self.wb_width * num_waterbodies))
 
                 if i >= num_waterbodies - 1:
@@ -64,7 +64,7 @@ class TightFitWB(object):
                     m.minimumClearance = t.minimumClearance
                     if plan.correctlyPlaced(m):
                         self.num_mansions_in_grid += 1
-                        plan.addResidence(m)
+                        plan.residences.append(m)
             return plan.deepCopy()
 
         i = 0
@@ -93,20 +93,18 @@ class TightFitWB(object):
 
                     while plan.correctlyPlaced(r1):
                         shift = True
-                        r1.x -= 1
                         r1.x1 -= 1
                         r1.x2 -= 1
 
                     if shift:
-                        r1.x += 1
                         r1.x1 += 1
                         r1.x2 += 1
-
                     if not plan.correctlyPlaced:
                         y += 1
                         continue
-                    plan.addResidence(r1)
-                    if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses():
+
+                    plan.residences.append(r1)
+                    if plan.NUMBER_OF_HOUSES == len(plan.residences):
                         return plan
                     y += r1.height + r1.minimumClearance
                     i += 1

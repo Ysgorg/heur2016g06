@@ -44,8 +44,8 @@ class TightFit_A(object):
                 if plan.correctlyPlaced(r1):
 
 
-                    plan.addResidence(r1)
-                    if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses():
+                    plan.residences.append(r1)
+                    if plan.NUMBER_OF_HOUSES == len(plan.residences):
                         return plan
                     #if frame is not None: frame.repaint(plan)
                     y += r1.height + r1.minimumClearance

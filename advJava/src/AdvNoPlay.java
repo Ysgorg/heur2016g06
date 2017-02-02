@@ -2,13 +2,13 @@ package src;
 
 import districtobjects.*;
 
-public class Example {
+public class AdvNoPlay {
 	private static boolean PLAYGROUND = false;
 	private static int NR_HOUSES = 888; // Whatever	
 
 	GroundplanFrame frame;
 
-	public Example() throws Exception {
+	public AdvNoPlay() throws Exception {
 		frame = new GroundplanFrame();
 		Groundplan plan = planDistrict();
 
@@ -153,7 +153,7 @@ public class Example {
 
 	public static void main(String[] args) {
 		try {
-			new Example();
+			new AdvNoPlay();
 		} catch (Exception e) {
 			//Do nothing with exception...
 		}

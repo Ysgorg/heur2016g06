@@ -18,7 +18,7 @@ public class Example {
 		plan.saveToImage(String.format(System.getProperty("user.dir") + "/images/plan" + System.currentTimeMillis() + ".png"), (int)Groundplan.WIDTH*scale + 4*marginleft, (int)Groundplan.HEIGHT*scale + 4*margintop, scale, 0, 0);
 		frame.setPlan(plan);
 
-		while(true){
+		while (true) {
 			try {
 				frame.repaint();
 				Thread.sleep(50);
@@ -70,68 +70,57 @@ public class Example {
 		x = 3;
 
 		// As there is unused space at bottom of plan, these bungalows will fill up:
-		while (y > 0) { //////////// This places bottom row of bungalows.
-			boolean rowPlaced = false;
+		double bungX = 3;
+		double bungY = 170 - 3 - 10;
+		double extraClearance = 0;
 
-			while (x < maxX) {
-				Bungalow bun = new Bungalow(x,y);
-				bun.flip();
+		for (int i = 0, count = 17; i < count; i++) { //////////// This places bottom row of bungalows.
+			if (i > 12) {
+				extraClearance = 1;
 
-				if (plan.isCorrectlyPlaced(bun)) {
-					plan.addResidence(bun);
-					rowPlaced = true;
-
-					//Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
-				}
-
-				x += ss;
+				bungY = 170 - 3 - 10 - extraClearance;
+				bungX += extraClearance;
 			}
 
-			if (rowPlaced) {
-				Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
-				break;
-			}
+			Bungalow bun = new Bungalow(bungX, bungY);
+			plan.addResidence(bun);
+			bun.flip();
 
-			x = 3;
-			y -= ss;
+			bungX += 7.5 + 3;
 		}
 
-		y = 0;
-		x = maxX;
-
-		// As there is unused space at bottom of plan, these bungalows will fill up:
-		while (x > 0) { ///////// This palces right row of bungalows
-			boolean rowPlaced = false;
-
-			while (y < maxY) {
-				Bungalow bun = new Bungalow(x,y);
-
-				if (plan.isCorrectlyPlaced(bun)) {
-					plan.addResidence(bun);
-					rowPlaced = true;
-
-					//Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
+		bungX = 200 - 3 - 10;
+		bungY = 3;
+		extraClearance = 0; // The extra clearance is to improve the usage of space in the bottom right
+		// As there is unused space at Right of plan, these bungalows will fill up:
+		for (int i = 0, count = 15; i < count; i++) { ///////// This places right row of bungalows TODO ORIGINAL 15 
+			if (i > 7) {
+				if (i < 9 || i > 10) {
+					extraClearance = 1;
+				} else {
+					extraClearance = 2;
 				}
 
-				y += ss;
+				bungX = 200 - 3 - 10 - extraClearance;
+				bungY += extraClearance;
 			}
 
-			if (rowPlaced)
-				break;
+			Bungalow bun = new Bungalow(bungX, bungY);
+			plan.addResidence(bun);
 
-			Thread.sleep(sleepTime);frame.repaint(); // Repainting can throw errors when done too quickly
-			y = 3;
-			x -= ss;
+			bungY += 7.5 + 3;
 		}
+
+		System.out.println(plan.isValid() + " Value of plan is: " + plan.getPlanValue());
 
 
 		x = 3; // 3 is minimum distance of bungalow
 		y = 3;
-
+		FamilyHome fam = new FamilyHome(0,0);
 		while (x < maxX) { ///////////////// This places all family houses
 
 			while (y < maxY) {
-				FamilyHome fam = new FamilyHome(x,y);
+				fam = new FamilyHome(x,y);
 
 				if (plan.isCorrectlyPlaced(fam)) {
 					plan.addResidence(fam);

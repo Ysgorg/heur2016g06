@@ -1,5 +1,3 @@
-
-import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 import numpy as np
 
@@ -7,7 +5,7 @@ X = 0
 Y1 = 1
 Y2 = 2
 
-def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label, names, draw_separate_legend=True):
+def plot_it(plt, x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label, names, draw_separate_legend=True):
     fig, ax1 = plt.subplots()
 
     ax1.set_xlabel(x_label)
@@ -46,7 +44,6 @@ def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label, n
         plt.legend(legends, labels)
 
     fig.tight_layout()
-    plt.show()
 
 def prettify(param):
 
@@ -61,6 +58,7 @@ def prettify(param):
 
 
 def multiline_double_plot(
+        plt,
         dataseries,
         x_name="Number of houses",
         y1_name="Plan value",
@@ -122,7 +120,7 @@ def multiline_double_plot(
 
         # plot the values
 
-    plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label, names, separate_legend)
+    plot_it(plt, x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label, names, separate_legend)
 
 
 

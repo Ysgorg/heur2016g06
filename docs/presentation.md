@@ -6,22 +6,28 @@ output:
 
 # Presentation
 
-This doc summarises the project. 
+This doc summarises the project.
 
 ## Abstract
 
 ????????????
 
-## Research Question
+## Research Goal/Question
 
-?????????????
+TODO: Probably change again
+
+**Research Goal**
+To find the highest plan value in a certain number of iterations, by varying parameters of various algorithms, optimised by simulated annealing.
+
+**Research Question**
+What combination of algorithm and parameters produces the highest plan value in a fixed number of iterations?
 
 ## What we did
 
  - Analyzed the problem
  - Proposed heuristics
  - Implemented an algo making heavy use of knowledge
- - Implemented searching methods for good parameters 
+ - Implemented searching methods for good parameters
  - Got and compared results
  - Suggested best approach
 
@@ -47,9 +53,9 @@ This doc summarises the project.
     solution := residences, waterbodies, playgrounds
     score(problem, solution) := # sum of values of solution.residences minus cost of solution.playgrounds
     isvalid(problem, solution) := # True iff problem constraints are met
-    optimal_solution := # is valid and has score higher than or equal to any other possible solution to the same problem 
+    optimal_solution := # is valid and has score higher than or equal to any other possible solution to the same problem
 
-The ideal algorithm would find an optimal solution for any problem. 
+The ideal algorithm would find an optimal solution for any problem.
 
 ### Constraints and heuristic impacts / adaptions / notes
 
@@ -70,12 +76,12 @@ The ideal algorithm would find an optimal solution for any problem.
 *numbers are for reference, not some ordering*
 
  1. more clearance is better
- 2. prefer increasing clearances of more valueable residence 
+ 2. prefer increasing clearances of more valueable residence
  3. clearance should not go unshared
- 4. a new residence should not be placed in a way that reduces an already placed 
+ 4. a new residence should not be placed in a way that reduces an already placed
  5. put water in unusable area
  6. put playgrounds in a way that maximize area and minimizes number of playgrounds
- 
+
 ![partial implementation](images/corner-rows.png)
 
 todo grow the smaller rows, so as much clearance as possible is shared

@@ -114,8 +114,8 @@ public class AdvNoPlay {
 		System.out.println(plan.isValid() + " Value of plan is: " + plan.getPlanValue());
 
 
-		x = 3; // 3 is minimum distance of bungalow
-		y = 3;
+		x = 0; // 2 is minimum distance of family home
+		y = 0;
 		FamilyHome fam = new FamilyHome(0,0);
 		while (x < maxX) { ///////////////// This places all family houses
 

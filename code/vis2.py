@@ -4,8 +4,9 @@ from visualizations.boxplot import plot_boxplot
 import matplotlib.pyplot as plt
 
 import glob
+import os
 
-RESULTS_ARCHIVE = "old_results/"
+RESULTS_ARCHIVE = os.path.dirname(os.path.abspath(__file__))+"/old_results/"
 VALUE_FILE = "values.json"
 
 def series_metadata(param,variable):
@@ -57,14 +58,16 @@ def compute_dataseries(data, variable):
     return [ v for v in rs.values() ]
 
 def compute_spread(all_results, save_output=True):
-    tests = []
 
-    for test_num in dataset:
-        value_row = []
-        for dataset in all_results:
-            value = test_num['result']['Value']
-            value_row.append(value)
-        tests.append(value_row)
+    # assume all datasets (results) are the same length
+    dataset_len = len(all_results[0])
+
+    tests = [[0 for y in range(len(all_results))] for x in range(dataset_len)] # list of test types, containing a list of repeated results (values)
+
+    for i, dataset in enumerate(all_results):
+        for test_num, test in enumerate(dataset):
+            value = test['result']['Value']
+            tests[test_num][i] = value
 
     # save the output
     if save_output:
@@ -74,14 +77,21 @@ def compute_spread(all_results, save_output=True):
     return tests
 
 
-def load_old_results():
+def load_all_results():
     old_results = []
 
-    for filename in glob.iglob(RESULTS_ARCHIVE):
-        print filename
-        with open(filename) as data_file:
-            data = json.load(data_file)
-            old_results.append(data)
+    with open('results.json') as data_file: data = json.load(data_file)
+
+    old_results.append(data)
+
+    #print old_results
+
+    for filename in os.listdir(RESULTS_ARCHIVE):
+        if filename.endswith(".json"):
+            print filename
+            with open(RESULTS_ARCHIVE+"/"+filename) as data_file:
+                data = json.load(data_file)
+                old_results.append(data)
 
     return old_results
 
@@ -91,6 +101,6 @@ def load_old_results():
 with open('results.json') as data_file: data = json.load(data_file)
 multiline_double_plot(plt, compute_dataseries(data, variable='nh'), separate_legend=True)
 
-all_results = load_old_results().append(data) # load old results and append latest
+all_results = load_all_results() # load all results
 plot_boxplot(plt, compute_spread(all_results, save_output=True))
 plt.show()

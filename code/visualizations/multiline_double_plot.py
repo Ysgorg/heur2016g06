@@ -1,19 +1,13 @@
 
+import matplotlib.pyplot as plt
+import matplotlib.pylab as pylab
+import numpy as np
+
 X = 0
 Y1 = 1
 Y2 = 2
 
-
-def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,names):
-
-
-
-
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-
+def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label, names, draw_separate_legend=True):
     fig, ax1 = plt.subplots()
 
     ax1.set_xlabel(x_label)
@@ -35,21 +29,24 @@ def plot_it(x_list, y1_list, y2_list, x_label, y1_label, y2_label, main_label,na
 
         s1 = y1_list[i]
         s2 = y2_list[i]
-
         p1, = ax1.plot(x_list[i], s1, '-', label=l1)
         p2, = ax2.plot(x_list[i], s2, '.', label=l2)
 
         legends.append(p1)
         legends.append(p2)
+
         labels.append(l1)
         labels.append(l2)
 
-    plt.legend(legends, labels)
+    if draw_separate_legend:
+        fig_legend = pylab.figure()
+        fig_legend.legend(legends, labels, 'center')
+        fig_legend.show()
+    else:
+        plt.legend(legends, labels)
 
     fig.tight_layout()
     plt.show()
-
-
 
 def prettify(param):
 
@@ -68,7 +65,8 @@ def multiline_double_plot(
         x_name="Number of houses",
         y1_name="Plan value",
         y2_name="Processing time",
-        main_label="Performace Overview"):
+        main_label="Performace Overview",
+        separate_legend=False):
 
     # assert that the input is as expected
 
@@ -124,7 +122,7 @@ def multiline_double_plot(
 
         # plot the values
 
-    plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label,names)
+    plot_it(x_lists, y1_lists, y2_lists, x_name, y1_name, y2_name, main_label, names, separate_legend)
 
 
 

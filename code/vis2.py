@@ -53,4 +53,4 @@ def compute_dataseries(data, variable):
 #test_mdp()
 
 with open('results.json') as data_file: data = json.load(data_file)
-multiline_double_plot(compute_dataseries(data, variable='nh'))
+multiline_double_plot(compute_dataseries(data, variable='nh'), separate_legend=True)

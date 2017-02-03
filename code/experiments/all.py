@@ -11,7 +11,7 @@ def print_log_line(plan, counters, t, init_time, best):
     value = str(0 if not plan.isValid() else int(plan.getPlanValue()))
     processing_time = str(int(time.time() - t)) # ms
     total_time = str(int(time.time()-init_time))
-    print counters,'\t'+ value+'\t'+ processing_time+'\t\t'+ total_time+'\t\t'+ str(best.getPlanValue())
+    print counters,'\t'+ value+'\t'+ processing_time+'\t\t'+ total_time+'\t\t'+ str(int(best.getPlanValue()))
 
 
 def perform_all_experiments(experiment_config, frame=None):
@@ -91,11 +91,11 @@ def perform_all_experiments(experiment_config, frame=None):
                                     if not valid_plan(base,v): continue
 
                                     t = time.time()
-                                    res_ = f(base.deepCopy(), experiment, v, frame)['Plan']
+                                    result = f(base.deepCopy(), experiment, v, frame)['Plan']
                                     tim = time.time()-t
                                     if best is None or result.getPlanValue() > best.getPlanValue(): best = result
                                     counters[3]+=1
-                                    print_log_line(res_,counters,t,init_time,best)
+                                    print_log_line(result,counters,t,init_time,best)
 
                                     rows.append({
                                         'Number of residences':nh,
@@ -103,11 +103,11 @@ def perform_all_experiments(experiment_config, frame=None):
                                         'Search function':experiment_key,
                                         'Base':base.name,
                                         'Residence placer': v.name,
-                                        'Plan value': res_.getPlanValue() if res_.isValid() else 0,
+                                        'Plan value': result.getPlanValue() if result.isValid() else 0,
                                         'Processing time': tim,
-                                        'Familyhome clearance':res_.params[0],
-                                        'Bungalow clearance':res_.params[1],
-                                        'Mansion clearance':res_.params[2]
+                                        'Familyhome clearance':result.params[0],
+                                        'Bungalow clearance':result.params[1],
+                                        'Mansion clearance':result.params[2]
                                     })
 
                             elif experiment_key == 'HC':

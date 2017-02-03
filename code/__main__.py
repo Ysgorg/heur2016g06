@@ -32,7 +32,7 @@ import json
 
 t = time.time()
 
-fname = 'main_results.json' if sys.argv == 0 or sys.argv[1]!='test' else 'test_results.json'
+fname = 'main_results.csv' if sys.argv == 0 or sys.argv[1]!='test' else 'test_results.csv'
 
 with open(fname, 'w') as fp:
     res = run_main(frame, len(sys.argv) > 1 and sys.argv[1] == "test")

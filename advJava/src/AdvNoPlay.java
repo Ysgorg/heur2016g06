@@ -5,18 +5,33 @@ import districtobjects.*;
 public class AdvNoPlay {
 	private static boolean PLAYGROUND = false;
 	private static int NR_HOUSES = 888; // Whatever	
-
 	GroundplanFrame frame;
+	private int sleepTime = 10; // Time between 
+	private int checkTime = 1; // Sleep Time between checks
+	private double ss = 0.5; // StepSize
+	private long tStart = System.currentTimeMillis();
 
-	public AdvNoPlay() throws Exception {
+	public AdvNoPlay(String[] args) throws Exception {
 		frame = new GroundplanFrame();
 		Groundplan plan = planDistrict();
+		
+		if (args.length == 1) {
+			this.ss = Double.parseDouble(args[0]);
+		}
+		if (args.length == 2) {
+			this.sleepTime = Integer.parseInt(args[1]);
+		}
+		if (args.length == 3) {
+			this.checkTime = Integer.parseInt(args[2]);
+		}
 
 		int scale = 4;
 		int marginleft = 10;
 		int margintop = 10;
 		plan.saveToImage(String.format(System.getProperty("user.dir") + "/images/plan" + System.currentTimeMillis() + ".png"), (int)Groundplan.WIDTH*scale + 4*marginleft, (int)Groundplan.HEIGHT*scale + 4*margintop, scale, 0, 0);
 		frame.setPlan(plan);
+		
+		System.out.println("Time elapsed: " + (System.currentTimeMillis() - tStart) / 1000.0);
 
 		while (true) {
 			try {
@@ -31,8 +46,6 @@ public class AdvNoPlay {
 	public Groundplan planDistrict() throws Exception {
 		Groundplan plan = new Groundplan(NR_HOUSES, PLAYGROUND);
 		frame.setPlan(plan);
-		int sleepTime = 500; // Time between 
-		double ss = 0.5; // StepSize
 
 		double wBSize = Math.sqrt(170*200*0.2/4/4); // Size of ratio 1 of 4 water bodies
 
@@ -50,6 +63,9 @@ public class AdvNoPlay {
 
 			if (i < 3) { // Disable the last bungalow row
 				for( int j = 0, countJ = 6; j < countJ; j++) { // Place bungalows between water
+					if (j > 0) {
+						bunY += 1;
+					}
 					bun = new Bungalow(wBSize + x, bunY);
 					bun.flip();
 					plan.addResidence(bun);
@@ -93,7 +109,7 @@ public class AdvNoPlay {
 		bungY = 3;
 		extraClearance = 0; // The extra clearance is to improve the usage of space in the bottom right
 		// As there is unused space at Right of plan, these bungalows will fill up:
-		for (int i = 0, count = 15; i < count; i++) { ///////// This places right row of bungalows TODO ORIGINAL 15 
+		for (int i = 0, count = 15; i < count; i++) { ///////// This places right row of bungalows
 			if (i > 7) {
 				if (i < 9 || i > 10) {
 					extraClearance = 1;
@@ -111,7 +127,7 @@ public class AdvNoPlay {
 			bungY += 7.5 + 3;
 		}
 
-		System.out.println(plan.isValid() + " Value of plan is: " + plan.getPlanValue());
+		System.out.println("Plan is valid?:" + plan.isValid() + "   Value of static plan is: " + plan.getPlanValue());
 
 
 		x = 0; // 2 is minimum distance of family home
@@ -122,6 +138,7 @@ public class AdvNoPlay {
 			while (y < maxY) {
 				fam = new FamilyHome(x,y);
 
+				Thread.sleep(checkTime);
 				if (plan.isCorrectlyPlaced(fam)) {
 					plan.addResidence(fam);
 
@@ -135,17 +152,18 @@ public class AdvNoPlay {
 			y = 0;
 			x += ss;
 		}
+		
+		Thread.sleep(2000); // Sleep enough to make sure plan is finished setting everything up.
 
-		if (plan.isValid())
-		{
+		if (plan.isValid())	{
 			System.out.println("Plan is valid.");
-			System.out.println("Plan value: " + plan.getPlanValue());
+			System.out.println("Plan value: " + plan.getPlanValue() + "s");
 		} else {
 			System.out.println("Plan is invalid!");
 		}
 
 		frame.setPlan(plan);
-		Thread.sleep(2000); // Sleep enough to make sure plan is finished setting.
+		Thread.sleep(2000); // Sleep enough to make sure plan is finished setting everything up.
 		frame.repaint();
 
 		return plan;
@@ -153,7 +171,7 @@ public class AdvNoPlay {
 
 	public static void main(String[] args) {
 		try {
-			new AdvNoPlay();
+			new AdvNoPlay(args);
 		} catch (Exception e) {
 			//Do nothing with exception...
 		}

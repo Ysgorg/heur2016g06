@@ -1,12 +1,9 @@
 from random import random
-from time import sleep
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
-from districtobjects.Residence import Residence
 from src.Groundplan import Groundplan
-from src.GroundplanFrame import GroundplanFrame
 
 
 def getTypeFunc(k):
@@ -19,10 +16,7 @@ def getTypeFunc(k):
 
 
 def findValidHouse(plan, f, pre):
-
     h = None
-
-
 
     for count in range(100):
         if pre is None or random() < 0.5:
@@ -46,8 +40,8 @@ def findValidHouse(plan, f, pre):
 
     return None
 
-def mutateAHouse(plan):
 
+def mutateAHouse(plan):
     ind = int(random() * len(plan.residences))
 
     toberemoved = plan.residences[ind]
@@ -64,8 +58,8 @@ def mutateAHouse(plan):
 
     return plan
 
-def randomSwap(plan):
 
+def randomSwap(plan):
     for i in range(100):
 
         i1 = int(random() * len(plan.residences))
@@ -87,56 +81,60 @@ def randomSwap(plan):
                     return temp
 
 
-
 class HillClimber(object):
     name = "HillClimber"
     expects = ["Playgrounds", "Waterbodies"]
     puts = ["Residences"]
 
-    def getPlan(self): return self.plan
+    def getPlan(self):
+        return self.plan
 
-    def best_among_candidates(self, plan, f, number_of_candidate_moves,frame):
+    def best_among_candidates(self, plan, f, number_of_candidate_moves, frame):
 
         best = None
         for i in range(number_of_candidate_moves):
-            if (len(plan.residences) < plan.NUMBER_OF_HOUSES ):
-                h = findValidHouse(plan.deepCopy(),self.decide_residence_type(len(plan.residences)),None)
+            if len(plan.residences) < plan.NUMBER_OF_HOUSES:
+                h = findValidHouse(plan.deepCopy(), self.decide_residence_type(len(plan.residences)), None)
                 if h is not None:
                     assert plan.correctlyPlaced(h)
                     candidate = plan.deepCopy()
                     candidate.addResidence(h)
                 else:
                     candidate = None
-            else: candidate = ( randomSwap(plan.deepCopy()) if random() < 0.5 else mutateAHouse(plan.deepCopy()))
+            else:
+                candidate = (randomSwap(plan.deepCopy()) if random() < 0.5 else mutateAHouse(plan.deepCopy()))
 
             if candidate is None: continue
             if frame is not None:
-
-                assert isinstance(candidate,Groundplan)
+                assert isinstance(candidate, Groundplan)
                 frame.repaint(candidate)
 
-            assert isinstance(candidate,Groundplan)
+            assert isinstance(candidate, Groundplan)
 
-            if best is None  or (best.isValid() and candidate.isValid() and candidate.getPlanValue() > best.getPlanValue())\
-                    or (not best.isValid() and (candidate.isValid() or candidate.getPlanValue()>best.getPlanValue())):
+            if best is None or (
+                            best.isValid() and candidate.isValid() and candidate.getPlanValue() > best.getPlanValue()) \
+                    or (not best.isValid() and (candidate.isValid() or candidate.getPlanValue() > best.getPlanValue())):
                 best = candidate
 
         return best
 
-    def decide_residence_type(self,i):
-        if i % 10 < 5:    return FamilyHome
-        elif i % 10 < 8:  return Bungalow
-        else:             return Mansion
+    @staticmethod
+    def decide_residence_type(i):
+        if i % 10 < 5:
+            return FamilyHome
+        elif i % 10 < 8:
+            return Bungalow
+        else:
+            return Mansion
 
     def __init__(self, plan, constants, number_of_candidate_moves, frame=None):
         plan = plan.deepCopy()
         i = 0
 
-
         while i < constants['max_iterations'] and not plan.isValid() and len(plan.residences) < plan.NUMBER_OF_HOUSES:
-            #print plan.isValid(),float(i)/constants['max_iterations'],plan.getPlanValue()
+            # print plan.isValid(),float(i)/constants['max_iterations'],plan.getPlanValue()
             f = self.decide_residence_type(i)
-            r = self.best_among_candidates(plan.deepCopy(), f, number_of_candidate_moves,frame)
+            r = self.best_among_candidates(plan.deepCopy(), f, number_of_candidate_moves, frame)
             if r is not None: plan = r
             if frame is not None: frame.repaint(plan)
             i += 1

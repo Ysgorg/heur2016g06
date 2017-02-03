@@ -67,8 +67,8 @@ class TightFitWB(object):
                     if plan.correctlyPlaced(m):
                         self.num_mansions_in_grid += 1
                         plan.addResidence(m)
-                        if isinstance(frame,GroundplanFrame):
-                            assert isinstance(plan,Groundplan)
+                        if isinstance(frame, GroundplanFrame):
+                            assert isinstance(plan, Groundplan)
                             frame.repaint(plan)
                             if self.slow:
                                 sleep(0.2)
@@ -112,8 +112,8 @@ class TightFitWB(object):
                         continue
                     plan.addResidence(r1)
 
-                    if isinstance(frame,GroundplanFrame):
-                        assert isinstance(plan,Groundplan)
+                    if isinstance(frame, GroundplanFrame):
+                        assert isinstance(plan, Groundplan)
                         frame.repaint(plan)
                         if self.slow:
                             sleep(0.2)
@@ -154,12 +154,12 @@ class TightFitWB(object):
     def getPlan(self):
         return self.plan
 
-    def __init__(self, plan, i, j, k, frame=None,slow=False):
+    def __init__(self, plan, i, j, k, frame=None, slow=False):
 
-        assert isinstance(plan,Groundplan)
+        assert isinstance(plan, Groundplan)
 
         self.slow = slow
-        self.frame=frame
+        self.frame = frame
         self.name = "TightFit_WB"
         self.expects = []
         self.puts = ["Waterbodies", "Residences"]

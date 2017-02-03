@@ -36,7 +36,7 @@ class TightFit_B(object):
             res[1] = plan.height - res[1]
         return res
 
-    def coords(self, plan, rt, factor, t, frame,slow):
+    def coords(self, plan, rt, factor, t, frame, slow):
 
         r = rt(0, 0)
         c = r.minimumClearance * factor
@@ -68,17 +68,17 @@ class TightFit_B(object):
                             sleep(0.1)
         return plan
 
-    def develop_ground_plan(self, plan, i, j, k, frame,slow):
+    def develop_ground_plan(self, plan, i, j, k, frame, slow):
         try:
-            plan = self.coords(plan, FamilyHome, i, 0, frame,slow)
-            plan = self.coords(plan, Bungalow, j, 1, frame,slow)
-            plan = self.coords(plan, Mansion, k, 2, frame,slow)
+            plan = self.coords(plan, FamilyHome, i, 0, frame, slow)
+            plan = self.coords(plan, Bungalow, j, 1, frame, slow)
+            plan = self.coords(plan, Mansion, k, 2, frame, slow)
             return plan
         except Exception:
             return plan
 
-    def __init__(self, plan, i, j, k, frame=None,slow=False):
+    def __init__(self, plan, i, j, k, frame=None, slow=False):
 
         self.factors = [i, j, k]
-        self.plan = self.develop_ground_plan(plan.deepCopy(), i, j, k, frame,slow).deepCopy()
+        self.plan = self.develop_ground_plan(plan.deepCopy(), i, j, k, frame, slow).deepCopy()
         # frame.repaint(self.plan)

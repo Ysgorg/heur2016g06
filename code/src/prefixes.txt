@@ -1,3 +1,0 @@
-algo_ : an algorithm that generates complete plans. take different kinds of input, see __main__.py
-base_ : an algorithm that returns a plan with playgrounds and waterbodies, but no residences
-neighbor_ : an algorithm that takes a plan as input, and returns a plan based on it

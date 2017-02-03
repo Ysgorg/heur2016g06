@@ -5,6 +5,8 @@
 
 results in sortable table
 
+assumes data.csv in same directory
+
 ----------------->
 
 

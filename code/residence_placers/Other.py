@@ -1,10 +1,6 @@
-from math import ceil
-from time import sleep, time
+from time import time
 
-from math import floor
-
-from algos.Grid import Grid
-from districtobjects.Bungalow import Bungalow
+from districtobjects.Grid import Grid
 from districtobjects.Mansion import Mansion
 from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
@@ -55,7 +51,6 @@ def in_corner(plan, x0, y0, x_dir, y_dir):
 
 
 def grow_waterbodies(plan):
-
     wbs = plan.waterbodies
     plan.waterbodies = []
 
@@ -80,12 +75,9 @@ def grow_waterbodies(plan):
         plan.waterbodies.append(wb)
 
 
-
 def make_great_plan(frame):
-
     init_time = time()
     plan = Groundplan(30)
-
 
     """ place playgrounds in corners A and C """
     r = plan.MAXIMUM_PLAYGROUND_DISTANCE + 11  # largest dimension
@@ -120,7 +112,7 @@ def make_great_plan(frame):
             wb__max_width += 0.1
             wb_max_height -= 0.1
 
-    wb1 = optimize_wb_side(plan,  Waterbody(0, plan.height - wb_max_height, wb__max_width, wb_max_height))
+    wb1 = optimize_wb_side(plan, Waterbody(0, plan.height - wb_max_height, wb__max_width, wb_max_height))
     wb2 = optimize_wb_side(plan, Waterbody(plan.width - wb__max_width, 0, wb__max_width, wb_max_height))
 
     assert plan.correctlyPlaced(wb1)
@@ -131,18 +123,16 @@ def make_great_plan(frame):
 
     """ place place mansions in all corners (beginning width B and D) """
 
-
     num_mansions = 0
     required_num_mansions = plan.MINIMUM_MANSION_PERCENTAGE * plan.NUMBER_OF_HOUSES
-    per_corner = int((required_num_mansions-4)/2)
+    per_corner = int((required_num_mansions - 4) / 2)
     grids = []
 
-
     corners = [
-        [plan.width, 0, -0.1, 0.1,1], # high priority
-        [0, plan.height, 0.1, -0.1,1], # high priority
-        [0, 0, 0.1, 0.1,0],
-        [plan.width, plan.height, -0.1, -0.1,0]
+        [plan.width, 0, -0.1, 0.1, 1],  # high priority
+        [0, plan.height, 0.1, -0.1, 1],  # high priority
+        [0, 0, 0.1, 0.1, 0],
+        [plan.width, plan.height, -0.1, -0.1, 0]
     ]
 
     for c in corners:
@@ -157,29 +147,34 @@ def make_great_plan(frame):
 
         m.minimumClearance = plan.getMinimumDistance(m)
         num_rows = 1
-        if c[4] > 0: num_cols = 2
-        else: num_cols = per_corner
+        if c[4] > 0:
+            num_cols = 2
+        else:
+            num_cols = per_corner
 
         if num_mansions + num_rows * num_cols > required_num_mansions: break
 
-        g = Grid(num_rows,num_cols, Mansion, float(m.minimumClearance), [0 if c[2]<0 else 1, 0 if c[3]<0 else 1], init_coords, plan)
-        frame.repaint(plan)
-        while g.expand():frame.repaint(plan)
+        g = Grid(num_rows, num_cols, Mansion, float(m.minimumClearance), [0 if c[2] < 0 else 1, 0 if c[3] < 0 else 1],
+                 init_coords, plan)
+        if frame is not None:
+            frame.repaint(plan)
+        while g.expand():
+            if frame is not None: frame.repaint(plan)
 
-        b_coords = [init_coords[0],0]
+        b_coords = [init_coords[0], 0]
 
         if c[4] == 1:
-            assert len(g.residences)>0
-            if c[3]>0: b_coords[1] = g.residences[0].y2 + g.residences[0].minimumClearance
-            else: b_coords[1] = g.residences[0].y1 - g.residences[0].minimumClearance
+            assert len(g.residences) > 0
+            if c[3] > 0:
+                b_coords[1] = g.residences[0].y2 + g.residences[0].minimumClearance
+            else:
+                b_coords[1] = g.residences[0].y1 - g.residences[0].minimumClearance
 
-
-
-            #g2 = Grid(2,2,Bungalow,Bungalow(0,0).minimumClearance*1.0,[0 if c[2]<0 else 1, 0 if c[3]<0 else 1], b_coords,plan)
+            # g2 = Grid(2,2,Bungalow,Bungalow(0,0).minimumClearance*1.0,[0 if c[2]<0 else 1, 0 if c[3]<0 else 1], b_coords,plan)
 
             if frame is not None: frame.repaint(plan)
 
-            #while g2.expand():if frame is not None: frame.repaint(plan)
+            # while g2.expand():if frame is not None: frame.repaint(plan)
         """
         if c[4]<1:
             while g.expand():
@@ -187,11 +182,10 @@ def make_great_plan(frame):
                 if g.residences[0].minimumClearance > 30: break
         """
 
-        for s in g.residences: assert plan.correctlyPlaced(s,verbose=False)
+        for s in g.residences: assert plan.correctlyPlaced(s, verbose=False)
         grids.append(g)
 
         num_mansions += 1
-
 
     """ place bungalow grids
     d = Bungalow(0,0)
@@ -218,7 +212,7 @@ def make_great_plan(frame):
 
     for g in grids: assert g.is_correct()
 
-    print "took", (time() - init_time)*1000, 'ms'
+    print "took", (time() - init_time) * 1000, 'ms'
 
     print 'put', int(total_water_area / (plan.AREA * plan.MINIMUM_WATER_PERCENTAGE) * 100), '% of water'
     if frame is not None: frame.repaint(plan)

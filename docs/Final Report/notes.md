@@ -3,7 +3,6 @@ output:
   pdf_document: default
 ---
 
-
 # Presentation
 
 This doc summarises the project.
@@ -30,6 +29,27 @@ What combination of algorithm and parameters produces the highest plan value in 
  - Implemented searching methods for good parameters
  - Got and compared results
  - Suggested best approach
+ 
+## Different approaches
+
+### First approach
+ 
+ - used only some heuristic knowledge
+ - searched for good parameters for naive tile placement algorithms
+ - takes much time
+ - yields kind of OK scores
+ - generifies for different problem instances
+ 
+Problems: took a lot of development time that would have been better invested in the second approach
+
+### Second approach
+
+ - heavy use of heuristic knowledge 
+ - takes little time
+ - should yield higher scores than first approach
+ - should ideally generify to different problem instances
+ 
+problem: difficult to both encode heuristic knowledge AND make generic for different problem instances
 
 ## Problem Analysis
 
@@ -84,9 +104,6 @@ The ideal algorithm would find an optimal solution for any problem.
 
 ![partial implementation](images/corner-rows.png)
 
-todo grow the smaller rows, so as much clearance as possible is shared
-
-
 ## First, more brute approach
 
 did lots of computation without enough usage of knowledge
@@ -96,3 +113,4 @@ did lots of computation without enough usage of knowledge
 ![results, without legend](images/without-legend.png)
 
 ![results, with legend](images/with-legend.png)
+

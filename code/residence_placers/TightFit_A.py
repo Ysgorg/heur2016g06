@@ -22,7 +22,7 @@ class TightFit_A(object):
     def getPlan(self):
         return self.plan
 
-    def place_residences(self, plan, frame=None,slow=False):
+    def place_residences(self, plan, frame=None, slow=False):
 
         i = 0
         r = self.next_to_place(i)
@@ -40,10 +40,9 @@ class TightFit_A(object):
                 r1.original_min_clearance = r1.minimumClearance
                 r1.minimumClearance = self.getMinimumDistance(r1)
 
-                #print plan.PLAYGROUND
+                # print plan.PLAYGROUND
 
                 if plan.correctlyPlaced(r1):
-
 
                     plan.addResidence(r1)
                     if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses():
@@ -68,11 +67,11 @@ class TightFit_A(object):
         else:
             return Mansion
 
-    def __init__(self, plan, i, j, k, frame=None,slow=False):
+    def __init__(self, plan, i, j, k, frame=None, slow=False):
 
-        assert isinstance(i,float)
-        assert isinstance(j,float)
-        assert isinstance(k,float)
+        assert isinstance(i, float)
+        assert isinstance(j, float)
+        assert isinstance(k, float)
 
         self.factors = [i, j, k]
 
@@ -85,7 +84,7 @@ class TightFit_A(object):
         self.bungalow_tresh = plan.NUMBER_OF_HOUSES * (
             plan.MINIMUM_FAMILYHOMES_PERCENTAGE + plan.MINIMUM_BUNGALOW_PERCENTAGE)
 
-        self.plan = self.place_residences(plan, frame=frame,slow=slow).deepCopy()
+        self.plan = self.place_residences(plan, frame=frame, slow=slow).deepCopy()
         if frame is not None: frame.repaint(self.plan)
         # frame.repaint(self.plan)
         self.plan.params = [i, j, k]

@@ -27,9 +27,9 @@ class validstate_cluster(object):
 
         self.plan = put_cluster(clusters[0], 0, 0, self.plan)
         self.plan = put_cluster(
-            clusters[1], self.plan.WIDTH - clusters[1][0], 0, self.plan)
+            clusters[1], self.plan.width - clusters[1][0], 0, self.plan)
         self.plan = put_cluster(
-            clusters[2], 0, self.plan.waterbodies[0].getY() - clusters[2][1], self.plan)
+            clusters[2], 0, self.plan.waterbodies[0].y1 - clusters[2][1], self.plan)
 
         if self.visualize:
             frame = GroundplanFrame(self.plan)

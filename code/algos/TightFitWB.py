@@ -1,9 +1,12 @@
 import math
+from time import sleep
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 from districtobjects.Waterbody import Waterbody
+from src.Groundplan import Groundplan
+from src.GroundplanFrame import GroundplanFrame
 
 
 class TightFitWB(object):
@@ -11,7 +14,7 @@ class TightFitWB(object):
     expects = []
     puts = ["Waterbodies", "Residences"]
 
-    def compute_clearance(self, r):
+    def getMinimumDistance(self, r):
         if isinstance(r, Mansion):
             return Mansion(0, 0).minimumClearance * self.m_clearance
         elif isinstance(r, Bungalow):
@@ -41,14 +44,13 @@ class TightFitWB(object):
             mansions_per_col = int(math.ceil(mansions_to_place * 1.0 / 4))
 
             t = Mansion(0, 0)
-            t.minimumClearance = self.wb_width  # max(self.compute_clearance(t),self.wb_width)
+            t.minimumClearance = self.wb_width  # max(self.getMinimumDistance(t),self.wb_width)
 
             for i in range(num_waterbodies):
 
                 x = i * (self.wb_width + t.width + scale * 2)
 
-                plan.addWaterbody(
-                    Waterbody(x, 0, self.wb_width, self.wb_width * num_waterbodies))
+                plan.waterbodies.append(Waterbody(x, 0, self.wb_width, self.wb_width * num_waterbodies))
 
                 if i >= num_waterbodies - 1:
                     break
@@ -65,27 +67,32 @@ class TightFitWB(object):
                     if plan.correctlyPlaced(m):
                         self.num_mansions_in_grid += 1
                         plan.addResidence(m)
+                        if isinstance(frame,GroundplanFrame):
+                            assert isinstance(plan,Groundplan)
+                            frame.repaint(plan)
+                            if self.slow:
+                                sleep(0.2)
             return plan.deepCopy()
 
         i = 0
         r = self.next_to_place(i)
         r1 = r(0, 0)
         r1.original_min_clearance = r1.minimumClearance
-        r1.minimumClearance = self.compute_clearance(r1)
+        r1.minimumClearance = self.getMinimumDistance(r1)
         x = r1.minimumClearance
 
         plan = placeWbs(plan).deepCopy()
         i = self.num_mansions_in_grid
         superBreak = False
-        while x < plan.WIDTH:
+        while x < plan.width:
 
             y = r1.minimumClearance
 
-            while y + r1.width + r1.minimumClearance < plan.HEIGHT:
+            while y + r1.width + r1.minimumClearance < plan.height:
 
                 r1 = r(x, y)
                 r1.original_min_clearance = r1.minimumClearance
-                r1.minimumClearance = self.compute_clearance(r1)
+                r1.minimumClearance = self.getMinimumDistance(r1)
 
                 if plan.correctlyPlaced(r1):
 
@@ -93,12 +100,10 @@ class TightFitWB(object):
 
                     while plan.correctlyPlaced(r1):
                         shift = True
-                        r1.x -= 1
                         r1.x1 -= 1
                         r1.x2 -= 1
 
                     if shift:
-                        r1.x += 1
                         r1.x1 += 1
                         r1.x2 += 1
 
@@ -106,6 +111,13 @@ class TightFitWB(object):
                         y += 1
                         continue
                     plan.addResidence(r1)
+
+                    if isinstance(frame,GroundplanFrame):
+                        assert isinstance(plan,Groundplan)
+                        frame.repaint(plan)
+                        if self.slow:
+                            sleep(0.2)
+
                     if plan.NUMBER_OF_HOUSES == plan.getNumberOfHouses():
                         return plan
                     y += r1.height + r1.minimumClearance
@@ -117,23 +129,23 @@ class TightFitWB(object):
                 else:
                     y += 1
             if superBreak:
-                x = self.compute_clearance(r(0, 0))
+                x = self.getMinimumDistance(r(0, 0))
                 superBreak = False
                 continue
             x += r1.width + \
-                 max(self.compute_clearance(r(0, 0)), r1.minimumClearance)
+                 max(self.getMinimumDistance(r(0, 0)), r1.minimumClearance)
 
         return plan
 
     @staticmethod
     def compute_wb_min_side_length(plan, num_bodies):
         return math.sqrt(
-            ((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / plan.MINIMUM_WATERBODY_RATIO)
+            ((plan.height * plan.width * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / plan.MINIMUM_WATERBODY_RATIO)
 
     @staticmethod
     def compute_other_wb_side(plan, num_bodies, side_1):
         side_2 = (
-                     (plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / side_1
+                     (plan.height * plan.width * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / side_1
         if max(side_1, side_2) / min(side_1, side_2) > plan.MINIMUM_WATERBODY_RATIO:
             raise Exception
         else:
@@ -142,8 +154,12 @@ class TightFitWB(object):
     def getPlan(self):
         return self.plan
 
-    def __init__(self, plan, i, j, k, frame=None):
+    def __init__(self, plan, i, j, k, frame=None,slow=False):
 
+        assert isinstance(plan,Groundplan)
+
+        self.slow = slow
+        self.frame=frame
         self.name = "TightFit_WB"
         self.expects = []
         self.puts = ["Waterbodies", "Residences"]

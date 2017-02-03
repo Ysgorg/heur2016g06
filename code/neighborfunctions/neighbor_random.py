@@ -20,11 +20,11 @@ def neighbor_random(state, temperature):
 
         while True:
             if pre is None or random() < 0.5:
-                x = int(random() * plan.WIDTH)
-                y = int(random() * plan.HEIGHT)
+                x = int(random() * plan.width)
+                y = int(random() * plan.height)
             else:
-                x = int(pre.getX() - 5 + 10 * random())
-                y = int(pre.getY() - 5 + 10 * random())
+                x = int(pre.x1 - 5 + 10 * random())
+                y = int(pre.y1 - 5 + 10 * random())
 
             f = getTypeFunc(type_to_place)
 
@@ -74,8 +74,8 @@ def neighbor_random(state, temperature):
                 r2 = temp.getResidence(i2)
                 f1 = getTypeFunc(r1.getType())
                 f2 = getTypeFunc(r2.getType())
-                n1 = f1(r2.getX(), r2.getY())
-                n2 = f2(r1.getX(), r1.getY())
+                n1 = f1(r2.x1, r2.y1)
+                n2 = f2(r1.x1, r1.y1)
                 temp.removeResidence(r1)
                 temp.removeResidence(r2)
                 if temp.correctlyPlaced(n1):

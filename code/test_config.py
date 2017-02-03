@@ -7,12 +7,9 @@ from bases.base_c import base_c
 from bases.base_dynamic import base_dynamic
 from src.Groundplan import Groundplan
 
-tight_fit_algos = [TightFitWB, TightFit_A, TightFit_B]
+tight_fit_algos = [TightFitWB,TightFit_A, TightFit_B]
 
-bases = [Groundplan, #base_a, base_b, base_c,
-         #base_dynamic
-         base_b
-         ]
+bases = [base_a,base_b,base_dynamic]
 
 zoom = {
     "variables": {
@@ -21,10 +18,10 @@ zoom = {
     },
     "constants": {
         'min': 1.0,
-        'max': 2.0,
-        'interval': 1.0,
-        'interval_shrink_factor': 0.1,
-        'min_interval': 0.5
+        'max': 3.0,
+        'interval': 0.5,
+        'interval_shrink_factor': 0.5,
+        'min_interval': 0.2
     }
 }
 
@@ -34,7 +31,7 @@ hc = {
         "Number of candidate moves": [2]
     },
     "constants": {
-        "max_iterations": 10
+        "max_iterations": 100
     }
 }
 
@@ -44,9 +41,9 @@ sa_2 = {
         "Tight Fit functions": tight_fit_algos
     },
     "constants": {
-        "max_iterations": 10,
+        "max_iterations": 5,
         'min': 1.0,
-        'max': 8.0
+        'max': 2.0
     }
 }
 
@@ -55,8 +52,9 @@ test_config = {
 
         # as defined by course manual
 
-        "Number of residences": [i*10+10 for i in range(10)],
-        "Enable playgrounds": [True, False],
+        "Number of residences": [40],#,70,100],#[i*10+10 for i in range(10)],
+        "Enable playgrounds": [True#, False
+                               ],
         "Area dimensions": [{"width": 200.0, "height": 170.0}],
         "Building proportions": [{"Mansion": 0.2, "Bungalow": 0.3, "FamilyHome": 0.5}]
     },

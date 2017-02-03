@@ -69,8 +69,9 @@ def zoom(base, experiment, f, frame=None):
     if best is None:
         o = {'Plan': None, 'Value': 0, 'Processing time': pt, 'Params': {'base': base.name, 'algorithm': f}}
     else:
+        best[4].params = [best[1],best[2],best[3]]
         o = {
-            'Plan': best[4].serialize() if best[4] is not None else None,
+            'Plan': best[4] if best[4] is not None else None,
             'Value': best[5],
             'Processing time': pt,
             'Parameters': {

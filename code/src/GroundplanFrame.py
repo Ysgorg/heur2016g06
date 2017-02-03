@@ -12,7 +12,7 @@ class GroundplanFrame(object):
     COLOR_PLAYGROUND = "green"
 
     def __init__(self, plan):
-        self.SCALE = 3
+        self.SCALE = 4
         self.root = Tk()
         self.plan = plan
 
@@ -24,8 +24,8 @@ class GroundplanFrame(object):
 
         self.canvas = Canvas(self.frame,
                              bg="white",
-                             width=self.plan.getWidth() * self.SCALE,
-                             height=self.plan.getHeight() * self.SCALE)
+                             width=self.plan.width * self.SCALE,
+                             height=self.plan.height * self.SCALE)
 
         self.canvas.bind("<Button-1>", self.processMouseEvent)
         self.canvas.focus_set()
@@ -34,8 +34,6 @@ class GroundplanFrame(object):
 
     def draw_circumference(self, o, r, col):
 
-
-        print r
 
         self.line(o.x1, o.y1 - r, o.x2, o.y1 - r, col)
         self.line(o.x2 + r, o.y1, o.x2 + r, o.y2, col)
@@ -48,32 +46,28 @@ class GroundplanFrame(object):
 
 
     def setPlan(self):
-        for residence in self.plan.getResidences():
-            self.canvas.create_rectangle(residence.getX() * self.SCALE,
-                                         residence.getY() * self.SCALE,
-                                         (residence.getX() + residence.getWidth()) *
-                                         self.SCALE,
-                                         (residence.getY() + residence.getHeight()) *
-                                         self.SCALE,
-                                         fill=residence.getColor())
-            self.draw_circumference(residence,residence.minimumClearance,'black')
+        for r in self.plan.residences:
 
-        for waterbody in self.plan.getWaterbodies():
-            self.canvas.create_rectangle(waterbody.getX() * self.SCALE,
-                                         waterbody.getY() * self.SCALE,
-                                         (waterbody.getX() + waterbody.getWidth()) *
+            self.canvas.create_rectangle(r.x1 * self.SCALE, r.y1 * self.SCALE, (r.x2) * self.SCALE, (r.y2) * self.SCALE,
+                                         fill=r.getColor())
+            self.draw_circumference(r,r.minimumClearance,'black')
+
+        for wb in self.plan.waterbodies:
+            self.canvas.create_rectangle(wb.x1 * self.SCALE,
+                                         wb.y1 * self.SCALE,
+                                         (wb.x1 + wb.width) *
                                          self.SCALE,
-                                         (waterbody.getY() + waterbody.getHeight()) *
+                                         (wb.y1 + wb.height) *
                                          self.SCALE,
                                          fill=self.COLOR_WATER)
 
 
-        for playground in self.plan.getPlaygrounds():
-            self.canvas.create_rectangle(playground.getX() * self.SCALE,
-                                         playground.getY() * self.SCALE,
-                                         (playground.getX() + playground.getWidth()) *
+        for playground in self.plan.playgrounds:
+            self.canvas.create_rectangle(playground.x1 * self.SCALE,
+                                         playground.y1 * self.SCALE,
+                                         (playground.x1 + playground.width) *
                                          self.SCALE,
-                                         (playground.getY() + playground.getHeight()) *
+                                         (playground.y1 + playground.height) *
                                          self.SCALE,
                                          fill=self.COLOR_PLAYGROUND)
 
@@ -84,7 +78,7 @@ class GroundplanFrame(object):
         self.text.insert(INSERT, self.plan.getPlanValue())
         self.text.insert(INSERT, "\nis valid: ")
         isval = self.plan.isValid()
-        # print isval
+
         self.text.insert(INSERT, isval)
 
         self.canvas.pack()
@@ -93,23 +87,20 @@ class GroundplanFrame(object):
         self.root.update()
 
     def mark(self, x, y, c):
-
-        self.canvas.create_line(
-            x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
+        self.canvas.create_line(x * self.SCALE, y * self.SCALE, x * self.SCALE, y * self.SCALE, fill=c)
 
     def circular_edge(self,x,y,distance,x_dir,y_dir):
 
         def compute_y(x,distance):
-
             x = float(x)
             distance = float(distance)
             assert x >= 0
             assert distance > 0
-
             y = abs((distance**2 - x**2))**0.5
             return y
 
         x_dist = 0.5
+
         while x_dist < distance:
             y_dist = compute_y(x_dist,int(distance))
             self.mark(x+x_dist*x_dir,y+y_dist*y_dir,'green')

@@ -1,3 +1,5 @@
+""" Not functional """
+
 import time
 from Queue import Queue
 from random import random
@@ -6,35 +8,19 @@ from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Mansion import Mansion
 
-
 def determine_type_to_place(i):
     tot = i.getNumberOfHouses()
-    if tot % 10 == 0:
-        return FamilyHome
-    if float(i.number_of_familyhomes) / tot < 0.5:
-        return FamilyHome
-    elif float(i.number_of_bungalows) / tot < 0.3:
-        return Bungalow
-    elif float(i.number_of_mansions) / tot < 0.2:
-        return Mansion
-
+    if tot % 10 == 0: return FamilyHome
+    if float(i.number_of_familyhomes) / tot < 0.5: return FamilyHome
+    elif float(i.number_of_bungalows) / tot < 0.3: return Bungalow
+    elif float(i.number_of_mansions) / tot < 0.2: return Mansion
 
 def determine_coordinates(plan, f):
     while True:
-        x = int(random() * plan.WIDTH)
-        y = int(random() * plan.HEIGHT)
+        x = int(random() * plan.width)
+        y = int(random() * plan.height)
         if plan.correctlyPlaced(f(x, y)):
             return [x, y]
-    """
-
-    for x in range(1,plan.WIDTH,1+int(25*random())):
-        for y in range(1,plan.HEIGHT,1+int(25*random())):
-            if plan.correctlyPlaced(f(x,y)):
-                return [x,y]
-    return None
-    pass
-    """
-
 
 class algo_TreeSearcher(object):
 
@@ -70,8 +56,6 @@ class algo_TreeSearcher(object):
                     child.data = n.data.deepCopy()
 
                     f = determine_type_to_place(child.data)
-                    if f is None:
-                        print
                     coords = determine_coordinates(n.data, f)
                     if coords is not None:
                         n.data.addResidence(f(coords[0], coords[1]))
@@ -97,14 +81,13 @@ class algo_TreeSearcher(object):
                     self.thetree.data = self.best_plan.deepCopy()
 
                     if node.data.getNumberOfHouses() == base.num_houses:
-                        return "yes"
+                        return True
                 print self.c, node.depth, node.data.getPlanValue()
                 for c in node.children:
                     traverse(c)
 
             ms = time.time()
-            if traverse(tree) == "yes":
-                print "yes"
+            traverse(tree)
             end = time.time()
             print "built tree of ", self.c, "nodes in ", buildt, "sec, then traversed it in", (end - ms), "sec"
 

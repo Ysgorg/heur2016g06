@@ -7,7 +7,7 @@ from src.Groundplan import Groundplan
 def get_valid_water_dimensions(plan, num_bodies):
     # input plan and desired number of water bodies
     # output the dimensions that give exactly MINIMUM_WATER_PERCENTAGE
-    x = math.sqrt(((plan.HEIGHT * plan.WIDTH * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
+    x = math.sqrt(((plan.height * plan.width * plan.MINIMUM_WATER_PERCENTAGE) / num_bodies) / 4)
     return [x, x * 4]
 
 
@@ -31,11 +31,11 @@ class base_c(object):
 
         factor = 13
 
-        plan.addWaterbody(Waterbody(0, 40, dims[0], dims[1]))
-        plan.addWaterbody(Waterbody(dims[0] + factor, 40, dims[0], dims[1]))
-        plan.addWaterbody(
+        plan.waterbodies.append(Waterbody(0, 40, dims[0], dims[1]))
+        plan.waterbodies.append(Waterbody(dims[0] + factor, 40, dims[0], dims[1]))
+        plan.waterbodies.append(
             Waterbody(2 * (dims[0] + factor), 40, dims[0], dims[1]))
-        plan.addWaterbody(
+        plan.waterbodies.append(
             Waterbody(3 * (dims[0] + factor), 40, dims[0], dims[1]))
 
         return plan
@@ -44,17 +44,17 @@ class base_c(object):
     dummy_pg = Playground(0, 0)
     if flip: dummy_pg = dummy_pg.flip()
 
-    pgy1 = plan.HEIGHT / 3 - dummy_pg.getHeight() / 2
-    pgy2 = plan.HEIGHT / 3 * 2 - dummy_pg.getHeight() / 2
+    pgy1 = plan.height / 3 - dummy_pg.height / 2
+    pgy2 = plan.height / 3 * 2 - dummy_pg.height / 2
 
-    pgx = plan.WIDTH / 2 + dims[0] / 2 - dummy_pg.getWidth() / 2
+    pgx = plan.width / 2 + dims[0] / 2 - dummy_pg.width / 2
 
     factor = 5
     pg1 = Playground(pgx + factor, pgy1 + factor)
     if flip: pg1 = pg1.flip()
-    plan.addPlayground(pg1)
+    plan.playgrounds.append(pg1)
     pg2 = Playground(pgx - factor, pgy2 - factor)
     if flip: pg2 = pg2.flip()
-    plan.addPlayground(pg2)
+    plan.playgrounds.append(pg2)
     return plan
     """

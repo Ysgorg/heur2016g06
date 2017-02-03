@@ -7,33 +7,33 @@ def evaluate_base(plan, frame):
     # returns the proportion of area of a plan which can potentially be
     # covered by a residence
 
-    bm = [[0 for y in range(plan.HEIGHT)] for x in range(plan.WIDTH)]
+    bm = [[0 for y in range(plan.height)] for x in range(plan.width)]
 
-    for x in range(0, plan.WIDTH):
-        for y in range(0, plan.HEIGHT):
+    for x in range(0, plan.width):
+        for y in range(0, plan.height):
             m = Mansion(x, y)
             b = Bungalow(x, y)
             h = FamilyHome(x, y)
 
             if plan.correctlyPlaced(h):
                 bm[x][y] = 1
-                bm[min(int(x + h.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + h.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + h.width), plan.width - 1)][
+                    min(int(y + h.height), plan.height - 1)] = 1
 
             if plan.correctlyPlaced(m):
                 bm[x][y] = 1
-                bm[min(int(x + m.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + m.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + m.width), plan.width - 1)][
+                    min(int(y + m.height), plan.height - 1)] = 1
 
             if plan.correctlyPlaced(b):
                 bm[x][y] = 1
-                bm[min(int(x + b.getWidth()), plan.WIDTH - 1)][
-                    min(int(y + b.getHeight()), plan.HEIGHT - 1)] = 1
+                bm[min(int(x + b.width), plan.width - 1)][
+                    min(int(y + b.height), plan.height - 1)] = 1
 
     count = 0
-    tot = plan.WIDTH * plan.HEIGHT
-    for x in range(plan.WIDTH):
-        for y in range(plan.HEIGHT):
+    tot = plan.width * plan.height
+    for x in range(plan.width):
+        for y in range(plan.height):
             count += bm[x][y]
 
     useful_proportion = float(count) / tot
@@ -44,8 +44,8 @@ def evaluate_base(plan, frame):
 
         frame.repaint(plan)
 
-        for x in range(plan.WIDTH):
-            for y in range(plan.HEIGHT):
+        for x in range(plan.width):
+            for y in range(plan.height):
                 if bm[x][y]:
                     frame.mark(x, y, 'black')
 

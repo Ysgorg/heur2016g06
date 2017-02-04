@@ -1,5 +1,7 @@
 from bases.base_a import base_a
 from bases.base_b import base_b
+from param_searchers.simulated_annealing import sa_2
+from param_searchers.zoom import zoom
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
@@ -14,25 +16,19 @@ b = base_a(40, True, 200, 170).deepCopy()
 # shows grid placer a putting residences on base a, with params i=1,j=2,k=3
 from residence_placers.TightFit_A import TightFit_A
 
-while True:
-    TightFit_A(b.deepCopy(), 1.0, 2.0, 3.0, frame=f, slow=True)
-    # TightFitWB(Groundplan(enable_playground=False),1.0, 2.0, 3.0, frame=f, slow=True)
+#while True:
+TightFit_A(b.deepCopy(), 1.0, 2.0, 3.0, frame=f, slow=True)
 
 
 
-    """gif 2 : sa finding parameters for gif 1"""
-    condig = {
-        "variables": {
-            "Bases": [base_b]
-        },
-        "constants": {
-            "max_iterations": 25,
-            'min': 1.0,
-            'max': 15.0
-        }
-    }
+"""gif 2 : sa finding parameters for gif 1"""
+condig = {
+    "variables": {"Bases": [base_b]},
+    "constants": {"max_iterations": 25,'min': 1.0,'max': 15.0,'interval':2,'min_interval':0.2,'interval_shrink_factor':0.75}
+}
 
-    # sa_2(b,condig,TightFit_A,frame=f,slow=True)
+sa_2(b,condig,TightFit_A,frame=f,slow=True)
+zoom(b,condig,TightFit_A,frame=f,slow=True)
 
 """gif 3 : zoom finding parameters for gif 1"""
 

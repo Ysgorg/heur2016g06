@@ -3,7 +3,7 @@ import time
 from src.Groundplan import Groundplan
 
 
-def zoom(base, experiment, f, frame=None):
+def zoom(base, experiment, f, frame=None,slow=False):
     # print 'zoom' , base.puts
 
     def best_res(res):
@@ -40,12 +40,14 @@ def zoom(base, experiment, f, frame=None):
             while j_min <= j < j_max:
                 k = k_min
                 while k_min <= k < k_max:
-                    r = f(base.deepCopy(), i, j, k, frame).getPlan()
+                    r = f(base.deepCopy(), i, j, k, frame if not slow else None).getPlan()
                     v = 0
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
                         if r.isValid():
-                            if frame is not None: frame.repaint(r)
+                            if frame is not None:
+                                frame.repaint(r)
+                                if slow: time.sleep(0.1)
                             v = r.getPlanValue()
                     results.append([base, i, j, k, r, v])
                     k += interval

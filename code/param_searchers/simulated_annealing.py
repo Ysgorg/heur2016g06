@@ -2,12 +2,9 @@ import time
 from random import random
 
 
-def sa_2(base, experiment, t, frame, slow=False):
-    assert 'variables' in experiment
-    assert 'constants' in experiment
-    assert callable(t)
+def sa_2(base, constants, t, frame, slow=False):
 
-    constants = experiment['constants']
+    assert callable(t)
 
     def state(i, j, k, f):
         s = f(base.deepCopy(), i, j, k, frame=None, slow=False).getPlan().deepCopy()

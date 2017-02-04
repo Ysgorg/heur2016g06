@@ -96,7 +96,7 @@ def perform_all_experiments(experiment_config, frame=None):
                                     if not valid_plan(base, v): continue
 
                                     t = time.time()
-                                    result = f(base.deepCopy(), experiment, v, frame)['Plan']
+                                    result = f(base.deepCopy(), experiment['constants'], v, frame)['Plan']
                                     tim = time.time() - t
                                     if best is None or result.getPlanValue() > best.getPlanValue(): best = result
                                     counters[3] += 1
@@ -122,7 +122,7 @@ def perform_all_experiments(experiment_config, frame=None):
                                 for v in experiment['variables']["Number of candidate moves"]:
 
                                     t = time.time()
-                                    result = HillClimber(base.deepCopy(), {'max_iterations': 1000}, v,
+                                    result = HillClimber(base.deepCopy(), {'max_iterations': 1000,'number_of_candidate_moves': v} ,
                                                          frame).getPlan().deepCopy()
                                     tim = time.time() - t
                                     if best is None or result.getPlanValue() > best.getPlanValue(): best = result

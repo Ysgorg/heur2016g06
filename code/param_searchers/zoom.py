@@ -3,7 +3,7 @@ import time
 from src.Groundplan import Groundplan
 
 
-def zoom(base, experiment, f, frame=None,slow=False):
+def zoom(base, p, f, frame=None,slow=False):
     # print 'zoom' , base.puts
 
     def best_res(res):
@@ -19,8 +19,6 @@ def zoom(base, experiment, f, frame=None,slow=False):
         return min(p['max'], v + interval * 2)
 
     t = time.time()
-
-    p = experiment['constants']
 
     i_min = p['min']
     i_max = p['max']

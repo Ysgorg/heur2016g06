@@ -1,4 +1,5 @@
 from random import random
+from time import sleep
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
@@ -89,7 +90,7 @@ class HillClimber(object):
     def getPlan(self):
         return self.plan
 
-    def best_among_candidates(self, plan, f, number_of_candidate_moves, frame):
+    def best_among_candidates(self, plan, f, number_of_candidate_moves, frame,slow):
 
         best = None
         for i in range(number_of_candidate_moves):
@@ -108,6 +109,8 @@ class HillClimber(object):
             if frame is not None:
                 assert isinstance(candidate, Groundplan)
                 frame.repaint(candidate)
+                if slow:
+                    sleep(0.1)
 
             assert isinstance(candidate, Groundplan)
 
@@ -127,14 +130,13 @@ class HillClimber(object):
         else:
             return Mansion
 
-    def __init__(self, plan, constants, number_of_candidate_moves, frame=None):
+    def __init__(self, plan, constants, frame=None,slow=False):
         plan = plan.deepCopy()
         i = 0
 
         while i < constants['max_iterations'] and not plan.isValid() and len(plan.residences) < plan.NUMBER_OF_HOUSES:
-            # print plan.isValid(),float(i)/constants['max_iterations'],plan.getPlanValue()
             f = self.decide_residence_type(i)
-            r = self.best_among_candidates(plan.deepCopy(), f, number_of_candidate_moves, frame)
+            r = self.best_among_candidates(plan.deepCopy(), f, constants['number_of_candidate_moves'], frame,slow)
             if r is not None: plan = r
             if frame is not None: frame.repaint(plan)
             i += 1

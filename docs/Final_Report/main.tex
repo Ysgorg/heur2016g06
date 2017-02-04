@@ -1,0 +1,366 @@
+\documentclass{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{algorithmicx}
+%\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\title{Final Report}
+\author{ Group 6 (Ross Chadwick, Eirik Kultorp, Milan Blonk) }
+\date{Heuristics February 2017}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+% TODO Refine and expand
+
+In this report we analyse and propose solutions to the given problem, Amstelhaege. Amstelhaege has many constraints, producing an extremely large search space of which no generic algorithm can produce an optimal result with high efficiency, without bringing a range of heuristics into consideration.
+
+We wil break down the problem in this report and present our solution, which is also not guaranteed to find the optimal solution, but does provide a good estimation of a global maxmia, in feasible time/space complexities.
+
+\subsection{Problem Description}
+
+All entities placed on the map are flippable tiles with properties: \begin{equation}
+{ x, y, w, h, constant\_value, value\_per\_one\_clearance\_unit }
+\end{equation}
+
+\begin{itemize}
+\item Tiles are of classes Playground, Waterbody and Residence.
+\item Residence has subclasses Mansion, Bungalow and Familyhome.
+\item Residences have $constant\_value > 0$, $value\_per\_one\_clearance\_unit > 0$.
+\item Playgrounds have $constant\_value < 0$, $value\_per\_one\_clearance\_unit > 0$.
+\item Waterbodies have $constant\_value == 0$, $\_per\_one\_clearance\_unit == 0$.
+\item Residences must be within a certain distance from a playground.
+\item The proportions of residences per type is 5:3:2 (Familyhome:Bungalow:Mansion).
+\item Total number of residences must be one of [40, 70, 100].
+\item Waterbodies have any dimensions with ratio equal or lower than 4:1.
+\item Waterbodies must collectively cover a certain proportion of the map.
+\item There can be at most N waterbodies.
+\item The plan area is 200x170.
+\end{itemize}
+
+Problem instances are defined by their constraint valuations. The course defines one such valuation.\\
+
+The advanced assignment is defined by the same valuation, minus the playground, residence proportion, and number of residence constraints.
+
+\subsubsection{Constraints and their Heuristic Impact}
+
+\begin{table}[H]
+\centering
+\caption{Constraints and their heuristic values (Where M:B:F = Mansion:Bungalow:FamilyHome)}
+\label{my-label}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Constraint} & \textbf{Assignment} & \textbf{Advanced Assignment} & \textbf{Heuristic Value} \\ \hline
+\textbf{M:B:F Ratio} & 2:3:5 & None & Proportion decreases as value increases -\textgreater ??? \\ \hline
+\textbf{M:B:F Values} & ? & ? & More valuable buildings -\textgreater More Value \\ \hline
+\textbf{M:B:F Clearance Bonus} & ? & ? & More clearance -\textgreater More residence value \\ \hline
+\textbf{Plan Dimensions} & 200x170 & 200x170 & More area -\textgreater More residences -\textgreater More value possible \\ \hline
+\textbf{Playgrounds} & True & False & Cost value and restrict freedom of placement -\textgreater Limit usage where possible \\ \hline
+\textbf{Max Playground Distance} & 50 & Null &  \\ \hline
+\textbf{Max Number of Waterbodies} & 4 & 4 & More water bodies -\textgreater Smaller water bodies -\textgreater Greater freedom of placement \\ \hline
+\textbf{Waterbody Side Ratio} & 4:1 & 4:1 & Close to plan dimension ratio -\textgreater Better fitting \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\subsubsection{Value to Optimize}
+
+The sum of each tile's:
+$$value + (clearance() - min\_clearance) \times added\_value\_per\_one\_clearance\_unit$$ While satisfying problem instance constraints.
+
+\subsubsection{Optimal Solutions and The Perfect Algorithm}
+
+Correct solutions are easily brute forceable. Optimal solutions are not feasibly brute forcable. An optimal solution is a configuration for which no other configuration has a higher value. A perfect algorithm is one which finds an optimal solution for any problem instance, with low time complexity.
+
+\subsection{Research Goal / Question}
+\textbf{Our research goal is as follows:}
+\\To find the highest plan value in a fixed number of iterations, by varying
+parameters of various algorithms, optimised by Simulated Annealing and
+‘Zoom’, (Where random hill climbing is a control variable).
+\\\\\textbf{Which can be re-formulated as the question:}
+\\What combination of algorithm and heuristic parameters produces the
+highest plan value in a fixed number of iterations?
+
+\subsubsection{Related work}
+
+github
+
+\section{Heuristics}
+
+\begin{enumerate}
+\item More clearance is better
+\item Prioritise increasing clearances of more valueable residences first.
+\item Clearance should not go unshared
+\item A new residence should not be placed in a way that reduces an already placed residence's value.
+\item Place water in unusable area.
+\item Put playgrounds in a way that maximizes usable area and minimizes number of playgrounds.
+\end{enumerate}
+
+\section{Algorithms}
+
+\subsection{Plan Generation Algorithm Components}
+
+\begin{table}[H]
+\centering
+\caption{Algorithm Components, where 'TRUE' indicates features}
+\label{algorithm-components}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Name / Type} & \textbf{Waterbodies} & \textbf{Playgrounds} & \textbf{Residences} & \textbf{Optimisation} \\ \hline
+%\textbf{GroundPlan} &  &  &  &  \\ \hline
+\textbf{Base A} & TRUE & TRUE &  &  \\ \hline
+\textbf{Base B} & TRUE & TRUE &  &  \\ \hline
+\textbf{Base C} & TRUE & TRUE &  &  \\ \hline
+\textbf{Tight Fit A} &  &  & TRUE &  \\ \hline
+\textbf{Tight Fit B} &  &  & TRUE &  \\ \hline
+\textbf{Hill Climber} &  &  & TRUE &  \\ \hline
+\textbf{Simulated Annealing} &  &  &  & TRUE \\ \hline
+\textbf{Zoom} &  &  &  & TRUE \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\iffalse
+\subsubsection{Groundplan}
+
+Groundplan simply produces an empty plan, where everything is place
+\fi
+
+\subsubsection{Bases}
+Bases are configurations of water and playground placements, ready to be used by house placement algorithms. We created two static bases and one dynamic base, which attempts to find an optimal solution for the given area and constraints.
+
+Below are examples of each type: <images of the three bases, side by side>
+
+\subsubsection{Residence Placers}
+
+There are three residence placers.
+
+\paragraph{Tight Fit}
+
+Puts residences in a grid. Two versions. %<example\_tf\_a.jpg>, <example\_tf\_b.jpg>.
+Clearance between residence types determined by seed values given to the Tight Fit algorithm upon init.
+
+%GIFS: <link>, <link>.
+
+\paragraph{Hill Climber}
+
+puts one new residence on the map, taking the best among num\_candidates candidate options. GIF: <link>
+
+\subsection{Parameter Search Algorithms (Optimisation)}
+
+With uniform clearance for all residence types, we have a len(residence types)-dimensional search space. We use compare two different search methods for this task.
+
+\subsubsection{Simulated Annealing}
+
+\subsubsection{Zoom}
+
+\section{Experimental setup}
+
+We run all plan generator algorithms and catch the output value and computation time. See <git repo> for details.
+
+\section{Results}
+
+\subsection{Raw data}
+
+<link to web results table>
+
+\subsection{Correlations}
+
+<correlations between each column and plan value column>
+
+\subsection{Processing Time/Value}
+
+<scatterplot>
+
+\subsection{Value Per Iteration}
+
+\subsubsection{Hill Climber}
+
+<line plot>
+
+\subsubsection{Simulated Annealing}
+
+<line plot>
+
+\subsubsection{Zoom Optimisation}
+
+<line plot>
+
+\section{Conclusions}
+
+// dummy sentences
+plan x is generally better than other plans
+tightfit y is generally better than others, except sometimes
+no plan was without obvious potential for improvement
+
+\subsection{Advanced assignment}
+
+<plots, screenshot, text reasoning about why good>
+
+
+ %// todo integrate still-relevant parts of the below to the above
+
+\subsection{Description}
+
+TODO go into detail on cluster generator for static starting plan and go into detail on evolver to optimize plan.
+
+SA is a probabilistic method of finding a global optimum in a state space. SA algorithms have a generic top layer, common for all problems. In our work we tailor SA to our specific needs with heuristics to determine which moves to make, moving from one state to another.
+
+We will apply SA to perform different tasks:
+
+\begin{enumerate}
+    \item Initial placement of water and playgrounds, optimizing for area on which we can place residences
+    \item Placement of residences, optimizing for plan value.
+\end{enumerate}
+
+The second application will take the output of the first application as input, determining the initial state. The two stages are very similar, in the sense that they both use SA. They vary by what value they optimize for and what elements are placed.
+
+Our SA algorithm will be expanded with various parameters as we go. Below is the basic skeleton of how we intend to start the implementation. \\ For example, we plan to implement and chage the parameters of the goal (Upper limit), getNeighbor() function, acceptance probability function, initial temperature and temperature scheduler function.% todo split up, put parts in experimental conditions section
+
+\subsubsection{generateNeighbor()}
+
+The generateNeighbor() function is used to create a new state based on a seed state - defining a \textit{move}. It should not be deterministic, as different states generated from the same state will be compared to the seed state. It is within the generateNeighbor function that heuristics become important. We can try using the temperature as a factor in the randomness of the generated states. We will do an empirical evaluation of how useful this is.
+
+\subparagraph{Possible moves}
+
+A move may include any/all of the following actions:
+\begin{itemize}
+    \item Moving an element
+    \item Swapping positions of elements
+    \item Flipping an element
+\end{itemize}
+
+
+\paragraph{Water and Playground Placement Stage Heuristics}
+
+We want as few playgrounds as possible (because playgrounds have negative value), while their radiuses cover as much area as possible (because all residences must be within range of a playground). We also want as little water as possible (because they have no value but take up space that could be covered by playground range). Water placed near a map edge but not touching it in such a way that no residences can be fitted between it and the edge also implies wasted space. Playground range overlapping water and reaching outside the map is also wasted space.
+
+\paragraph{Residence Placement Stage Heuristics}
+
+We will apply different heuristic functions to determine what moves to make. These functions should be local to where we apply the change, as on this level we are making small changes in the hope that it will increase the global value. But we will not directly use the getPlanValue() function at this point, as this is being done on the above layer (in the main SA function), and it would undermine the use of heuristic functions at this point.
+\\
+\\
+Some heuristics that we will consider are:
+\begin{itemize}
+ \item Maximize clearance from other residences.
+ \item Prioritise clearance of the most valuable house type (house price divided by house area)
+\end{itemize}
+
+To be expanded.
+
+% To avoid getting stuck near a local optimum, the resulting state must be far enough away from the seed state to escape the local optimum. To avoid missing out on the global optimum when near it, it must not always move far away. Thus, a factor that influences distance from the seed must be included. It should be random, so there is variance in the seed-child distance. This should ensure that the algorithm both zooms in on local optimums, and jumps far and approaches a better state than the local optimum.
+
+\subsection{Pseudo Code}
+
+\subsubsection{Simulated Annealing Variations}
+Below are the basis of our algorithms. They pseudo code will likely not reflect the end solution and we will be experimenting and expanding as we gather results.
+\\
+    \begin{algorithmic}
+        \State $\textit{MAX\_STEPS} \gets \text{ 1000 // we will vary this }$
+        \State $\textit{state} \gets \text{ plan.deepCopy() }$\\
+            \Procedure{simulatedAnnealingValue}{$state$}
+            \For{$step\gets 1, MAX\_STEPS$}
+                \State $t \gets temperature(step/MAX\_STEPS)$
+                \State $neighbor \gets getNeighbor(state)$
+                \If{$acceptanceThreshold(state.planValue(), neighbor.planValue(), t) >= random()$}
+                    \State $t \gets temperature(step/MAX\_STEPS)$
+                \EndIf
+            \EndFor
+            \State \textbf{return} $state$
+            \EndProcedure
+            \\
+            \Procedure{simulatedAnnealingArea}{$state$}
+            \For{$step\gets 1, MAX\_STEPS$}
+                \State $t \gets temperature(step/MAX\_STEPS)$
+                \State $neighbor \gets getNeighbor(state)$
+                \If{$acceptanceThreshold(state.placeableArea(), neighbor.placeableArea, t) >= random()$}
+                    \State $t \gets temperature(step/MAX\_STEPS)$
+                \EndIf
+            \EndFor
+            \State \textbf{return} $state$
+            \EndProcedure
+    \end{algorithmic}
+
+\subsubsection{getNeighbor() Variations}
+    \begin{algorithmic}
+            \Procedure{getRandomNeighbor}{$state$}
+            \State $residence \gets state.selectRandomResidence()$
+            \If{$random() < 0.5$}
+               \State residence.moveInRandomDirection()
+            \Else
+                \State state.swap(residence, state.getRandomResidence())
+            \EndIf
+            \State \textbf{return} $state$
+            \EndProcedure
+    \end{algorithmic}
+
+\pagebreak
+
+\subsection{Control Algorithm}
+
+TODO go into detail on an random start -> evolver situation. May be notable that the random start fails on 100 houses setting because of tight placement (unless fixed by now).
+
+The diagram below visualises the core concepts of our description in the previous section.
+
+%\pagebreak
+
+\section{Difficulties, limitations, restrictions}
+
+\subsection{Ambiguity in assignment details}
+
+The assignment states several contradicting situations regarding clearance. At first is stated that 'a playground does not count as clearance', this means two houses could not be placed opposite sides of a playground without clearance to the playground. The assignment however also states that 'The clearance of a home is the smallest distance between it and the closest other home', this means that two houses could be placed opposite sides of a playground without clearance to the playground as the playground is functioning as distance between the two houses.
+
+In the advanced assignment it is asked for to 'find the optimal number of houses (with and without playgrounds) if no restrictions hold for the numbers per type. That is, any type can be used or not'. This can be interpreted in two ways. The first interpretation is that the constraint regarding the ratio of different houses is left intact but some types may be left out. The second interpretation is that the ratio of houses is discarded and any number of houses of types can be used.
+
+\subsection{Incompleteness of given code}
+
+The given code had a large amount of bugs which we had to resolve. This took up quite an amount of our productive time. The bugs also delayed our decision making and algorithm design as in many cases, we had to go back and question the guidelines, attempting to implement them as best as we could interpret them. This led to quite a few revisions of our analysis of the problem.
+
+\section{Experimental setup}
+
+\subsection{Algorithmic Variants}
+
+Different versions of generateNeighbor(), implementing different heuristics within each. See generateNeighbor section above for more details. Different sets of generateNeighbor() functions will be used for the first (pg/wb placement) and second (residence placement) stages.
+
+\subsection{Experimental Conditions}
+
+We will run the experiment with different values for max\_iterations, and with different generateNeighbor() algorithms that SA will be using to find the next housing location, and observe the results.
+
+\subsection{Problem Instances}
+
+Problem instances are as defined by the assignment: ratio of 5:3:2 FamilyHouses:Bungalows:Mansions, on a grid of 200x170 distance units, with a total of 40, 70 and 100 residences in different instances.
+
+\subsection{Benchmarking}
+
+We will compare our results for this SA algorithms with each other across the different variants, changing one variable at a time in a systematic way. We will also benchmark our SA variants against previous implementations of any algorithms available online, and against a evolutionary algorithm we implemented.
+
+\subsubsection{Intelligent vs SA Placement of Water and Playgrounds} % ?
+
+During our analysis of the given problem, we also came up with a deterministic approach to dynamically (and statically) placing water and playgrounds. This was done as an experiment and will also be used to evaluate SAs solutions for water and playground placement. The dynamic approach first places the required water with number of bodies as a parameter. The total usable area left is then divided by the reachable area of a playground and either the floor() or ceil() integer value of this calculation is used as the number of playgrounds to place in a matrix-like format.
+
+On the next pages are some screenshots visualising our placements so far.
+
+\section{Results and Analysis}
+
+\subsection{}
+
+
+\end{document}

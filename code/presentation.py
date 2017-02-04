@@ -2,36 +2,22 @@ from bases.base_a import base_a
 from bases.base_b import base_b
 from param_searchers.simulated_annealing import sa_2
 from param_searchers.zoom import zoom
+from residence_placers.HillClimber import HillClimber
+from residence_placers.TightFit_B import TightFit_B
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
+from residence_placers.TightFit_A import TightFit_A
 
 f = GroundplanFrame(Groundplan())
 f.repaint(Groundplan())
 
+a = base_a(40, True, 200, 170).deepCopy()
 b = base_a(40, True, 200, 170).deepCopy()
 
-# sleep(4)
-
-"""gif 1 : base a , grid placer a (i=1,j=2,k=3)"""
-# shows grid placer a putting residences on base a, with params i=1,j=2,k=3
-from residence_placers.TightFit_A import TightFit_A
-
-#while True:
-TightFit_A(b.deepCopy(), 1.0, 2.0, 3.0, frame=f, slow=True)
+TightFit_A(a.deepCopy(), 1.0, 2.0, 3.0, frame=f, slow=True)
+TightFit_B(b.deepCopy(), 1.0, 2.0, 3.0, frame=f, slow=True)
+HillClimber(a.deepCopy(),{'max_iterations': 60,'number_of_candidate_moves':4},frame=f,slow=True)
 
 
-
-"""gif 2 : sa finding parameters for gif 1"""
-condig = {
-    "variables": {"Bases": [base_b]},
-    "constants": {"max_iterations": 25,'min': 1.0,'max': 15.0,'interval':2,'min_interval':0.2,'interval_shrink_factor':0.75}
-}
-
-sa_2(b,condig,TightFit_A,frame=f,slow=True)
-zoom(b,condig,TightFit_A,frame=f,slow=True)
-
-"""gif 3 : zoom finding parameters for gif 1"""
-
-"""gif 4 : uniform distributed waterbodies"""
-
-"""gif 5: other_approach , showing functions"""
+sa_2(a, {"max_iterations": 25, 'min': 1.0, 'max': 15.0}, TightFit_A, frame=f, slow=True)
+zoom(b, {'min': 1.0, 'max': 15.0, 'interval':2, 'min_interval':0.2, 'interval_shrink_factor':0.75}, TightFit_B, frame=f, slow=True)

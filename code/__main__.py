@@ -73,3 +73,5 @@ elif 'test' in sys.argv:
     run_main(frame, True)
 
 print "procedure took", int((time.time() - t)), 'seconds'
+
+while True:pass

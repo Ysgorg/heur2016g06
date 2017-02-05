@@ -44,7 +44,7 @@ class GroundplanFrame(object):
         self.circular_edge(o.x2, o.y1, r, 1.0, -1.0)
         self.circular_edge(o.x2, o.y2, r, 1.0, 1.0)
 
-    def setPlan(self):
+    def setPlan(self,s=None):
         for r in self.plan.residences:
             self.canvas.create_rectangle(r.x1 * self.SCALE, r.y1 * self.SCALE, r.x2 * self.SCALE, r.y2 * self.SCALE,
                                          fill=r.getColor())
@@ -74,8 +74,8 @@ class GroundplanFrame(object):
         self.text.insert(INSERT, self.plan.getPlanValue())
         self.text.insert(INSERT, "\nis valid: ")
         isval = self.plan.isValid()
-
         self.text.insert(INSERT, isval)
+        if s is not None: self.text.insert(INSERT, str(s))
 
         self.canvas.pack()
         self.text.pack(fill=BOTH, expand=1)
@@ -111,12 +111,12 @@ class GroundplanFrame(object):
         self.canvas.pack()
         self.root.update()
 
-    def repaint(self, newPlan):
+    def repaint(self, newPlan,str=None):
         assert isinstance(newPlan,Groundplan)
         self.text.delete(1.0, END)
         self.canvas.delete("all")
         self.plan = newPlan
-        self.setPlan()
+        self.setPlan(str)
 
     def processMouseEvent(self, event):
         coordinates = ((event.x / self.SCALE), ",", (event.y / self.SCALE))

@@ -45,7 +45,7 @@ def zoom(base, p, f, frame=None,slow=False):
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
 
-                        if count%10==0:iteration_value_rows.append(r.getPlanValue())
+                        iteration_value_rows.append(r.getPlanValue())
                         count+=1
                         if r.isValid():
                             if frame is not None:

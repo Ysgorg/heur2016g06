@@ -114,6 +114,7 @@ def perform_all_experiments(experiment_config, frame=None):
                                             v.name
                                         ] + sf['it_vals']
                                     )
+                                    sf['it_vals']=[]
 
                                     rows.append({
                                         'Number of residences': nh,
@@ -142,6 +143,7 @@ def perform_all_experiments(experiment_config, frame=None):
                                     counters[3] += 1
                                     print_log_line(result, counters, t, init_time, best, frame_2)
                                     lines.append([nh,pg,base.name,experiment_key,result.getPlanValue(),v]+hc.iteration_value_rows)
+                                    hc.iteration_value_rows=[]
 
                                     rows.append({
                                         'Number of residences': nh,
@@ -153,5 +155,6 @@ def perform_all_experiments(experiment_config, frame=None):
                                         'Number of candidates': v
                                     })
 
+        GroundplanFrame(best).repaint(best,"Overall best for nh="+str(nh))
 
     return [fields, rows,{'lines':lines}]

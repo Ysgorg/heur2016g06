@@ -87,7 +87,6 @@ class HillClimber(object):
     expects = ["Playgrounds", "Waterbodies"]
     puts = ["Residences"]
 
-    iteration_value_rows = []
 
     def getPlan(self):
         return self.plan
@@ -134,8 +133,10 @@ class HillClimber(object):
             return Mansion
 
     def __init__(self, plan, constants, frame=None,slow=False):
+        self.iteration_value_rows = []
         plan = plan.deepCopy()
         i = 0
+
 
         while i < constants['max_iterations'] and not plan.isValid() and len(plan.residences) < plan.NUMBER_OF_HOUSES:
             f = self.decide_residence_type(i)

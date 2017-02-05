@@ -58,7 +58,7 @@ main_config = {
 
         # as defined by course manual
 
-        "Number of residences": [i * 10 + 10 for i in range(10)],
+        "Number of residences": [40,70,100],#[i * 10 + 10 for i in range(10)],
         "Enable playgrounds": [True],
         "Area dimensions": [{"width": 200.0, "height": 170.0}],
         "Building proportions": [{"Mansion": 0.2, "Bungalow": 0.3, "FamilyHome": 0.5}]

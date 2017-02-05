@@ -29,9 +29,9 @@ HillClimber(a.deepCopy(),{'max_iterations': 60,'number_of_candidate_moves':4},fr
 
 
 print "##########" , 'Running Simulated Annealing'
-sa_2(a, {"max_iterations": 25, 'min': 1.0, 'max': 15.0}, TightFit_A, frame=f, slow=True)
+sa_2(a, {"max_iterations": 25, 'min': 1.0, 'max': 10.0}, TightFit_A, frame=f, slow=True)
 print "##########" , 'Running zoom'
-zoom(b, {'min': 1.0, 'max': 15.0, 'interval':2, 'min_interval':0.2, 'interval_shrink_factor':0.75}, TightFit_B, frame=f, slow=True)
+zoom(b, {'min': 1.0, 'max': 10.0, 'interval':2, 'min_interval':0.2, 'interval_shrink_factor':0.5}, TightFit_B, frame=f, slow=True)
 
 print "##########" , 'Running test batch test'
 os.system("python . vis test")

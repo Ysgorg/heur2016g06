@@ -12,3 +12,4 @@ class Mansion(Residence):
                                       minimumClearance=6,
                                       addedValuePercentage=0.06,
                                       color="Cyan")
+

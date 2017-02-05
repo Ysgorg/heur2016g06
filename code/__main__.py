@@ -8,7 +8,6 @@ from all import perform_all_experiments
 from batch_configs.main_config import main_config
 from batch_configs.test_config import test_config
 from residence_placers.Other import make_great_plan
-from residence_placers.Other_2 import make_other_great_plan
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
@@ -18,10 +17,10 @@ json_results = 'all_main_results.json' if len(sys.argv) == 1 or sys.argv[1] != '
 fname = 'main_results.csv' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'test_results.csv'
 
 def run_main(frame, test):
+
     experiment_config = test_config if test else main_config
     pprint(experiment_config)
     res = perform_all_experiments(experiment_config, frame)
-
 
     fields = res[0]
     rows = res[1]
@@ -68,8 +67,6 @@ t = time.time()
 
 if 'other' in sys.argv:
     make_great_plan(frame)
-if 'other_2' in sys.argv:
-    make_other_great_plan(frame)
 elif 'full' in sys.argv:
     run_main(frame, False)
 elif 'test' in sys.argv:

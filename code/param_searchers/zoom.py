@@ -31,6 +31,8 @@ def zoom(base, p, f, frame=None,slow=False):
 
     results = []
 
+    iteration_value_rows = []
+
     while interval > p['min_interval']:
         i = i_min
         while i_min <= i < i_max:
@@ -42,6 +44,7 @@ def zoom(base, p, f, frame=None,slow=False):
                     v = 0
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
+                        iteration_value_rows.append(r.getPlanValue())
                         if r.isValid():
                             if frame is not None:
                                 frame.repaint(r)
@@ -67,7 +70,7 @@ def zoom(base, p, f, frame=None,slow=False):
     pt = time.time() - t
 
     if best is None:
-        o = {'Plan': None, 'Value': 0, 'Processing time': pt, 'Params': {'base': base.name, 'algorithm': f}}
+        o = {'Plan': None, 'Value': 0, 'Processing time': pt, 'Params': {'base': base.name, 'algorithm': f},'it_vals':iteration_value_rows}
     else:
         best[4].params = [best[1], best[2], best[3]]
         o = {
@@ -78,7 +81,7 @@ def zoom(base, p, f, frame=None,slow=False):
                 'familyhome_min_clearance': best[1],
                 'bungalow_min_clearance': best[2],
                 'mansion_min_clearance': best[3]
-            }
+            },'it_vals':iteration_value_rows
         }
 
     return o

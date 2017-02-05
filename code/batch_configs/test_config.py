@@ -5,7 +5,8 @@ from residence_placers.TightFitWB import TightFitWB
 from residence_placers.TightFit_A import TightFit_A
 from residence_placers.TightFit_B import TightFit_B
 
-tight_fit_algos = [TightFitWB, TightFit_A, TightFit_B]
+tight_fit_algos = [#TightFitWB,
+                   TightFit_A, TightFit_B]
 
 bases = [base_a, base_b, base_dynamic]
 
@@ -18,17 +19,18 @@ zoom = {
     },
     "constants": {
         'min': 1.0,
-        'max': 3.0,
-        'interval': 0.5,
-        'interval_shrink_factor': 0.5,
-        'min_interval': 0.2
+        'max': 10.0,
+        'interval': 3.0,
+        'interval_shrink_factor': 0.1,
+        'min_interval': 2.0
     }
 }
 
 hc = {
     "variables": {
         "Bases": bases,
-        "Number of candidate moves": [2]
+        "Number of candidate moves": [2,3#,6
+                                      ]
     },
     "constants": {
         "max_iterations": MAX_ITERATIONS
@@ -43,7 +45,7 @@ sa_2 = {
     "constants": {
         "max_iterations": MAX_ITERATIONS,
         'min': 1.0,
-        'max': 15.0
+        'max': 2.0
     }
 }
 

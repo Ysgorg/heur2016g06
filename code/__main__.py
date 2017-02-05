@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import json
 from pprint import pprint
 
 from all import perform_all_experiments
@@ -10,8 +11,10 @@ from residence_placers.Other import make_great_plan
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
-fname = 'main_results.csv' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'test_results.csv'
+from visualizations.boxplot import plot_boxplot
 
+json_results = 'all_main_results.json' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'all_test_results.json'
+fname = 'main_results.csv' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'test_results.csv'
 
 def run_main(frame, test):
 
@@ -34,6 +37,24 @@ def run_main(frame, test):
         writer = csv.writer(f)
         writer.writerows(res[2]['lines'])
         print "saved results to",fname2,
+
+    # Store new results with all previous
+    # if already exists, read contents to current_results
+    current_results = []
+    if os.path.exists(json_results):
+        with open(json_results, 'r') as old_results:
+            current_results = json.load(old_results)
+            if current_results == None:
+                current_results = []
+
+    current_results.append(res[1])
+    with open(json_results, 'w') as json_write:
+        json.dump(current_results, json_write, indent=2)
+
+    # Plot all samples on boxplots (Value and time), store in fname.png
+    plot_boxplot(current_results, fname+'.png')
+
+
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 

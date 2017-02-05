@@ -23,6 +23,7 @@ def plot_boxplot(data_sets, fname):
     for key, obj in results.iteritems():
         if key not in labels:
             labels.append(key)
+        
         value_sets.append(obj['values'])
         time_sets.append(obj['times'])
 

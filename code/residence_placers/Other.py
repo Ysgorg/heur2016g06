@@ -100,9 +100,10 @@ def doit(frame,num,slow):
     if frame:
         frame.repaint(plan)
         if slow: sleep(0.2)
-    print len(grids)
+
     for g in grids:
         while g.expand():
+            print 'y'
             frame.repaint(plan)
 
 
@@ -115,7 +116,7 @@ def doit(frame,num,slow):
         frame.repaint(plan)
         if slow: sleep(1)
 
-    grow_waterbodies(plan,frame)
+    grow_waterbodies(plan,frame,slow)
 
     """ assert everything is as expected"""
 
@@ -128,7 +129,7 @@ def doit(frame,num,slow):
 
 
 def make_great_plan(frame,slow):
-    for nh in [(i+1)*10 for i in range(10)]:
+    for nh in [30]:#[(i+1)*10 for i in range(10)]:
         print 'num houses:',nh
         doit(frame,nh,slow)
         sleep(1)

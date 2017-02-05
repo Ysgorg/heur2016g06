@@ -115,7 +115,6 @@ class NewGrid():
 
             self.shrink()
             assert self.is_correct()
-            print 'no'
             return False
 
         return True

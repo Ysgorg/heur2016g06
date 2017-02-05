@@ -2,7 +2,7 @@ from time import sleep
 
 from districtobjects.Waterbody import Waterbody
 
-def grow_waterbodies(plan,frame):
+def grow_waterbodies(plan,frame,slow):
 
     wbs = plan.waterbodies
     plan.waterbodies = []
@@ -15,16 +15,17 @@ def grow_waterbodies(plan,frame):
 
         for wb in wbs:
 
+            if enough_water(plan,wb):
+                plan.waterbodies.append(wb)
+                break
 
-
-            if enough_water(plan,wb):break
             for i in range(2):
 
                 while plan.correctlyPlaced(Waterbody(wb.x1 - 1, wb.y1, wb.width + 1, wb.height)):
                     if enough_water(plan,wb):break
                     wb.x1 -= 1
                     wb.width += 1
-                    if frame:
+                    if frame and slow:
                         t = plan.deepCopy()
                         t.waterbodies.append(wb)
                         frame.repaint(t)
@@ -33,7 +34,7 @@ def grow_waterbodies(plan,frame):
                     wb.x2 += 1
                     wb.width += 1
 
-                    if frame:
+                    if frame and slow:
                         t = plan.deepCopy()
                         t.waterbodies.append(wb)
                         frame.repaint(t)
@@ -42,7 +43,7 @@ def grow_waterbodies(plan,frame):
                     wb.y1 -= 1
                     wb.height += 1
 
-                    if frame:
+                    if frame and slow:
                         t = plan.deepCopy()
                         t.waterbodies.append(wb)
                         frame.repaint(t)
@@ -52,11 +53,16 @@ def grow_waterbodies(plan,frame):
                     wb.y2 += 1
                     wb.height += 1
 
-                    if frame:
+                    if frame and slow:
                         t = plan.deepCopy()
                         t.waterbodies.append(wb)
                         frame.repaint(t)
 
             plan.waterbodies.append(wb)
+
+
+    if frame:
+        t = plan.deepCopy()
+        frame.repaint(t)
 
     return plan

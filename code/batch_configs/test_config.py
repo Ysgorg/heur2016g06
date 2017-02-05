@@ -19,16 +19,15 @@ zoom = {
         'min': 1.0,
         'max': 10.0,
         'interval': 3.0,
-        'interval_shrink_factor': 0.1,
-        'min_interval': 2.0
+        'interval_shrink_factor': 0.7,
+        'min_interval': 0.5
     }
 }
 
 hc = {
     "variables": {
         "Bases": bases,
-        "Number of candidate moves": [2,3#,6
-                                      ]
+        "Number of candidate moves": [2,3,6]
     },
     "constants": {
         "max_iterations": 140
@@ -41,9 +40,9 @@ sa_2 = {
         "Tight Fit functions": tight_fit_algos
     },
     "constants": {
-        "max_iterations": 2,
+        "max_iterations": 100,
         'min': 1.0,
-        'max': 2.0
+        'max': 10.0
     }
 }
 

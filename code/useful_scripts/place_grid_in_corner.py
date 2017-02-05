@@ -1,4 +1,4 @@
-from useful_scripts.Grid import Grid
+
 from useful_scripts.get_corner_residence import get_corner_residence
 from useful_scripts.new_grid import NewGrid
 

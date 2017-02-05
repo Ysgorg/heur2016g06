@@ -6,7 +6,7 @@ from districtobjects.Mansion import Mansion
 from districtobjects.Playground import Playground
 from districtobjects.Waterbody import Waterbody
 from src.Groundplan import Groundplan
-from useful_scripts.Grid import Grid
+
 from useful_scripts.grow_waterbodies import grow_waterbodies
 from useful_scripts.place_grid_in_corner import corner_grid
 
@@ -103,8 +103,8 @@ def doit(frame,num,slow):
 
     for g in grids:
         while g.expand():
-            print 'y'
-            frame.repaint(plan)
+            if frame is not None and slow:
+                frame.repaint(plan)
 
 
     plan.waterbodies.append(Waterbody(139,48,1,1))
@@ -133,3 +133,10 @@ def make_great_plan(frame,slow):
         print 'num houses:',nh
         doit(frame,nh,slow)
         sleep(1)
+
+    for nh in [(i+1)*10 for i in range(10)]:
+        print 'num houses:',nh
+        r = doit(None,nh,False)
+        if frame is not None and r is not None: frame.repaint(r)
+        sleep(0.5)
+

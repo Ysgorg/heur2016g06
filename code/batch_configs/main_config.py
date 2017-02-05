@@ -37,7 +37,7 @@ hc = {
         "Number of candidate moves": [2, 4, 6]
     },
     "constants": {
-        "max_iterations": 100
+        "max_iterations": 150
     }
 }
 
@@ -47,9 +47,9 @@ sa_2 = {
         "Tight Fit functions": tight_fit_algos
     },
     "constants": {
-        "max_iterations": 100,
+        "max_iterations": 1000,
         'min': 1.0,
-        'max': 8.0
+        'max': 10.0
     }
 }
 

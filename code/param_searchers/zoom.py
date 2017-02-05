@@ -32,7 +32,7 @@ def zoom(base, p, f, frame=None,slow=False):
     results = []
 
     iteration_value_rows = []
-
+    count=0
     while interval > p['min_interval']:
         i = i_min
         while i_min <= i < i_max:
@@ -44,7 +44,9 @@ def zoom(base, p, f, frame=None,slow=False):
                     v = 0
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
-                        iteration_value_rows.append(r.getPlanValue())
+
+                        if count%10==0:iteration_value_rows.append(r.getPlanValue())
+                        count+=1
                         if r.isValid():
                             if frame is not None:
                                 frame.repaint(r)

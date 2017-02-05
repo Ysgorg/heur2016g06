@@ -104,7 +104,6 @@ def perform_all_experiments(experiment_config, frame=None):
                                     counters[3] += 1
                                     print_log_line(result, counters, t, init_time, best, frame_2)
 
-                                    for i in sf :print i
                                     lines.append(
                                         [
                                             nh,

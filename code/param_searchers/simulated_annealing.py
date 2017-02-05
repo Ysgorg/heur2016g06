@@ -9,8 +9,11 @@ def sa_2(base, constants, t, frame, slow=False):
     def state(i, j, k, f):
         s = f(base.deepCopy(), i, j, k, frame=None, slow=False).getPlan().deepCopy()
         s.params = [i, j, k]
-        if frame is not None: frame.repaint(s)
-        v = 0 if not s.isValid() else s.getPlanValue()
+        if frame is not None:
+            frame.repaint(s)
+            if slow:
+                time.sleep(0.1)
+        v = float("-inf") if not s.isValid() else s.getPlanValue()
         return [i, j, k, v, s]
 
     def gen_neigbor(seed, temperature, f):
@@ -44,9 +47,10 @@ def sa_2(base, constants, t, frame, slow=False):
 
     init_time = time.time()
 
+    iteration_value_rows = []
+
     for i in range(constants['max_iterations'] - 1):
 
-        if slow: time.sleep(0.5)
         temperature = 1 - (float(i + 1) / constants['max_iterations'])
 
         assert isinstance(current_state[0], float)
@@ -63,6 +67,8 @@ def sa_2(base, constants, t, frame, slow=False):
         elif (current_state[3] - neigbor[3]) / temperature > random():
             current_state = neigbor
 
+        iteration_value_rows.append(current_state[4].getPlanValue())
+
     pt = time.time() - init_time
 
     return {
@@ -73,5 +79,6 @@ def sa_2(base, constants, t, frame, slow=False):
             'familyhome_min_clearance': best_state[0],
             'bungalow_min_clearance': best_state[1],
             'mansion_min_clearance': best_state[2]
-        }
+        },
+        'it_vals':iteration_value_rows
     }

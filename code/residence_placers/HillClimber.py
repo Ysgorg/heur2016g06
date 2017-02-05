@@ -87,6 +87,8 @@ class HillClimber(object):
     expects = ["Playgrounds", "Waterbodies"]
     puts = ["Residences"]
 
+    iteration_value_rows = []
+
     def getPlan(self):
         return self.plan
 
@@ -119,6 +121,7 @@ class HillClimber(object):
                     or (not best.isValid() and (candidate.isValid() or candidate.getPlanValue() > best.getPlanValue())):
                 best = candidate
 
+
         return best
 
     @staticmethod
@@ -138,6 +141,7 @@ class HillClimber(object):
             f = self.decide_residence_type(i)
             r = self.best_among_candidates(plan.deepCopy(), f, constants['number_of_candidate_moves'], frame,slow)
             if r is not None: plan = r
+            self.iteration_value_rows.append(plan.getPlanValue())
             if frame is not None: frame.repaint(plan)
             i += 1
 

@@ -1,5 +1,7 @@
 from Tkinter import *
 
+from src.Groundplan import Groundplan
+
 
 class GroundplanFrame(object):
     extra = 11
@@ -110,6 +112,7 @@ class GroundplanFrame(object):
         self.root.update()
 
     def repaint(self, newPlan):
+        assert isinstance(newPlan,Groundplan)
         self.text.delete(1.0, END)
         self.canvas.delete("all")
         self.plan = newPlan

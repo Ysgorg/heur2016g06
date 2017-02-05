@@ -35,6 +35,7 @@ def perform_all_experiments(experiment_config, frame=None):
         , 'Number of candidates', 'Processing time']
 
     rows = []
+    lines = []
 
     def valid_plan(base, algo):
         result = (set(base.puts) == set(algo.expects)) and \
@@ -96,11 +97,24 @@ def perform_all_experiments(experiment_config, frame=None):
                                     if not valid_plan(base, v): continue
 
                                     t = time.time()
-                                    result = f(base.deepCopy(), experiment['constants'], v, frame)['Plan']
+                                    sf = f(base.deepCopy(), experiment['constants'], v, frame)
+                                    result = sf['Plan']
                                     tim = time.time() - t
                                     if best is None or result.getPlanValue() > best.getPlanValue(): best = result
                                     counters[3] += 1
                                     print_log_line(result, counters, t, init_time, best, frame_2)
+
+                                    for i in sf :print i
+                                    lines.append(
+                                        [
+                                            nh,
+                                            pg,
+                                            base.name,
+                                            experiment_key,
+                                            result.getPlanValue(),
+                                            v.name
+                                        ] + sf['it_vals']
+                                    )
 
                                     rows.append({
                                         'Number of residences': nh,
@@ -122,12 +136,13 @@ def perform_all_experiments(experiment_config, frame=None):
                                 for v in experiment['variables']["Number of candidate moves"]:
 
                                     t = time.time()
-                                    result = HillClimber(base.deepCopy(), {'max_iterations': 1000,'number_of_candidate_moves': v} ,
-                                                         frame).getPlan().deepCopy()
+                                    hc = HillClimber(base.deepCopy(), {'max_iterations': 1000,'number_of_candidate_moves': v}, frame)
+                                    result = hc.getPlan().deepCopy()
                                     tim = time.time() - t
                                     if best is None or result.getPlanValue() > best.getPlanValue(): best = result
                                     counters[3] += 1
                                     print_log_line(result, counters, t, init_time, best, frame_2)
+                                    lines.append([nh,pg,base.name,experiment_key,result.getPlanValue(),v]+hc.iteration_value_rows)
 
                                     rows.append({
                                         'Number of residences': nh,
@@ -139,4 +154,5 @@ def perform_all_experiments(experiment_config, frame=None):
                                         'Number of candidates': v
                                     })
 
-    return [fields, rows]
+
+    return [fields, rows,{'lines':lines}]

@@ -7,6 +7,7 @@ from all import perform_all_experiments
 from batch_configs.main_config import main_config
 from batch_configs.test_config import test_config
 from residence_placers.Other import make_great_plan
+from residence_placers.Other_2 import make_other_great_plan
 from src.Groundplan import Groundplan
 from src.GroundplanFrame import GroundplanFrame
 
@@ -18,17 +19,22 @@ def run_main(frame, test):
     pprint(experiment_config)
     res = perform_all_experiments(experiment_config, frame)
 
-    with open(fname, 'w') as fp:
-        fields = res[0]
-        rows = res[1]
 
-        import csv
-        with open(fname, 'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fields)
-            writer.writeheader()
-            for r in rows: writer.writerow(r)
+    fields = res[0]
+    rows = res[1]
+
+    import csv
+    with open(fname, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
+        for r in rows: writer.writerow(r)
         print 'saved results to', fname
 
+    fname2="value_per_iteration.csv"
+    with open(fname2, "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(res[2]['lines'])
+        print "saved results to",fname2,
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +47,8 @@ t = time.time()
 
 if 'other' in sys.argv:
     make_great_plan(frame)
+if 'other_2' in sys.argv:
+    make_other_great_plan(frame)
 elif 'full' in sys.argv:
     run_main(frame, False)
 elif 'test' in sys.argv:

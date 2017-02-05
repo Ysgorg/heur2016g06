@@ -8,8 +8,8 @@ import string
 
 label_rotation = 45
 dpi_val = 100
-graph_width = 19.2
-graph_height = 18
+graph_width = 19
+graph_height = 11
 
 def plot_boxplot(data_sets, fname):
     results = process_results(data_sets)
@@ -32,7 +32,7 @@ def plot_boxplot(data_sets, fname):
     figure.set_size_inches(graph_width, graph_height)
 
     plt.title("Plan Value"+" ("+str(len(value_sets[0]))+" samples)")
-    plt.boxplot(value_sets, labels=labels)
+    plt.boxplot(value_sets, labels=labels, showmeans=True)
     plt.xticks(rotation=label_rotation)
     plt.xlabel("Experimental Setup")
     plt.ylabel("Plan Value")
@@ -45,7 +45,7 @@ def plot_boxplot(data_sets, fname):
     figure.set_size_inches(graph_width, graph_height)
 
     plt.title("Processing Time"+" ("+str(len(time_sets[0]))+" samples)")
-    plt.boxplot(time_sets, labels=labels)
+    plt.boxplot(time_sets, labels=labels, showmeans=True)
     plt.xticks(rotation=label_rotation)
     plt.xlabel("Experimental Setup")
     plt.ylabel("Time in seconds")
@@ -77,11 +77,11 @@ def process_results(all_results):
             elif "TightFit_B" in placer:
                 placer = "TFB"
 
-            if "A" in base:
+            if base == "base_a":
                 base = "bA"
-            elif "B" in base:
+            elif base == "base_b":
                 base = "bB"
-            elif "C" in base:
+            elif base == "base_c":
                 base = "bC"
             elif "dynamic" in base:
                 base = "bDy"

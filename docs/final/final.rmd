@@ -12,27 +12,36 @@ subtitle: VU Amsterdam Heuristics February 2017
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Research Goals
+## Introduction
 
- 1. describe the problem
- 2. formulate heuristics
- 3. describe and implement algorithms applying subsets of the heuristics
- 4. compare implementations algorithms statistically
- 5. plot results in a human friendly and statistically sound way
- 6. suggest best approach based on data
+This report documents our study into Amstelhaege, a problem defined by the Heuristics course at VU Amsterdam January 2017.
+
+### Activities
+
+We have done the following: 
+
+ 1. described the problem
+ 2. formulated heuristics
+ 3. described and implemented algorithms applying subsets of the heuristics 
+ 4. compared implementations statistically
+ 5. plotted meaningful results in a readable way
+ 6. drew conclusions from data and suggested future work
+
+### Research Question
+
+How do different algorithmic components and variable affect plan value?
 
 ## Problem description
 
-An amstelhaege problem instance is defined by a set of constraints for placement of rectangles in a continuous 2d area.
-The course defines 4 such valuations, indicated in the table below.
+An amstelhaege problem instance is defined by a set of constraints for placement of rectangles in a continuous 2d area, and a function determining the area value.  
 
-### Value to Optimize
+### Value to optimize for
 
-The sum of ( each tile's value + (clearance() - min clearance) x added value per one clearance unit), while satisfying problem instance constraints. 
+The sum of ( each tile's value + (clearance()-min clearance)*added value per one clearance unit), while satisfying problem instance constraints. 
 
 ### Amstelhaege Constraints
 
-
+  
       area_rules := width, height
       water_rules := max_waterbody_sides_len_ratio , max_num_waterbodies, minimum_water_proportion
       playground_rules := width, height, enable_playground, max_playground_distance, playground_cost
@@ -44,65 +53,69 @@ The sum of ( each tile's value + (clearance() - min clearance) x added value per
       problem := area_rules, water_rules, playground_rules, residence_rules
       solution := residences, waterbodies, playgrounds
 
+While there's an infinite number of possible problem isntances, the course defines 4 problem instances:
+
+ - (main assignment) playground enabled, 2:3:5 ratio of residence types, [40,70,100] residences
+ - (advanced assignment) playground disabled, any number of residences, any residence type proportion
+ 
+While we focus on algorithms that work well within the course-defined constraints, it would be most elegant to design an algorithm which works well for any problem instance.
+
 ### Heuristics
 
 We formulate these heuristics.
 
-#### A : More clearance is better
-
+#### A : More clearance is better 
 More clearance directly increases the value of a residence. Naturally, we desire high clearance.
 
 #### B : More valuable residences should be expanded first
-
 When given a choice between increasing the clearance of a more or less valuable residence, chose the more valuable one.
 
 #### C : Polite placement
-
 A new residence should not be placed in a way that reduces an already placed residence’s clearance.
 
 #### D : Clearance should be shared.
-
 Dedicating area for clearance costs space. The cost effectiveness of clearancearea increases when it is shared.
 
 #### E : Place residences in grids
-
 Grids is the optimal way of distributing rectangles with maximal uniform distance.
 
-#### F : Adaptive Water
+#### F : Water out of the way
+Place water in areas we wouldn't build on. This includes corners out of reach from playgrounds and the area within a residence's clearance.  
 
-When possible, water should be placed after residences, within the largest unused areas.
+#### G : Water last
+When there is sufficient space, water should be placed last and adapt to other rectangles. 
+If G is fulfilled then F is also fulfilled. 
 
-#### G : Balanced playground placement
+#### H : Balanced playground placement
+Playgrounds should be placed in a way that maximize area available for residences. 
 
-Playgrounds should be placed in a way that maximize area available for residences.
- - plot: value for 2 pgs, 1 pg
+ - todo plot value for 2 pgs, 1 pg
 
 ### Algorithms
 
 We implemented a series of algorithms with differing functionalities.
 Some place only waterbodies and playgrounds and some place only residences.
 Some place nothing on their own but optimize parameters for other algorithms.
-In the following table, all our algorithms are listed along with their categorization.
+In the following table, all our algorithms are listed with their features. 
+The rightmost columns reference heuristics used by the components. 
 
 #### Algorithm Components Table
 
- |name 			|  places wbs  | 	places pgs |	places residences   | optimizes parameters|
- |----------|--------------|-------------|-------------------|-----------------------|
- |base a 	|		1 |		1| 		|
- |base b 		|	1 	|	1	|	|
- |base c 		|	1| 		1	|	|
- |tight fit a |	 		|	 |	1||
- |tight fit b |||	1||
- |hillclimber |||1||
- |simulated annealing||||1|
- |zoom||||1|
-Bases are configurations of water and playground placements, ready to be used
-by residence placement algorithms. We created two static bases and one dynamic base, which attempts to find an optimal solution for the given area and
-constraints. Pictured are our three bases.
-
+ |name 			|  places wbs  | 	places pgs |	places residences   | opt params|A|B|C|D|E|F|G|H|
+ |----------|--------------|-------------|-------------------|-----------------------|--|--|--|--|--|--|--|--|
+ |base a 	|		1 |		1| 		||||||1|||
+ |base b 		|	1 	|	1	|	||||||1|||
+ |base c 		|	1| 		1	|	||||||1|||
+ |tight fit a |	 		|	 |	1||||1|1|1||||
+ |tight fit b |||	1||||1|1|1||||
+ |hillclimber |||1||||||||||
+ |simulated annealing||||1|||||||||
+ |zoom||||1|||||||||
+ |next|1|1|1|0|1|1|1|1|1|1|1|1|
+ 
 #### Bases
 
-Pictured below are bases A, B and C (Dynamic):
+Pictured are bases A, B and C. 
 
 ```{r, out.width = "100px", echo=FALSE}
 knitr::include_graphics("manual_images/base_a.png")
@@ -110,33 +123,48 @@ knitr::include_graphics("manual_images/base_b.png")
 knitr::include_graphics("manual_images/base_c.png")
 ```
 
-#### Residence placers
+The bases were designed with heuristics F and H in mind, with the goal of maximizing playground area without spamming them, and placing waterbodies where playgrounds (mostly) can't reach. However heuristic G was not taken into account. Heuristic G implies bases should not place any water at all, water should instead be placed after residences. 
 
-There are three residence placers.
+#### Residence placers
 
 ##### Tight Fit
 
 Tight Fit algorithms place residences on a base.
 We implemented two versions: TightFitA and TightFitB.
-Clearance between residence types is determined by seed values given to the Tight Fit algorithm upon init.
+
+Heuristics C,D,E were taken into account: 
+
+ - elements are placed in a grid
+ - Clearance between residence types is uniform across residences of each type
+ - Clearance values determined by seed values given to the algorithm upon init
+
 They place residences as pictured.
-Hill Climber HillClimber randomly generate N candidate moves, and selects the candidate with highest value.
-Results in plans as in the picture.
+
+```{r, out.width = "100px", echo=FALSE}
+knitr::include_graphics("manual_images/tf_a.png")
+knitr::include_graphics("manual_images/tf_b.png")
+```
+
+Tight Fit A (left) places one long wrapping line, while Tight Fit B (right) places three separate diagnoally cut grids. 
+We expect TF B's placement scheme to lead to less shared clearance, and thus for it to perform wors. 
+
+##### Hill Climber
+
+HillClimber randomly generate N candidate moves, and selects the candidate with highest value. Results in plans as in the picture.
+HillClimber uses no heuristics. However we expect its result plan to by convergence satisfy some constraints. 
+We expect Hill Climber to perform poorly.
 
 ##### Parameter Optimisers
 
-With uniform clearance for all residence types, we have a len(residence types)-
-dimensional search space. We implement, use and compare two different search
-methods for this task.
+The Tight Fit algorithm takes values at init which are used as the clearance for each residence type. 
+To find the best values to give Tight Fit, we implement algorithms that searches this 4d space (mansion clearance,bungalow clearance,familyhome clearance,value of generated plan) for the point with highest generated plan value. 
+
+In both our parameter optimisers, we could but don't apply heuristic B, by limiting the search space to where mansion_clearance/familyhome_clearance > 1.0
 
 ##### Simulated Annealing
 
-Simulated Annealing (SA) is supposed to finds a good approximation of a global
-optimum, which in our context is a point in a 3D space which yields the highest
-plan value when input to a Tight Fit algorithm. The features of SA are in
-contrast with greedy algorithms such as hill climbing, which tend to get stuck
-in local optima while often missing the global maximum when there are many
-peaks.
+Simulated Annealing (SA) is supposed to finds a good approximation of a global optimum, which in our context is a point in a 3D space which yields the highest plan value when input to a Tight Fit algorithm. The features of SA are in contrast with greedy algorithms such as hill climbing, which tend to get stuck
+in local optima while often missing the global maximum when there are many peaks.
 
         Assign [i, j, k] with initial starting values
             For each iteration until max iterations:
@@ -154,12 +182,16 @@ the best result was found.
         Reset range to be around the best point found, and reduce the interval.
         When interval is below threshold, stop.
 
+### Next algorithm
+
+The next algorithm to implement would be one that uses all the heuristics.
+We started to pack our heuristics into a new algorithm, but didn't have time to finish it. 
+For a demonstration of the implementation so for, run the presentation.py script in the attached code. 
+
 ## Experimental setup
 
-
-We run all plan generator algorithms and catch the output value and compu-
-tation time. We also catch the value per iteration of algorithms where it is
-applicable.
+We run all implemented algorithms and catch the output value and computation time. 
+We also catch the value per time within algorithms, and the clearance parameters in cases where Tight Fit is involved. 
 
 ### Results
 
@@ -167,20 +199,8 @@ applicable.
 
 The raw data is attached in a spreadsheet and hosted in a sortable table at fanaly.site88.net/heur/
 
-#### Statistics
-
-#### Plots
-
-##### Plan value spread for each valuatation of each variant
-
-Across whole dataset:
-
-```{r, out.width = "300px", echo=FALSE}
-knitr::include_graphics("manual_images/total_ptime.png")
-```
-
-- TODO replace with auto plot generation
-
+#### Plan value spread for each valuatation of each variant
+ 
 ```{r, out.width = "400px", echo=FALSE}
 knitr::include_graphics("images/variants1.png")
 ```
@@ -189,19 +209,19 @@ knitr::include_graphics("images/variants1.png")
 knitr::include_graphics("images/variants2.png")
 ```
 
- - Top left: varying bases A, B, C.
+ - Top left: varying bases A, B, C. 
  - Top right: varying residence placer function TFA,TFB,HC
- - Bottom left: varying number of candidate moves 2,4,6
+ - Bottom left: varying number of candidate moves 2,4,6 
  - bottom right: varying search functinon (SA,Zoom)
-
+ 
 We observe
 
  - bases A and C are generally better than B
  - TF A outperforms TF B
  - Considering more candidate moves increases HillClimber's plan values
  - Zoom finds better values than Simulated annealing
- - Our Hillclimbing implementation is not a scalable
-
+ - Our Hillclimbing implementation doesn't scale
+ 
 #### Plan value per processing time
 
 ```{r, out.width = "220px", echo=FALSE}
@@ -214,19 +234,18 @@ knitr::include_graphics("images/2-3-4-5-6.png")
 - upper left: Comparison of SA and Zoom
 - upper right: Comparison of SA and Tight Fit
 - lower left: Comparison of bases A, B, and C (aka dynamic)
-- lower right: Comparison of HillClimber with \[2, 3, 4, 5, 6\] candidates
+- lower right: Comparison of HillClimber with [2, 3, 4, 5, 6] candidates
 
 we observe
 
  - zoom slightly outperforms SA, but zoom spends more time searching but failing to improve
  - Tight Fit A outperforms Tight Fit B
  - in the first 3 plots, we can clearly distinguish between datapoints for different num house requirements
- - ????
- - rainbow!
+ - rainbow! 
 
-#### Correlations between each numerical variable and plan value
+#### Correlations between residence clearances and plan value
 
-We found these (pearson) correlations between plan value and each residence clearance factor, across all data:
+We found these (pearson) correlations between plan value and each residence clearance factor, across all Tight Fit runs:
 
  - mansion clearance factor : 0.88,
  - bungalow clearance factor : 0.80,
@@ -234,27 +253,27 @@ We found these (pearson) correlations between plan value and each residence clea
 
 todo:
 
- - plot change of correlations across algorithms
- - this would show convergence of high mansion clearance / plan value correlation toward those of sa and zoom
-
+ - scatterplot of correlation of each TF variant
+ - catch average clearance factor of hillclimber and compare. convergence maybe?
+ 
 #### Variety in algorithm output
 
-```{r, out.width = "500px", echo=FALSE}
-knitr::include_graphics("images/boxplot_plan_value.png")
+ - TODO remove or regenerate with real data
+
+```{r, out.width = "400px", echo=FALSE}
+knitr::include_graphics("manual_images/randomness.png")
 ```
 
- - Spread in plan value across 30 runs, with the same settings.
- - As expected, determininstic algorithms have 0 variance.
+This boxplot shows spreads in plan value across several runs for the same problem instance.
+As expected, deterministic algorithms have 0 spread. 
 
 ### Best plans
 
-```{r, out.width = "100px", echo=FALSE}
-knitr::include_graphics("manual_images/40.png")
-knitr::include_graphics("manual_images/70.png")
-knitr::include_graphics("manual_images/100.png")
+```{r, out.width = "400px", echo=FALSE}
+knitr::include_graphics("manual_images/bests.png")
 ```
 
-Above are the best plans found for 40, 70 and 100 residences.
+Above are the best plans found for 40, 70 and 100 residences. 
 
 |NH|Algo|Base|Residence placer|i|j|k|value|
 |--|----|----|----------------|-|-|-|-----|
@@ -262,18 +281,18 @@ Above are the best plans found for 40, 70 and 100 residences.
 |70|Zoom|C   |TF A            |2.35|2.65|2.62|32.7 m|
 |100|Zoom|A   |TF A            |2.13|1.0|1.0|42.3 m|
 
-observations:
-
- - preference for more valuable residence
- - tight fit A and zoom consistently outperform others
+We observe that the best algorithms happen to prioritize clearance of more valuable residences. 
+The 70-residence problem instance is an exception which we can't explain. 
+We also observe that tight fit A and zoom consistently outperform others. 
+Also note, crucially, that the best plans found have obvious ways of increasing clearance by moving and/or flipping some residences
 
 ## Conclusions
 
-- see observations around doc
+By comparing our different algorithm components statistically, we are able to say some generally outperform others. 
+Zoom is preferable over SA, Tight Fit A outperforms Tight Fit B which outperforms HillClimber. Out HillClimber implementation doesn't scale.  
+The bases we tested had little but noticable difference. Base A is generally preferable. 
 
-## Future work
-
-- implement more of the heuristic knowledge
+Future work would involve to continue developing a cohesive algorithm which applies all heuristics. Parameter search for clearances should be avoided, as it takes a lot of time and could be better done for each grid individually, with expand, shrink and bounce functions. For data analysis, it would make algorithm component evaluation more fluent if we computed correlations across all columns. We've done this for a few numerical values, but it should be done systematically for all columns. 
 
 ## Advanced assignment
 
@@ -308,7 +327,9 @@ To make up for this the last row of family homes may be removed,
     and replaced by bungalows to allow for a more optimal use of space and generating
 more value as seen in figure a below.
 
-![](manual_images/advanced.png)
+```{r, out.width = "220px", echo=FALSE}
+knitr::include_graphics("manual_images/advanced.png")
+```
 
 The above image shows a plan where space is used more optimally when using bungalows,
  instead of family homes to fill up the open space.
@@ -319,7 +340,3 @@ Homes generate more value per square meter this plan with bungalows generates a 
  because more space is used.
 Plan B, the plan with the most optimal value, has a total of 197 residences when no playgrounds are placed.
 Using more family homes might increase value if the amount of space used does not decrease.
-
-Future work
-Bringing together our heuristics
-Our best plan values took 10 seconds to generate. This is a lot of time, and there’s obvious room for improvement.

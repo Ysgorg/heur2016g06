@@ -209,10 +209,10 @@ knitr::include_graphics("images/variants1.png")
 knitr::include_graphics("images/variants2.png")
 ```
 
- - Top left: varying bases A, B, C.
- - Top right: varying residence placer function TFA,TFB,HC
- - Bottom left: varying number of candidate moves 2,4,6
- - bottom right: varying search functinon (SA,Zoom)
+ - Top left: all results where base=[A, B, C].
+ - Top right: all results where residence placement function=[TFA,TFB,HC]
+ - Bottom left: all results where number of candidate moves=[2,4,6]
+ - bottom right: all restults where search function=[SA,Zoom]
 
 We observe
 
@@ -282,15 +282,19 @@ Above are the best plans found for 40, 70 and 100 residences.
 |100|Zoom|A   |TF A            |2.13|1.0|1.0|42.3 m|
 
 We observe that the best algorithms happen to prioritize clearance of more valuable residences.
-The 70-residence problem instance is an exception which we can't explain.
+The 70-residence problem instance is an exception.
+In this case, the similar clearances happen to allow tightfit to place the residences in a convenient way.
 We also observe that tight fit A and zoom consistently outperform others.
 Also note, crucially, that the best plans found have obvious ways of increasing clearance by moving and/or flipping some residences
 
 ## Conclusions
 
-By comparing our different algorithm components statistically, we are able to say some generally outperform others.
-Zoom is preferable over SA, Tight Fit A outperforms Tight Fit B which outperforms HillClimber. Out HillClimber implementation doesn't scale.
-The bases we tested had little but noticable difference. Base A is generally preferable.
+We described the problem, formulated heuristics, implemented some algorithms applying some of the heuristics,
+set up a testing framework, and did some statistics and plotting on the data.
+This helped us to identify the most suitable of our components.
+The results indicate that search algorithms end up with finding plans that satisfy some of our constraints.
+This shows both that these heurstics make sense,
+    and that it's safe to include these heuritics in our implementation to restrict our search space.
 
 Future work would involve to continue developing a cohesive algorithm which applies all heuristics. Parameter search for clearances should be avoided, as it takes a lot of time and could be better done for each grid individually, with expand, shrink and bounce functions. For data analysis, it would make algorithm component evaluation more fluent if we computed correlations across all columns. We've done this for a few numerical values, but it should be done systematically for all columns.
 
@@ -303,6 +307,7 @@ For this purpose two static plans have been made, one for the situation with pla
  and one for a situation without playgrounds.
 By manual deduction of the assignment a formula for value per square meter of space has been constructed,
  which can be applied for calculating the amount of value (V) per square meter for a residence
+ 
   - width W
   - height H
   - minimal clearance minC

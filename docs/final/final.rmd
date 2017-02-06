@@ -86,19 +86,29 @@ In the following table, all our algorithms are listed along with their categoriz
 
 #### Algorithm Components Table
 
-table
-
+ |name 			|  places wbs  | 	places pgs |	places residences   | optimizes parameters|
+ |----------|--------------|-------------|-------------------|-----------------------|
+ |base a 	|		1 |		1| 		|
+ |base b 		|	1 	|	1	|	|
+ |base c 		|	1| 		1	|	|
+ |tight fit a |	 		|	 |	1||
+ |tight fit b |||	1||
+ |hillclimber |||1||
+ |simulated annealing||||1|
+ |zoom||||1|
 Bases are configurations of water and playground placements, ready to be used
 by residence placement algorithms. We created two static bases and one dynamic base, which attempts to find an optimal solution for the given area and
 constraints. Pictured are our three bases.
 
 #### Bases
 
-##### Base A
+Pictured are bases A, B and C. 
 
-##### Base B
-
-##### Base C
+```{r, out.width = "100px", echo=FALSE}
+knitr::include_graphics("manual_images/base_a.png")
+knitr::include_graphics("manual_images/base_b.png")
+knitr::include_graphics("manual_images/base_c.png")
+```
 
 #### Residence placers
 
@@ -163,13 +173,14 @@ The raw data is attached in a spreadsheet and hosted in a sortable table at fana
 
 ##### Plan value spread for each valuatation of each variant
 
-First, across all:
-
- - TODO integrate with auto plot generation
-```{r, out.width = "200px", echo=FALSE}
+Across whole dataset: 
+ 
+```{r, out.width = "300px", echo=FALSE}
 knitr::include_graphics("manual_images/total_ptime.png")
 ```
 
+- TODO replace with auto plot generation
+ 
 ```{r, out.width = "400px", echo=FALSE}
 knitr::include_graphics("images/variants1.png")
 ```
@@ -189,7 +200,8 @@ We observe
  - TF A outperforms TF B
  - Considering more candidate moves increases HillClimber's plan values
  - Zoom finds better values than Simulated annealing
-
+ - Our Hillclimbing implementation is not a scalable
+ 
 #### Plan value per processing time
 
 ```{r, out.width = "220px", echo=FALSE}
@@ -208,8 +220,9 @@ we observe
 
  - zoom slightly outperforms SA, but zoom spends more time searching but failing to improve
  - Tight Fit A outperforms Tight Fit B
+ - in the first 3 plots, we can clearly distinguish between datapoints for different num house requirements
  - ????
- - rainbow!
+ - rainbow! 
 
 #### Correlations between each numerical variable and plan value
 
@@ -226,17 +239,17 @@ todo:
 
 #### Variety in algorithm output
 
-![](manual_images/randomness.png)
+```{r, out.width = "100px", echo=FALSE}
+knitr::include_graphics("manual_images/randomness.png")
+```
 
  - spread in plan value across several runs, on same settings
  - as expected, determininstic algorithms have 0 variance
 
 ### Best plans
 
-```{r, out.width = "100px", echo=FALSE}
-knitr::include_graphics("manual_images/40.png")
-knitr::include_graphics("manual_images/70.png")
-knitr::include_graphics("manual_images/100.png")
+```{r, out.width = "400px", echo=FALSE}
+knitr::include_graphics("manual_images/bests.png")
 ```
 
 Above are the best plans found for 40, 70 and 100 residences. 
@@ -258,14 +271,7 @@ observations:
 
 ## Future work
 
-- implement more heuristics
-
-### Usefulness of work
-
- - Every of the heuristics that we implemented improved our solution score/finding time.
- - Visualizing rectangle reach perimeter aids human intuition in plan evaluation.
- - Future algorithms can be added to the batch test framework.
- - Modular design lets us easily add more algorithms, more data analysis, more plots.
+- implement more of the heuristic knowledge
 
 ## Advanced assignment
 

@@ -44,7 +44,7 @@ def make_lineplots(lines):
 
     variants = [
         ['base_a','base_b','base_dynamic'],
-        [2,3,4,5],
+        [2,3,4,5,6],
         ['TightFit_A','TightFit_B'],
         ['SA','Zoom']
     ]

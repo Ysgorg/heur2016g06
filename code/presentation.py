@@ -57,3 +57,4 @@ pause()
 print "##########" , 'Running test batch test'
 os.system("python . vis test")
 pause()
+

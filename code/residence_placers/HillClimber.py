@@ -1,5 +1,5 @@
 from random import random
-from time import sleep
+from time import sleep, time
 
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
@@ -137,13 +137,18 @@ class HillClimber(object):
         plan = plan.deepCopy()
         i = 0
 
+        best_plan = plan
 
         while i < constants['max_iterations'] and not plan.isValid() and len(plan.residences) < plan.NUMBER_OF_HOUSES:
             f = self.decide_residence_type(i)
+            init_time=time()
             r = self.best_among_candidates(plan.deepCopy(), f, constants['number_of_candidate_moves'], frame,slow)
-            if r is not None: plan = r
-            self.iteration_value_rows.append(plan.getPlanValue())
+            if r is not None:
+                plan = r
             if frame is not None: frame.repaint(plan)
             i += 1
+            if plan.getPlanValue()>best_plan.getPlanValue() and (plan.isValid() or not best_plan.isValid()):
+                best_plan=plan
+                self.iteration_value_rows.append([time()-init_time,plan.getPlanValue()])
 
-        self.plan = plan
+        self.plan = best_plan

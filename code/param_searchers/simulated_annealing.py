@@ -64,10 +64,10 @@ def sa_2(base, constants, t, frame, slow=False):
             current_state = neigbor
             if current_state[3] > best_state[3]:
                 best_state = current_state
+                iteration_value_rows.append([time.time()-init_time,current_state[4].getPlanValue()])
         elif (current_state[3] - neigbor[3]) / temperature > random():
             current_state = neigbor
 
-        iteration_value_rows.append(current_state[4].getPlanValue())
 
     pt = time.time() - init_time
 

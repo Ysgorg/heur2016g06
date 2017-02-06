@@ -91,70 +91,48 @@ def perform_all_experiments(experiment_config, frame=None):
 
                             # todo generify
 
-                            if experiment_key == 'Zoom' or experiment_key == 'SA':
-                                variable = experiment['variables']['Tight Fit functions']
-                                for v in variable:
-                                    if not valid_plan(base, v): continue
+                            # generic
 
-                                    t = time.time()
-                                    sf = f(base.deepCopy(), experiment['constants'], v, frame)
-                                    result = sf['Plan']
-                                    tim = time.time() - t
-                                    if best is None or result.getPlanValue() > best.getPlanValue(): best = result
-                                    counters[3] += 1
-                                    print_log_line(result, counters, t, init_time, best, frame_2)
+                            hc = experiment_key=='HC'
 
-                                    lines.append(
-                                        [
-                                            nh,
-                                            pg,
-                                            base.name,
-                                            experiment_key,
-                                            result.getPlanValue(),
-                                            v.name
-                                        ] + sf['it_vals']
-                                    )
-                                    sf['it_vals']=[]
-
-                                    rows.append({
-                                        'Number of residences': nh,
-                                        'Enable playground': pg,
-                                        'Search function': experiment_key,
-                                        'Base': base.name,
-                                        'Residence placer': v.name,
-                                        'Plan value': result.getPlanValue() if result.isValid() else 0,
-                                        'Processing time': tim,
-                                        'Familyhome clearance': result.params[0],
-                                        'Bungalow clearance': result.params[1],
-                                        'Mansion clearance': result.params[2]
-                                    })
-
-                            elif experiment_key == 'HC':
-
+                            if not hc: variable = experiment['variables']['Tight Fit functions']
+                            else:
+                                variable = experiment['variables']["Number of candidate moves"]
                                 if not valid_plan(base, HillClimber): continue
 
-                                for v in experiment['variables']["Number of candidate moves"]:
+                            for v in variable:
+                                t = time.time()
 
-                                    t = time.time()
+                                if not hc:
+                                    if not valid_plan(base, v): continue
+                                    r = f(base.deepCopy(), experiment['constants'], v, frame)
+                                    result = r['Plan']
+                                    it_vals = r['it_vals']
+                                    r['it_vals']=[]
+                                    v_v = v.name
+                                else:
                                     hc = HillClimber(base.deepCopy(), {'max_iterations': 1000,'number_of_candidate_moves': v}, frame)
                                     result = hc.getPlan().deepCopy()
-                                    tim = time.time() - t
-                                    if best is None or result.getPlanValue() > best.getPlanValue(): best = result
-                                    counters[3] += 1
-                                    print_log_line(result, counters, t, init_time, best, frame_2)
-                                    lines.append([nh,pg,base.name,experiment_key,result.getPlanValue(),v]+hc.iteration_value_rows)
+                                    it_vals = hc.iteration_value_rows
                                     hc.iteration_value_rows=[]
+                                    v_v = v
 
-                                    rows.append({
-                                        'Number of residences': nh,
-                                        'Enable playground': pg,
-                                        'Base': base.name,
-                                        'Residence placer': experiment_key,
-                                        'Plan value': result.getPlanValue() if result.isValid() else 0,
-                                        'Processing time': tim,
-                                        'Number of candidates': v
-                                    })
+                                tim = time.time() - t
 
-        GroundplanFrame(best).repaint(best,"Overall best for nh="+str(nh))
+                                if best is None or result.getPlanValue() > best.getPlanValue(): best = result
+                                print_log_line(result, counters, t, init_time, best, frame_2)
+                                lines.append(
+                                    [
+                                        [nh,pg,base.name,experiment_key,result.getPlanValue(),v_v],
+                                        it_vals
+                                    ]
+                                )
+
+                                if not hc:rows.append({'Number of residences': nh,'Enable playground': pg,'Search function': experiment_key,'Base': base.name,'Residence placer': v.name,'Plan value': result.getPlanValue() if result.isValid() else 0,'Processing time': tim,'Familyhome clearance': result.params[0],'Bungalow clearance': result.params[1],'Mansion clearance': result.params[2]})
+                                else: rows.append({'Number of residences': nh,'Enable playground': pg,'Base': base.name,'Residence placer': experiment_key,'Plan value': result.getPlanValue() if result.isValid() else 0,'Processing time': tim,'Number of candidates': v})
+
+
+        GroundplanFrame(best).repaint(best,"\n\tOverall best for nh="+str(nh))
+        best = None
 
     return [fields, rows,{'lines':lines}]

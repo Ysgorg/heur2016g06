@@ -6,7 +6,7 @@ from residence_placers.TightFit_A import TightFit_A
 from residence_placers.TightFit_B import TightFit_B
 
 tight_fit_algos = [#TightFitWB,
-                   TightFit_A, TightFit_B]
+    TightFit_A, TightFit_B]
 
 bases = [base_a, base_b, base_dynamic]
 
@@ -19,8 +19,8 @@ zoom = {
     },
     "constants": {
         'min': 1.0,
-        'max': 10.0,
-        'interval': 3.0,
+        'max': 2.0,
+        'interval': 2.1,
         'interval_shrink_factor': 0.1,
         'min_interval': 2.0
     }
@@ -29,7 +29,7 @@ zoom = {
 hc = {
     "variables": {
         "Bases": bases,
-        "Number of candidate moves": [2,3,6]
+        "Number of candidate moves": [2,3,4,5]
     },
     "constants": {
         "max_iterations": MAX_ITERATIONS
@@ -48,12 +48,13 @@ sa_2 = {
     }
 }
 
-test_config = {
+quick_config = {
+
     "Problem instances": {
 
         # as defined by course manual
 
-        "Number of residences": [40, 70 , 100],  # ,70,100],#[i*10+10 for i in range(10)],
+        "Number of residences": [40],  # ,70,100],#[i*10+10 for i in range(10)],
         "Enable playgrounds": [True  # , False
                                ],
         "Area dimensions": [{"width": 200.0, "height": 170.0}],

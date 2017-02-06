@@ -6,16 +6,9 @@ from residence_placers.TightFit_A import TightFit_A
 from residence_placers.TightFit_B import TightFit_B
 from src.Groundplan import Groundplan
 
-tight_fit_algos = [
-    # TightFitWB,
-    TightFit_A, TightFit_B]
+tight_fit_algos = [TightFit_A, TightFit_B]
 
-bases = [Groundplan,
-         base_a,
-         base_b,
-         base_c,
-         base_dynamic
-         ]
+bases = [base_a,base_b,base_dynamic]
 
 zoom = {
     "variables": {
@@ -24,7 +17,7 @@ zoom = {
     },
     "constants": {
         'min': 1.0,
-        'max': 10.0,
+        'max': 14.0,
         'interval': 2.0,
         'interval_shrink_factor': 0.75,
         'min_interval': 0.25
@@ -34,7 +27,7 @@ zoom = {
 hc = {
     "variables": {
         "Bases": bases,
-        "Number of candidate moves": [2, 4, 6]
+        "Number of candidate moves": [2, 3, 4, 5]
     },
     "constants": {
         "max_iterations": 150
@@ -49,7 +42,7 @@ sa_2 = {
     "constants": {
         "max_iterations": 1000,
         'min': 1.0,
-        'max': 10.0
+        'max': 14.0
     }
 }
 
@@ -58,7 +51,8 @@ main_config = {
 
         # as defined by course manual
 
-        "Number of residences": [40,70,100],#[i * 10 + 10 for i in range(10)],
+        "Number of residences": [40,70,100],
+            #,100],#[i * 10 + 10 for i in range(10)],
         "Enable playgrounds": [True],
         "Area dimensions": [{"width": 200.0, "height": 170.0}],
         "Building proportions": [{"Mansion": 0.2, "Bungalow": 0.3, "FamilyHome": 0.5}]

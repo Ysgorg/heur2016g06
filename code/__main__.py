@@ -6,6 +6,7 @@ from pprint import pprint
 
 from all import perform_all_experiments
 from batch_configs.main_config import main_config
+from batch_configs.quick_config import quick_config
 from batch_configs.test_config import test_config
 from residence_placers.Other import make_great_plan
 from src.Groundplan import Groundplan
@@ -16,10 +17,9 @@ from visualizations.boxplot import plot_boxplot
 json_results = 'all_main_results.json' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'all_test_results.json'
 fname = 'main_results.csv' if len(sys.argv) == 1 or sys.argv[1] != 'test' else 'test_results.csv'
 
-def run_main(frame, test):
+def run_main(frame, experiment_config):
 
-    experiment_config = test_config if test else main_config
-    pprint(experiment_config)
+    # pprint(experiment_config)
     res = perform_all_experiments(experiment_config, frame)
 
     fields = res[0]
@@ -32,10 +32,12 @@ def run_main(frame, test):
         for r in rows: writer.writerow(r)
         print 'saved results to', fname
 
-    fname2="value_per_iteration.csv"
-    with open(fname2, "wb") as f:
-        writer = csv.writer(f)
-        writer.writerows(res[2]['lines'])
+    fname2="value_per_time.json"
+
+    import json
+
+    with open(fname2, 'w') as outfile:
+        json.dump(res[2]['lines'], outfile)
         print "saved results to",fname2,
 
     # Store new results with all previous
@@ -68,9 +70,11 @@ t = time.time()
 if 'other' in sys.argv:
     make_great_plan(frame)
 elif 'full' in sys.argv:
-    run_main(frame, False)
+    run_main(frame, main_config)
 elif 'test' in sys.argv:
-    run_main(frame, True)
+    run_main(frame, test_config)
+elif 'quick' in sys.argv:
+    run_main(frame, quick_config)
 
 print "procedure took", int((time.time() - t)), 'seconds'
 

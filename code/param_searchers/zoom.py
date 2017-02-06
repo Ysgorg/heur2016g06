@@ -4,7 +4,6 @@ from src.Groundplan import Groundplan
 
 
 def zoom(base, p, f, frame=None,slow=False):
-    # print 'zoom' , base.puts
 
     def best_res(res):
         bestone = None
@@ -30,6 +29,7 @@ def zoom(base, p, f, frame=None,slow=False):
     interval = p['interval']
 
     results = []
+    init_time = time.time()
 
     iteration_value_rows = []
     count=0
@@ -44,8 +44,6 @@ def zoom(base, p, f, frame=None,slow=False):
                     v = 0
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
-
-                        iteration_value_rows.append(r.getPlanValue())
                         count+=1
                         if r.isValid():
                             if frame is not None:
@@ -58,6 +56,7 @@ def zoom(base, p, f, frame=None,slow=False):
             i += interval
 
         best = best_res(results)
+        iteration_value_rows.append([time.time()-init_time,best[4].getPlanValue()])
 
         i_min = getmin(best[1])
         i_max = getmax(best[1])

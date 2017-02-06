@@ -302,23 +302,15 @@ On the other hand the family homes produce the highest value per square meter, 1
 This meaning that placing as many family homes as possible would give the most value.
 However, when filling the plan with as many family homes as possible,
     one can see that near the edge space is unused,
-    because there is too little space to place more family homes.
+    because there is too little space to place more family homes as seen in the figure below.
 This unused space causes a plan to lose potential value.
 To make up for this the last row of family homes may be removed,
     and replaced by bungalows to allow for a more optimal use of space and generating
-more value as seen in figure a below.
+more value as seen in the second figure below.
 
-![](manual_images/advanced.png)
+![Plan prioritizing family homes with value 7.443E7](manual_images/advancedFamilyHome.png) ![Plan prioritizing Bungalows with value 7.7769E7](manual_images/advancedBungalow.png)
 
-The above image shows a plan where space is used more optimally when using bungalows,
- instead of family homes to fill up the open space.
-
-Figure 4: Advanced Assignment Plans
-
-Homes generate more value per square meter this plan with bungalows generates a plan with more value,
- because more space is used.
-Plan B, the plan with the most optimal value, has a total of 197 residences when no playgrounds are placed.
-Using more family homes might increase value if the amount of space used does not decrease.
+Family homes generate more value per square meter but this plan with bungalows generates a plan with more value, because more space is used. The balance between using as much family homes, which generate the most value per meter, and using enough other residences to optimize for space usage is difficult to find but may have been reached by the second plan that is presented. This second plan has a total of 197 residences of family homes and bungalows combined without the placement of playgrounds. Therefore one may say that the optimal number of residences is 197 in this case.
 
 Future work
 Bringing together our heuristics

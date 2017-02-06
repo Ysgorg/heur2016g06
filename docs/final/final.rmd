@@ -16,23 +16,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
  1. describe the problem
  2. formulate heuristics
- 3. describe and implement algorithms applying subsets of the heuristics 
+ 3. describe and implement algorithms applying subsets of the heuristics
  4. compare implementations algorithms statistically
  5. plot results in a human friendly and statistically sound way
  6. suggest best approach based on data
 
 ## Problem description
 
-An amstelhaege problem instance is defined by a set of constraints for placement of rectangles in a continuous 2d area. 
-The course defines 4 such valuations, indicated in the table below. 
+An amstelhaege problem instance is defined by a set of constraints for placement of rectangles in a continuous 2d area.
+The course defines 4 such valuations, indicated in the table below.
 
 ### Value to Optimize
 
-The sum of ( each tile's value + (clearance()-min clearance)*added value per one clearance unit), while satisfying problem instance constraints. 
+The sum of ( each tile's value + (clearance() - min clearance) x added value per one clearance unit), while satisfying problem instance constraints. 
 
 ### Amstelhaege Constraints
 
-  
+
       area_rules := width, height
       water_rules := max_waterbody_sides_len_ratio , max_num_waterbodies, minimum_water_proportion
       playground_rules := width, height, enable_playground, max_playground_distance, playground_cost
@@ -48,7 +48,7 @@ The sum of ( each tile's value + (clearance()-min clearance)*added value per one
 
 We formulate these heuristics.
 
-#### A : More clearance is better 
+#### A : More clearance is better
 
 More clearance directly increases the value of a residence. Naturally, we desire high clearance.
 
@@ -70,11 +70,11 @@ Grids is the optimal way of distributing rectangles with maximal uniform distanc
 
 #### F : Adaptive Water
 
-When possible, water should be placed after residences, within the largest unused areas. 
+When possible, water should be placed after residences, within the largest unused areas.
 
 #### G : Balanced playground placement
 
-Playgrounds should be placed in a way that maximize area available for residences. 
+Playgrounds should be placed in a way that maximize area available for residences.
  - plot: value for 2 pgs, 1 pg
 
 ### Algorithms
@@ -102,7 +102,7 @@ constraints. Pictured are our three bases.
 
 #### Bases
 
-Pictured are bases A, B and C. 
+Pictured are bases A, B and C.
 
 ```{r, out.width = "100px", echo=FALSE}
 knitr::include_graphics("manual_images/base_a.png")
@@ -173,14 +173,14 @@ The raw data is attached in a spreadsheet and hosted in a sortable table at fana
 
 ##### Plan value spread for each valuatation of each variant
 
-Across whole dataset: 
- 
+Across whole dataset:
+
 ```{r, out.width = "300px", echo=FALSE}
 knitr::include_graphics("manual_images/total_ptime.png")
 ```
 
 - TODO replace with auto plot generation
- 
+
 ```{r, out.width = "400px", echo=FALSE}
 knitr::include_graphics("images/variants1.png")
 ```
@@ -189,11 +189,11 @@ knitr::include_graphics("images/variants1.png")
 knitr::include_graphics("images/variants2.png")
 ```
 
- - Top left: varying bases A, B, C. 
+ - Top left: varying bases A, B, C.
  - Top right: varying residence placer function TFA,TFB,HC
- - Bottom left: varying number of candidate moves 2,4,6 
+ - Bottom left: varying number of candidate moves 2,4,6
  - bottom right: varying search functinon (SA,Zoom)
- 
+
 We observe
 
  - bases A and C are generally better than B
@@ -201,7 +201,7 @@ We observe
  - Considering more candidate moves increases HillClimber's plan values
  - Zoom finds better values than Simulated annealing
  - Our Hillclimbing implementation is not a scalable
- 
+
 #### Plan value per processing time
 
 ```{r, out.width = "220px", echo=FALSE}
@@ -222,7 +222,7 @@ we observe
  - Tight Fit A outperforms Tight Fit B
  - in the first 3 plots, we can clearly distinguish between datapoints for different num house requirements
  - ????
- - rainbow! 
+ - rainbow!
 
 #### Correlations between each numerical variable and plan value
 
@@ -252,7 +252,7 @@ knitr::include_graphics("manual_images/randomness.png")
 knitr::include_graphics("manual_images/bests.png")
 ```
 
-Above are the best plans found for 40, 70 and 100 residences. 
+Above are the best plans found for 40, 70 and 100 residences.
 
 |NH|Algo|Base|Residence placer|i|j|k|value|
 |--|----|----|----------------|-|-|-|-----|
@@ -260,9 +260,9 @@ Above are the best plans found for 40, 70 and 100 residences.
 |70|Zoom|C   |TF A            |2.35|2.65|2.62|32.7 m|
 |100|Zoom|A   |TF A            |2.13|1.0|1.0|42.3 m|
 
-observations: 
- 
- - preference for more valuable residence 
+observations:
+
+ - preference for more valuable residence
  - tight fit A and zoom consistently outperform others
 
 ## Conclusions

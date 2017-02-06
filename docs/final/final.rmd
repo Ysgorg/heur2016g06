@@ -327,8 +327,12 @@ To make up for this the last row of family homes may be removed,
     and replaced by bungalows to allow for a more optimal use of space and generating
 more value as seen in the second figure below.
 
+
 ```{r, out.width = "220px", echo=FALSE}
-knitr::include_graphics("manual_images/advanced.png")
+
+knitr::include_graphics("manual_images/advancedBungalow.png")
+knitr::include_graphics("manual_images/advancedFamilyHome.png")
+
 ```
 
 Family homes generate more value per square meter but this plan with bungalows generates a plan with more value, because more space is used. The balance between using as much family homes, which generate the most value per meter, and using enough other residences to optimize for space usage is difficult to find but may have been reached by the second plan that is presented. This second plan has a total of 197 residences of family homes and bungalows combined without the placement of playgrounds. Therefore one may say that the optimal number of residences is 197 in this case.

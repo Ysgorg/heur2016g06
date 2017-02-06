@@ -2,7 +2,6 @@ from Residence import Residence
 
 
 class Mansion(Residence):
-
     def __init__(self, x=-1, y=-1):
         super(Mansion, self).__init__(x,
                                       y,
@@ -13,3 +12,4 @@ class Mansion(Residence):
                                       minimumClearance=6,
                                       addedValuePercentage=0.06,
                                       color="Cyan")
+

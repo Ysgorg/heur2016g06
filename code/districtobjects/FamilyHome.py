@@ -2,7 +2,6 @@ from Residence import Residence
 
 
 class FamilyHome(Residence):
-
     def __init__(self, x=-1, y=-1):
         super(FamilyHome, self).__init__(x,
                                          y,

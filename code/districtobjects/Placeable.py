@@ -1,5 +1,4 @@
 class Placeable(object):
-
     def __init__(self, x, y, width, height, flipped=False):
         self.width = width
         self.height = height
@@ -22,4 +21,4 @@ class Placeable(object):
         return self
 
     def toString(self):
-        return str(self.getX()) + " " + str(self.rightEdge()) + " " + str(self.y1) + " " + str(self.bottomEdge())
+        return str(self.x1) + " " + str(self.x2) + " " + str(self.y1) + " " + str(self.y2)

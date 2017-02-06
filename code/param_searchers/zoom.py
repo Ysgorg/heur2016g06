@@ -3,8 +3,7 @@ import time
 from src.Groundplan import Groundplan
 
 
-def zoom(base, experiment, f, frame=None):
-    # print 'zoom' , base.puts
+def zoom(base, p, f, frame=None,slow=False):
 
     def best_res(res):
         bestone = None
@@ -20,8 +19,6 @@ def zoom(base, experiment, f, frame=None):
 
     t = time.time()
 
-    p = experiment['constants']
-
     i_min = p['min']
     i_max = p['max']
     j_min = p['min']
@@ -32,7 +29,10 @@ def zoom(base, experiment, f, frame=None):
     interval = p['interval']
 
     results = []
+    init_time = time.time()
 
+    iteration_value_rows = []
+    count=0
     while interval > p['min_interval']:
         i = i_min
         while i_min <= i < i_max:
@@ -40,12 +40,15 @@ def zoom(base, experiment, f, frame=None):
             while j_min <= j < j_max:
                 k = k_min
                 while k_min <= k < k_max:
-                    r = f(base.deepCopy(), i, j, k, frame).getPlan()
+                    r = f(base.deepCopy(), i, j, k, frame if not slow else None).getPlan()
                     v = 0
                     if isinstance(r, Groundplan):
                         r = r.deepCopy()
+                        count+=1
                         if r.isValid():
-                            if frame is not None: frame.repaint(r)
+                            if frame is not None:
+                                frame.repaint(r)
+                                if slow: time.sleep(0.1)
                             v = r.getPlanValue()
                     results.append([base, i, j, k, r, v])
                     k += interval
@@ -53,6 +56,7 @@ def zoom(base, experiment, f, frame=None):
             i += interval
 
         best = best_res(results)
+        iteration_value_rows.append([time.time()-init_time,best[4].getPlanValue()])
 
         i_min = getmin(best[1])
         i_max = getmax(best[1])
@@ -67,9 +71,9 @@ def zoom(base, experiment, f, frame=None):
     pt = time.time() - t
 
     if best is None:
-        o = {'Plan': None, 'Value': 0, 'Processing time': pt, 'Params': {'base': base.name, 'algorithm': f}}
+        o = {'Plan': None, 'Value': 0, 'Processing time': pt, 'Params': {'base': base.name, 'algorithm': f},'it_vals':iteration_value_rows}
     else:
-        best[4].params = [best[1],best[2],best[3]]
+        best[4].params = [best[1], best[2], best[3]]
         o = {
             'Plan': best[4] if best[4] is not None else None,
             'Value': best[5],
@@ -78,7 +82,7 @@ def zoom(base, experiment, f, frame=None):
                 'familyhome_min_clearance': best[1],
                 'bungalow_min_clearance': best[2],
                 'mansion_min_clearance': best[3]
-            }
+            },'it_vals':iteration_value_rows
         }
 
     return o

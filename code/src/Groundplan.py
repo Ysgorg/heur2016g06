@@ -1,16 +1,18 @@
 import inspect
 
+import time
+
 from districtobjects.Bungalow import Bungalow
 from districtobjects.FamilyHome import FamilyHome
 from districtobjects.Ground import Ground
 from districtobjects.Mansion import Mansion
+from districtobjects.Placeable import Placeable
 from districtobjects.Playground import Playground
 from districtobjects.Residence import Residence
 from districtobjects.Waterbody import Waterbody
 
 
 class Groundplan(object):
-
     def __init__(self,
 
                  number_of_houses=10,  #
@@ -82,9 +84,12 @@ class Groundplan(object):
 
     @staticmethod
     def getResidenceFunc(t):
-        if t == "FamilyHome": return FamilyHome
-        elif t == "Bungalow": return Bungalow
-        elif t == "Mansion": return Mansion
+        if t == "FamilyHome":
+            return FamilyHome
+        elif t == "Bungalow":
+            return Bungalow
+        elif t == "Mansion":
+            return Mansion
 
     def getNumberOfHouses(self):
         return self.num_houses
@@ -94,51 +99,65 @@ class Groundplan(object):
 
     def addResidence(self, residence):
         assert isinstance(residence, Residence)
-        if isinstance(residence,FamilyHome): self.number_of_familyhomes += 1
-        elif isinstance(residence,Bungalow): self.number_of_bungalows += 1
-        elif isinstance(residence,Mansion): self.number_of_mansions += 1
+        if isinstance(residence, FamilyHome):
+            self.number_of_familyhomes += 1
+        elif isinstance(residence, Bungalow):
+            self.number_of_bungalows += 1
+        elif isinstance(residence, Mansion):
+            self.number_of_mansions += 1
         self.num_houses += 1
         self.residences.append(residence)
 
     def removeResidence(self, residence):
         assert isinstance(residence, Residence)
-        if isinstance(residence,FamilyHome): self.number_of_familyhomes -= 1
-        elif isinstance(residence,Bungalow): self.number_of_bungalows -= 1
-        elif isinstance(residence,Mansion): self.number_of_mansions -= 1
+        if isinstance(residence, FamilyHome):
+            self.number_of_familyhomes -= 1
+        elif isinstance(residence, Bungalow):
+            self.number_of_bungalows -= 1
+        elif isinstance(residence, Mansion):
+            self.number_of_mansions -= 1
         self.num_houses -= 1
         self.residences.remove(residence)
 
-    def isValid(self):
-
+    def isValid(self,verbose=False):
+        t = time.time()
         def correctProportion(num_elements, threshold):
 
             return float(num_elements) / self.NUMBER_OF_HOUSES == threshold
 
         try:
-
             total_wb_area = 0
             for wb in self.waterbodies:
-
                 assert self.correctlyPlaced(wb)
-                total_wb_area += wb.width*wb.height
+                total_wb_area += wb.width * wb.height
 
+            if verbose: print 'wb area enough?',float(total_wb_area) / self.AREA , self.MINIMUM_WATER_PERCENTAGE
             assert (float(total_wb_area) / self.AREA) >= self.MINIMUM_WATER_PERCENTAGE
+
+            if verbose: print 'not too many water bodies?'
             assert len(self.waterbodies) <= self.MAXIMUM_WATER_BODIES
+            if verbose: print self.number_of_familyhomes, self.number_of_bungalows, self.number_of_mansions,len(self.residences)
             assert correctProportion(self.number_of_familyhomes, self.MINIMUM_FAMILYHOMES_PERCENTAGE)
             assert correctProportion(self.number_of_bungalows, self.MINIMUM_BUNGALOW_PERCENTAGE)
             assert correctProportion(self.number_of_mansions, self.MINIMUM_MANSION_PERCENTAGE)
+            if verbose: print 'num residences ok'
             assert self.num_houses == self.NUMBER_OF_HOUSES
             for r in self.residences: assert self.correctlyPlaced(r)
+            #print 'isvalid y took',time.time()-t,'ms'
             return True
         except:
             return False
 
     @staticmethod
-    def overlap(o1, o2): return o1 is not o2 and o1.x1 <= o2.x2 and o1.x2 >= o2.x1 and o1.y1 <= o2.y2 and o1.y2 >= o2.y1
+    def overlap(o1, o2):
+        return o1 is not o2 and o1.x1 <= o2.x2 and o1.x2 >= o2.x1 and o1.y1 <= o2.y2 and o1.y2 >= o2.y1
 
-    def correctlyPlaced(self, o,verbose=False):
+    def correctlyPlaced(self, o, verbose=False):
 
-        def within_area(o,verbose):
+
+
+        def within_area(o, verbose):
+            assert o is not None
             assert o.y1 >= self.ground.y1
             assert o.x2 <= self.ground.x2
             assert o.y2 <= self.ground.y2
@@ -146,21 +165,20 @@ class Groundplan(object):
             if verbose: print 'within area limits'
             return True
 
-        def no_overlap(o,verbose):
+        def no_overlap(o, verbose):
             for r in self.residences: assert not self.overlap(r, o)
             for r in self.playgrounds: assert not self.overlap(r, o)
             for r in self.waterbodies: assert not self.overlap(r, o)
             if verbose: print 'not overlapping anything'
             return True
 
-        def water_is_ok(o,verbose):
-            r = max(o.width, o.height) / min(o.width, o.height) <= self.MINIMUM_WATERBODY_RATIO
-            if verbose: print 'is ok water'
-            return r
+        def water_is_ok(o, verbose):
+            return (max(o.width, o.height) / float(min(o.width, o.height)) <= self.MINIMUM_WATERBODY_RATIO)
 
-        def residence_is_ok(o,verbose=False):
+        def residence_is_ok(o, verbose=False):
+            if verbose: print '?'
 
-            def is_within_reach_of_pg(pgs,o):
+            def is_within_reach_of_pg(pgs, o):
                 assert self.PLAYGROUND
                 assert len(pgs) > 0
                 for pg in pgs:
@@ -168,28 +186,42 @@ class Groundplan(object):
                 if verbose: print 'not within pg reach'
                 return False
 
-            assert isinstance(o,Residence)
+            assert isinstance(o, Residence)
             assert o.y1 >= o.minimumClearance
             assert o.x1 >= o.minimumClearance
             assert o.x2 <= self.ground.x2 - o.minimumClearance
             assert o.y2 <= self.ground.y2 - o.minimumClearance
-            if verbose: print 'has ok clearance from area edges'
-            for r in self.residences: assert r is o or self.getDistance(r, o) >= max(r.minimumClearance,o.minimumClearance)
+            if verbose:
+                print 'has ok clearance from area edges'
+            for r in self.residences:
+                if verbose: print 'distances:',self.getDistance(r, o), r.minimumClearance,o.minimumClearance
+                assert r is o or self.getDistance(r, o) >= max(r.minimumClearance,
+                                                                                     o.minimumClearance)
             if verbose: print 'no clearance conflict with other residences'
-            assert not self.PLAYGROUND or is_within_reach_of_pg(self.playgrounds,o)
+            assert not self.PLAYGROUND or is_within_reach_of_pg(self.playgrounds, o)
+            if verbose: print 'within pg reasch'
             return True
 
         try:
-            assert within_area(o,verbose)
-            assert no_overlap(o,verbose)
-            if isinstance(o,Waterbody): assert water_is_ok(o,verbose)
-            if isinstance(o,Residence): assert residence_is_ok(o)
+            if verbose:print 'placable?'
+            assert isinstance(o,Placeable)
+            if verbose:print 'within area?'
+            assert within_area(o, verbose)
+            if verbose:print 'no overlap?'
+            assert no_overlap(o, verbose)
+            if verbose:print 'water and residence ok??'
+            if isinstance(o, Waterbody): assert water_is_ok(o, verbose)
+            if isinstance(o, Residence): assert residence_is_ok(o,verbose)
+            if verbose:print 'yes'
             return True
-        except: return False
+        except Exception:
+            if verbose: print 'no'
+            return False
 
     def getDistance(self, o1, o2):
 
-        def dist(p1, p2): return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+        def dist(p1, p2):
+            return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
 
         a1 = o1.y1 < o2.y2
         a2 = o1.x2 < o2.x1
@@ -256,23 +288,31 @@ class Groundplan(object):
 
     def getResidenceValue(self, residence):
 
-        residence.original_min_clearance = type(residence)(0,0).minimumClearance
+        residence.original_min_clearance = type(residence)(0, 0).minimumClearance
         value_residence = residence.getValue()
         distance = self.getMinimumDistance(residence)
         value_increase = residence.getAddedValuePercentage() * value_residence
         return value_residence + (max(distance - residence.original_min_clearance, 0)) * value_increase
 
     def getMinimumDistance(self, residence):
-        return min([residence.x1,residence.y1,self.ground.x2 - residence.x2,self.ground.y2 - residence.y2,] 
-                   + [self.getDistance(residence,other) for other in self.residences if other is not residence])
+
+        assert isinstance(residence,Residence)
+        return min([residence.x1, residence.y1, self.ground.x2 - residence.x2, self.ground.y2 - residence.y2, ]
+                   + [self.getDistance(residence, other) for other in self.residences if other is not residence])
 
     def toString(self):
         return [[name, thing] for name, thing in inspect.getmembers(self)]
 
     def deepCopy(self):
 
-        c = Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND,name=self.name,puts=self.puts,width=self.width,height=self.height,min_wb_ratio=self.MINIMUM_WATERBODY_RATIO,max_pg_distance=self.MAXIMUM_PLAYGROUND_DISTANCE,mansion_proportion=self.MINIMUM_MANSION_PERCENTAGE,bungalow_proportion=self.MINIMUM_BUNGALOW_PERCENTAGE,familyhome_proportion=self.MINIMUM_FAMILYHOMES_PERCENTAGE,max_wbs=self.MAXIMUM_WATER_BODIES,min_water_proportion=self.MINIMUM_WATER_PERCENTAGE,residences=self.residences,waterbodies=self.waterbodies,playgrounds=self.playgrounds,params=self.params,)
-        return c
+        return Groundplan(self.NUMBER_OF_HOUSES, self.PLAYGROUND, name=self.name, puts=self.puts, width=self.width,
+                       height=self.height, min_wb_ratio=self.MINIMUM_WATERBODY_RATIO,
+                       max_pg_distance=self.MAXIMUM_PLAYGROUND_DISTANCE,
+                       mansion_proportion=self.MINIMUM_MANSION_PERCENTAGE,
+                       bungalow_proportion=self.MINIMUM_BUNGALOW_PERCENTAGE,
+                       familyhome_proportion=self.MINIMUM_FAMILYHOMES_PERCENTAGE, max_wbs=self.MAXIMUM_WATER_BODIES,
+                       min_water_proportion=self.MINIMUM_WATER_PERCENTAGE, residences=self.residences,
+                       waterbodies=self.waterbodies, playgrounds=self.playgrounds, params=self.params)
 
     @staticmethod
     def deserialize(s):

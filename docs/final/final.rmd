@@ -102,7 +102,7 @@ constraints. Pictured are our three bases.
 
 #### Bases
 
-Pictured are bases A, B and C.
+Pictured below are bases A, B and C (Dynamic):
 
 ```{r, out.width = "100px", echo=FALSE}
 knitr::include_graphics("manual_images/base_a.png")
@@ -239,17 +239,19 @@ todo:
 
 #### Variety in algorithm output
 
-```{r, out.width = "100px", echo=FALSE}
-knitr::include_graphics("manual_images/randomness.png")
+```{r, out.width = "500px", echo=FALSE}
+knitr::include_graphics("images/boxplot_plan_value.png")
 ```
 
- - spread in plan value across several runs, on same settings
- - as expected, determininstic algorithms have 0 variance
+ - Spread in plan value across 30 runs, with the same settings.
+ - As expected, determininstic algorithms have 0 variance.
 
 ### Best plans
 
-```{r, out.width = "400px", echo=FALSE}
-knitr::include_graphics("manual_images/bests.png")
+```{r, out.width = "100px", echo=FALSE}
+knitr::include_graphics("manual_images/40.png")
+knitr::include_graphics("manual_images/70.png")
+knitr::include_graphics("manual_images/100.png")
 ```
 
 Above are the best plans found for 40, 70 and 100 residences.

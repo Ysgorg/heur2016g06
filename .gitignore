@@ -1,3 +1,4 @@
 *.pyc
 code/plans/*
 .imdone
+.idea

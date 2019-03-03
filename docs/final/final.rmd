@@ -89,8 +89,6 @@ If G is fulfilled then F is also fulfilled.
 #### H : Balanced playground placement
 Playgrounds should be placed in a way that maximize area available for residences.
 
- - todo plot value for 2 pgs, 1 pg
-
 ### Algorithms
 
 We implemented a series of algorithms with differing functionalities.
@@ -209,6 +207,10 @@ knitr::include_graphics("images/variants1.png")
 knitr::include_graphics("images/variants2.png")
 ```
 
+Plot interpretation: box plots represent spread of plan values for all results where a variable has a certain value. 
+The boxes are grouped by number of houses (40,70,100). 
+The numbers on the x axis can be ignored. Plan value is on the y axis. 
+
  - Top left: all results where base=[A, B, C].
  - Top right: all results where residence placement function=[TFA,TFB,HC]
  - Bottom left: all results where number of candidate moves=[2,4,6]
@@ -241,7 +243,9 @@ we observe
  - zoom slightly outperforms SA, but zoom spends more time searching but failing to improve
  - Tight Fit A outperforms Tight Fit B
  - in the first 3 plots, we can clearly distinguish between datapoints for different num house requirements
+ - in the lower left, the solid blue is the hillcilmber data from the lower right.  
  - rainbow!
+ 
 
 #### Correlations between residence clearances and plan value
 
@@ -251,21 +255,16 @@ We found these (pearson) correlations between plan value and each residence clea
  - bungalow clearance factor : 0.80,
  - familyhome clearance factor : 0.72.
 
-todo:
-
- - scatterplot of correlation of each TF variant
- - catch average clearance factor of hillclimber and compare. convergence maybe?
-
 #### Variety in algorithm output
-
- - TODO remove or regenerate with real data
 
 ```{r, out.width = "400px", echo=FALSE}
 knitr::include_graphics("manual_images/randomness.png")
 ```
 
-This boxplot shows spreads in plan value across several runs for the same problem instance.
-As expected, deterministic algorithms have 0 spread.
+ - NOTE: ploted data is test data, not from the same dataset as the other plots. TODO regenerate for main data set.  
+
+This boxplot shows spreads in plan value across several runs for the same problem instance. As expected, deterministic algorithms have 0 spread.
+We cannot draw any other conclusions since the ploted data is not real. 
 
 ### Best plans
 
@@ -297,6 +296,7 @@ This shows both that these heurstics make sense,
     and that it's safe to include these heuritics in our implementation to restrict our search space.
 
 Future work would involve to continue developing a cohesive algorithm which applies all heuristics. Parameter search for clearances should be avoided, as it takes a lot of time and could be better done for each grid individually, with expand, shrink and bounce functions. For data analysis, it would make algorithm component evaluation more fluent if we computed correlations across all columns. We've done this for a few numerical values, but it should be done systematically for all columns.
+We could also empirically investigate effect of number of playgrounds per number of residences. 
 
 ## Advanced assignment
 
@@ -316,7 +316,7 @@ By manual deduction of the assignment a formula for value per square meter of sp
 The number of sides is reduced when sides of the residence are adjacent to water bodies or playgrounds as in those cases the clearance will not take up
 space.
 
-        V /m2 = (V + V * (minC - c) * ppm) / W + ns 1 * C ) * ( H + ns 2 * C )
+![](manual_images/v.png)
 
 This formula reveals that bungalows generate the most value per square meter,
     3325, when placed between water bodies at minimum distance.
@@ -341,3 +341,8 @@ knitr::include_graphics("manual_images/advancedFamilyHome.png")
 ```
 
 Family homes generate more value per square meter but this plan with bungalows generates a plan with more value, because more space is used. The balance between using as much family homes, which generate the most value per meter, and using enough other residences to optimize for space usage is difficult to find but may have been reached by the second plan that is presented. This second plan has a total of 197 residences of family homes and bungalows combined without the placement of playgrounds. Therefore one may say that the optimal number of residences is 197 in this case.
+
+# Appendix
+
+ - code on github: https://github.com/heur17g6/heur2017g06
+ - results table: http://fanaly.site88.net/heur/
